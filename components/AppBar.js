@@ -4,6 +4,215 @@ import UserApi from '../api/UserApi.js'
 const MDCDialog = mdc.dialog.MDCDialog
 const MDCLinearProgress = mdc.linearProgress.MDCLinearProgress
 
+const template = `
+<header class=" mdc-top-app-bar mdc-top-app-bar--fixed">
+    <div class="mdc-top-app-bar__row">
+        <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+            <span class="mdc-top-app-bar__title">app-web-test</span>
+        </section>
+        <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end">
+            {{#if signedIn}}
+            <button class="profile-button mdc-button mdc-top-app-bar__action-item mdc-button--unelevated">{{name}}</button>
+            <button class="sign-out-button mdc-button mdc-top-app-bar__action-item mdc-button--unelevated">Sign Out</button>
+            {{else}}
+            <button class="sign-in-button mdc-button mdc-top-app-bar__action-item mdc-button--unelevated">Sign In</button>
+            {{/if}}
+        </section>
+    </div>
+
+    <div class="signin-dialog mdc-dialog">
+        <div class="mdc-dialog__container" >
+            <div class="mdc-dialog__surface">
+            <h2 class="mdc-dialog__title">Sign In</h2>
+            <div class="mdc-dialog__content">
+                <form class="my-2">
+                    <label class="d-block">Email</label>
+                    <label class="mdc-text-field mdc-text-field--filled mdc-text-field--no-label w-100">
+                        <span class="mdc-text-field__ripple"></span>
+                        <input class="field-email mdc-text-field__input" type="text" tabindex="0">
+                        <span class="mdc-line-ripple"></span>
+                    </label>
+                    <label class="d-block pt-2">Password</label>
+                    <label class="mdc-text-field mdc-text-field--filled mdc-text-field--no-label w-100">
+                        <span class="mdc-text-field__ripple"></span>
+                        <input class="field-password mdc-text-field__input" type="password">
+                        <span class="mdc-line-ripple"></span>
+                    </label>
+                </form>
+                <div class="d-flex justify-center my-2"><a href="#forgot-password" class="forgot-password-link">Forgot Password?</a></div>
+                <div class="d-flex justify-center"><span class="mr-4">Not a member?</span><a href="#sign-up" class="sign-up-link">Sign Up</a></div>
+            </div>
+            <div class="mdc-dialog__actions">
+                <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="close">
+                    <div class="mdc-button__ripple"></div>
+                    <span class="mdc-button__label">Cancel</span>
+                </button>
+                <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="accept">
+                    <div class="mdc-button__ripple"></div>
+                    <span class="mdc-button__label">Sign In</span>
+                </button>
+            </div>
+            </div>
+        </div>
+        <div class="mdc-dialog__scrim"></div>
+    </div>
+
+    <div class="forgot-password-dialog mdc-dialog">
+        <div class="mdc-dialog__container" >
+            <div class="mdc-dialog__surface">
+            <h2 class="mdc-dialog__title">Forgot Password</h2>
+            <div class="mdc-dialog__content">
+                <form class="my-2">
+                    <label class="d-block">Email</label>
+                    <label class="mdc-text-field mdc-text-field--filled mdc-text-field--no-label w-100">
+                        <span class="mdc-text-field__ripple"></span>
+                        <input class="field-email mdc-text-field__input" type="text" tabindex="0">
+                        <span class="mdc-line-ripple"></span>
+                    </label>
+                </form>
+            </div>
+            <div class="mdc-dialog__actions">
+                <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="close">
+                    <div class="mdc-button__ripple"></div>
+                    <span class="mdc-button__label">Cancel</span>
+                </button>
+                <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="accept">
+                    <div class="mdc-button__ripple"></div>
+                    <span class="mdc-button__label">Reset Password</span>
+                </button>
+            </div>
+            </div>
+        </div>
+        <div class="mdc-dialog__scrim"></div>
+    </div>
+
+    <div class="signup-dialog mdc-dialog">
+        <div class="mdc-dialog__container" >
+            <div class="mdc-dialog__surface">
+            <h2 class="mdc-dialog__title">Sign Up</h2>
+            <div class="mdc-dialog__content">
+                <form autocomplete="off" class="my-2">
+                    <label class="d-block">Legal Name</label>
+                    <label class="mdc-text-field mdc-text-field--filled mdc-text-field--no-label w-100">
+                        <span class="mdc-text-field__ripple"></span>
+                        <input class="field-legal_name mdc-text-field__input" type="text" tabindex="0">
+                        <span class="mdc-line-ripple"></span>
+                    </label>
+                    <label class="d-block pt-2">Preferred Name</label>
+                    <label class="mdc-text-field mdc-text-field--filled mdc-text-field--no-label w-100">
+                        <span class="mdc-text-field__ripple"></span>
+                        <input class="field-preferred_name mdc-text-field__input" type="text">
+                        <span class="mdc-line-ripple"></span>
+                    </label>
+                    <label class="d-block pt-2">Email</label>
+                    <label class="mdc-text-field mdc-text-field--filled mdc-text-field--no-label w-100">
+                        <span class="mdc-text-field__ripple"></span>
+                        <input autocomplete="off" class="field-email mdc-text-field__input" type="text">
+                        <span class="mdc-line-ripple"></span>
+                    </label>
+                    <label class="d-block pt-2">Password</label>
+                    <label class="mdc-text-field mdc-text-field--filled mdc-text-field--no-label w-100">
+                        <span class="mdc-text-field__ripple"></span>
+                        <input autocomplete="new-password" class="field-password mdc-text-field__input" type="password">
+                        <span class="mdc-line-ripple"></span>
+                    </label>
+                </form>
+            </div>
+            <div class="mdc-dialog__actions">
+                <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="close">
+                    <div class="mdc-button__ripple"></div>
+                    <span class="mdc-button__label">Cancel</span>
+                </button>
+                <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="accept">
+                    <div class="mdc-button__ripple"></div>
+                    <span class="mdc-button__label">Sign Up</span>
+                </button>
+            </div>
+            </div>
+        </div>
+        <div class="mdc-dialog__scrim"></div>
+    </div>
+
+    <div class="my-profile-dialog mdc-dialog">
+        <div class="mdc-dialog__container" >
+            <div class="mdc-dialog__surface">
+            <h2 class="mdc-dialog__title">Profile</h2>
+            <div class="mdc-dialog__content">
+                <form autocomplete="off" class="my-2">
+                    <label class="d-block">Legal Name</label>
+                    <label class="mdc-text-field mdc-text-field--filled mdc-text-field--no-label w-100">
+                        <span class="mdc-text-field__ripple"></span>
+                        <input class="field-legal_name mdc-text-field__input" type="text" tabindex="0">
+                        <span class="mdc-line-ripple"></span>
+                    </label>
+                    <label class="d-block pt-2">Preferred Name</label>
+                    <label class="mdc-text-field mdc-text-field--filled mdc-text-field--no-label w-100">
+                        <span class="mdc-text-field__ripple"></span>
+                        <input class="field-preferred_name mdc-text-field__input" type="text">
+                        <span class="mdc-line-ripple"></span>
+                    </label>
+                    <label class="d-block pt-2">Email</label>
+                    <label class="mdc-text-field mdc-text-field--filled mdc-text-field--no-label w-100">
+                        <span class="mdc-text-field__ripple"></span>
+                        <input autocomplete="off" class="field-email mdc-text-field__input" type="text">
+                        <span class="mdc-line-ripple"></span>
+                    </label>
+                    <label class="d-block pt-2">Password</label>
+                    <button class="change-password mdc-button mdc-button--outlined w-100">
+                        <span class="mdc-button__ripple"></span>Change
+                    </button>
+                    <div class="edit-password-block w-100">
+                        <div class="d-flex align-center w-100">
+                            <label class="mdc-text-field mdc-text-field--filled mdc-text-field--no-label">
+                                <span class="mdc-text-field__ripple"></span>
+                                <input autocomplete="new-password" class="field-password mdc-text-field__input" type="password">
+                                <span class="mdc-line-ripple"></span>
+                            </label>
+                            <button class="close-edit-password mdc-icon-button material-icons ml-2">
+                                <div class="mdc-icon-button__ripple"></div>
+                                close
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="mdc-dialog__actions">
+                <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="close">
+                    <div class="mdc-button__ripple"></div>
+                    <span class="mdc-button__label">Cancel</span>
+                </button>
+                <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="accept">
+                    <div class="mdc-button__ripple"></div>
+                    <span class="mdc-button__label">Save</span>
+                </button>
+            </div>
+            </div>
+        </div>
+        <div class="mdc-dialog__scrim"></div>
+    </div>
+
+    <div class="processing-dialog mdc-dialog">
+        <div class="mdc-dialog__container" >
+            <div class="mdc-dialog__surface">
+            <h2 class="mdc-dialog__title"></h2>
+            <div class="mdc-dialog__content">
+                <div role="progressbar" class="mdc-linear-progress mdc-linear-progress--indeterminate" tabindex="0">
+                    <div class="mdc-linear-progress__buffering-dots"></div>
+                    <div class="mdc-linear-progress__buffer"></div>
+                    <div class="mdc-linear-progress__bar mdc-linear-progress__primary-bar">
+                        <span class="mdc-linear-progress__bar-inner"></span>
+                    </div>
+                    <div class="mdc-linear-progress__bar mdc-linear-progress__secondary-bar">
+                        <span class="mdc-linear-progress__bar-inner"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mdc-dialog__scrim"></div>
+    </div>
+</header>
+`
+
 export class AppBar extends HTMLElement {
     constructor() {
         super()
@@ -25,13 +234,15 @@ export class AppBar extends HTMLElement {
     disconnectedCallback() {
         session.removeEventListener('me', this.refreshCallback)
     }
-    refresh() {
-        const data = {
-            signedIn: session.me?.id,
+    get templateData() {
+        return {
+            signedIn: session.isSignedIn(),
             name: session.me?.display_name
         }
-        this.innerHTML = Handlebars.compile(this.template)(data)
-        this.addButtonClickDispatcher('.sign-in-button', 'click-signin')        
+    }
+    refresh() {
+        this.innerHTML = Handlebars.compile(template)(this.templateData)
+        this.addButtonClickDispatcher('.sign-in-button', 'click-signin')
         this.addButtonClickDispatcher('.sign-out-button', 'click-signout')
         this.addButtonClickDispatcher('.profile-button', 'click-profile')
 
@@ -219,212 +430,5 @@ export class AppBar extends HTMLElement {
     forgotPasswordDialog = undefined
     signupDialog = undefined
     myProfileDialog = undefined
-    template = `
-<header class=" mdc-top-app-bar mdc-top-app-bar--fixed">
-<div class="mdc-top-app-bar__row">
-<section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
-    <span class="mdc-top-app-bar__title">app-web-test</span>
-</section>
-<section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end">
-    {{#if signedIn}}
-    <button class="profile-button mdc-button mdc-top-app-bar__action-item mdc-button--unelevated">{{name}}</button>
-    <button class="sign-out-button mdc-button mdc-top-app-bar__action-item mdc-button--unelevated">Sign Out</button>
-    {{else}}
-    <button class="sign-in-button mdc-button mdc-top-app-bar__action-item mdc-button--unelevated">Sign In</button>
-    {{/if}}
-</section>
-</div>
-
-<div class="signin-dialog mdc-dialog">
-  <div class="mdc-dialog__container" >
-    <div class="mdc-dialog__surface">
-      <h2 class="mdc-dialog__title">Sign In</h2>
-      <div class="mdc-dialog__content">
-        <form class="my-2">
-            <label class="d-block">Email</label>
-            <label class="mdc-text-field mdc-text-field--filled mdc-text-field--no-label w-100">
-                <span class="mdc-text-field__ripple"></span>
-                <input class="field-email mdc-text-field__input" type="text" tabindex="0">
-                <span class="mdc-line-ripple"></span>
-            </label>
-            <label class="d-block pt-2">Password</label>
-            <label class="mdc-text-field mdc-text-field--filled mdc-text-field--no-label w-100">
-                <span class="mdc-text-field__ripple"></span>
-                <input class="field-password mdc-text-field__input" type="password">
-                <span class="mdc-line-ripple"></span>
-            </label>
-        </form>
-        <div class="d-flex justify-center my-2"><a href="#forgot-password" class="forgot-password-link">Forgot Password?</a></div>
-        <div class="d-flex justify-center"><span class="mr-4">Not a member?</span><a href="#sign-up" class="sign-up-link">Sign Up</a></div>
-      </div>
-      <div class="mdc-dialog__actions">
-        <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="close">
-            <div class="mdc-button__ripple"></div>
-            <span class="mdc-button__label">Cancel</span>
-        </button>
-        <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="accept">
-            <div class="mdc-button__ripple"></div>
-            <span class="mdc-button__label">Sign In</span>
-        </button>
-      </div>
-    </div>
-  </div>
-  <div class="mdc-dialog__scrim"></div>
-</div>
-
-<div class="forgot-password-dialog mdc-dialog">
-  <div class="mdc-dialog__container" >
-    <div class="mdc-dialog__surface">
-      <h2 class="mdc-dialog__title">Forgot Password</h2>
-      <div class="mdc-dialog__content">
-        <form class="my-2">
-            <label class="d-block">Email</label>
-            <label class="mdc-text-field mdc-text-field--filled mdc-text-field--no-label w-100">
-                <span class="mdc-text-field__ripple"></span>
-                <input class="field-email mdc-text-field__input" type="text" tabindex="0">
-                <span class="mdc-line-ripple"></span>
-            </label>
-        </form>
-      </div>
-      <div class="mdc-dialog__actions">
-        <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="close">
-            <div class="mdc-button__ripple"></div>
-            <span class="mdc-button__label">Cancel</span>
-        </button>
-        <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="accept">
-            <div class="mdc-button__ripple"></div>
-            <span class="mdc-button__label">Reset Password</span>
-        </button>
-      </div>
-    </div>
-  </div>
-  <div class="mdc-dialog__scrim"></div>
-</div>
-
-<div class="signup-dialog mdc-dialog">
-  <div class="mdc-dialog__container" >
-    <div class="mdc-dialog__surface">
-      <h2 class="mdc-dialog__title">Sign Up</h2>
-      <div class="mdc-dialog__content">
-        <form autocomplete="off" class="my-2">
-            <label class="d-block">Legal Name</label>
-            <label class="mdc-text-field mdc-text-field--filled mdc-text-field--no-label w-100">
-                <span class="mdc-text-field__ripple"></span>
-                <input class="field-legal_name mdc-text-field__input" type="text" tabindex="0">
-                <span class="mdc-line-ripple"></span>
-            </label>
-            <label class="d-block pt-2">Preferred Name</label>
-            <label class="mdc-text-field mdc-text-field--filled mdc-text-field--no-label w-100">
-                <span class="mdc-text-field__ripple"></span>
-                <input class="field-preferred_name mdc-text-field__input" type="text">
-                <span class="mdc-line-ripple"></span>
-            </label>
-            <label class="d-block pt-2">Email</label>
-            <label class="mdc-text-field mdc-text-field--filled mdc-text-field--no-label w-100">
-                <span class="mdc-text-field__ripple"></span>
-                <input autocomplete="off" class="field-email mdc-text-field__input" type="text">
-                <span class="mdc-line-ripple"></span>
-            </label>
-            <label class="d-block pt-2">Password</label>
-            <label class="mdc-text-field mdc-text-field--filled mdc-text-field--no-label w-100">
-                <span class="mdc-text-field__ripple"></span>
-                <input autocomplete="new-password" class="field-password mdc-text-field__input" type="password">
-                <span class="mdc-line-ripple"></span>
-            </label>
-        </form>
-      </div>
-      <div class="mdc-dialog__actions">
-        <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="close">
-            <div class="mdc-button__ripple"></div>
-            <span class="mdc-button__label">Cancel</span>
-        </button>
-        <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="accept">
-            <div class="mdc-button__ripple"></div>
-            <span class="mdc-button__label">Sign Up</span>
-        </button>
-      </div>
-    </div>
-  </div>
-  <div class="mdc-dialog__scrim"></div>
-</div>
-
-<div class="my-profile-dialog mdc-dialog">
-  <div class="mdc-dialog__container" >
-    <div class="mdc-dialog__surface">
-      <h2 class="mdc-dialog__title">Profile</h2>
-      <div class="mdc-dialog__content">
-        <form autocomplete="off" class="my-2">
-            <label class="d-block">Legal Name</label>
-            <label class="mdc-text-field mdc-text-field--filled mdc-text-field--no-label w-100">
-                <span class="mdc-text-field__ripple"></span>
-                <input class="field-legal_name mdc-text-field__input" type="text" tabindex="0">
-                <span class="mdc-line-ripple"></span>
-            </label>
-            <label class="d-block pt-2">Preferred Name</label>
-            <label class="mdc-text-field mdc-text-field--filled mdc-text-field--no-label w-100">
-                <span class="mdc-text-field__ripple"></span>
-                <input class="field-preferred_name mdc-text-field__input" type="text">
-                <span class="mdc-line-ripple"></span>
-            </label>
-            <label class="d-block pt-2">Email</label>
-            <label class="mdc-text-field mdc-text-field--filled mdc-text-field--no-label w-100">
-                <span class="mdc-text-field__ripple"></span>
-                <input autocomplete="off" class="field-email mdc-text-field__input" type="text">
-                <span class="mdc-line-ripple"></span>
-            </label>
-            <label class="d-block pt-2">Password</label>
-            <button class="change-password mdc-button mdc-button--outlined w-100">
-                <span class="mdc-button__ripple"></span>Change
-            </button>
-            <div class="edit-password-block w-100">
-                <div class="d-flex align-center w-100">
-                    <label class="mdc-text-field mdc-text-field--filled mdc-text-field--no-label">
-                        <span class="mdc-text-field__ripple"></span>
-                        <input autocomplete="new-password" class="field-password mdc-text-field__input" type="password">
-                        <span class="mdc-line-ripple"></span>
-                    </label>
-                    <button class="close-edit-password mdc-icon-button material-icons ml-2">
-                        <div class="mdc-icon-button__ripple"></div>
-                        close
-                    </button>
-                </div>
-            </div>
-        </form>
-      </div>
-      <div class="mdc-dialog__actions">
-        <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="close">
-            <div class="mdc-button__ripple"></div>
-            <span class="mdc-button__label">Cancel</span>
-        </button>
-        <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="accept">
-            <div class="mdc-button__ripple"></div>
-            <span class="mdc-button__label">Save</span>
-        </button>
-      </div>
-    </div>
-  </div>
-  <div class="mdc-dialog__scrim"></div>
-</div>
-
-<div class="processing-dialog mdc-dialog">
-  <div class="mdc-dialog__container" >
-    <div class="mdc-dialog__surface">
-      <h2 class="mdc-dialog__title"></h2>
-      <div class="mdc-dialog__content">
-        <div role="progressbar" class="mdc-linear-progress mdc-linear-progress--indeterminate" tabindex="0">
-            <div class="mdc-linear-progress__buffering-dots"></div>
-            <div class="mdc-linear-progress__buffer"></div>
-            <div class="mdc-linear-progress__bar mdc-linear-progress__primary-bar">
-                <span class="mdc-linear-progress__bar-inner"></span>
-            </div>
-            <div class="mdc-linear-progress__bar mdc-linear-progress__secondary-bar">
-                <span class="mdc-linear-progress__bar-inner"></span>
-            </div>
-        </div>
-    </div>
-  </div>
-  <div class="mdc-dialog__scrim"></div>
-</div>
-</header>`
 }
 customElements.define('app-bar', AppBar)
