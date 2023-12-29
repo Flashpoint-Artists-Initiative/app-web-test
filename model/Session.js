@@ -3,6 +3,7 @@ import AuthApi from '../api/AuthApi.js'
 const AuthTokenCookie = 'App-Web-Test.JWTToken'
 
 class SessionInfo {
+    _loaded = false
     me = undefined
     jwtToken = undefined
     eventListeners = new Map()
@@ -23,6 +24,16 @@ class SessionInfo {
                 listener()
             })
         }
+    }
+    get loaded() {
+        return this._loaded
+    }
+    set loaded(value) {
+        this._loaded = value
+        this.triggerEvent('loaded')
+    }
+    isSignedIn() {
+        return this.me?.id 
     }
     async signinWithCookie() {
         const token = document.cookie
@@ -90,5 +101,6 @@ export const session = new SessionInfo()
 window.addEventListener('load', async () => {
     document.getElementsByTagName('body')[0].style.display = 'none'
     await session.signinWithCookie()
+    session.loaded = true
     document.getElementsByTagName('body')[0].style.display = 'block'
 })
