@@ -5,6 +5,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
     <script type="module" src="index.js"></script>
     <script type="module" src="components/AppBar.js"></script>
+    <script type="module" src="components/HomePage.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="main.css">
@@ -12,9 +13,7 @@
   <body>
     <app-bar click-signin="alert('signin')" click-signout="alert('signout')" ></app-bar>
     <main class="mdc-top-app-bar--fixed-adjust">
-        <div class="pa-4">
-            <h1>TODO: Homepage</h1>
-        </div>
+      <home-page></home-page>
     </main>
   </body>
 </html>
