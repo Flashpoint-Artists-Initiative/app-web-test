@@ -67,6 +67,11 @@ class SessionInfo {
         this.triggerEvent('me')
         return { ok: true }
     }
+    updateUser(patch) {
+        this.me = Object.assign(this.me, patch)
+        this.me.display_name = this.me.preferred_name || this.me.legal_name
+        this.triggerEvent('me')
+    }
     signout() {
         this.me = undefined
         this.jwtToken = undefined

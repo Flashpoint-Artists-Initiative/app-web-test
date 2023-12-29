@@ -10,6 +10,11 @@ body {
 .justify-center { justify-content: center; }
 .justify-end { justify-content: flex-end; }
 
+.align-start { align-items: flex-start; }
+.align-center { align-items: center; }
+.align-end { align-items: flex-end; }
+.align-stretch { align-items: stretch; }
+
 .opacity-0 { opacity: 0 }
 .opacity-1 { opacity: 1 }
 
