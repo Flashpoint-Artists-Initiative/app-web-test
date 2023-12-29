@@ -43,15 +43,34 @@ export class AppBar extends HTMLElement {
                     const password = element.querySelector('.field-password').value.trim()
                     const error = await this.signin(email, password)
                     if (error) {
-                        this.showError(error)
+                        this.showMessage(error, 'error')
                     }
                 }
+            })
+            this.querySelector('.signin-dialog .forgot-password-link').addEventListener('click', (event) => {
+                event.preventDefault()
+                this.signinDialog.close()
+                this.openForgotPasswordDialog()
             })
             this.querySelector('.signin-dialog .sign-up-link').addEventListener('click', (event) => {
                 event.preventDefault()
                 this.signinDialog.close()
                 this.openSignupDialog()
-            })    
+            })
+        }
+
+        {
+            const element = this.querySelector('.forgot-password-dialog')
+            this.forgotPasswordDialog = new MDCDialog(element)
+            this.forgotPasswordDialog.listen('MDCDialog:closing', async (event) => {
+                if (event.detail.action == 'accept') {
+                    const email = element.querySelector('.field-email').value.trim()
+                    const error = await this.forgotPassword(email)
+                    if (error) {
+                        this.showMessage(error, 'info')
+                    }
+                }
+            })
         }
 
         {
@@ -67,11 +86,10 @@ export class AppBar extends HTMLElement {
                     }
                     const error = await this.signup(user)
                     if (error) {
-                        this.showError(error)
+                        this.showMessage(error, 'error')
                     }
                 }
             })
-    
         }
     }
     addButtonClickDispatcher(selector, eventName) {
@@ -83,33 +101,25 @@ export class AppBar extends HTMLElement {
         }
     }
     openSigninDialog() {
-        const element = this.querySelector('.signin-dialog')
-        ;['email', 'password'].forEach(selector => {
+        const element = this.querySelector('.signin-dialog');
+        ['email', 'password'].forEach(selector => {
             element.querySelector(`.field-${selector}`).value = ''
         })
         this.signinDialog.open()
     }
+    openForgotPasswordDialog() {
+        const element = this.querySelector('.forgot-password-dialog');
+        ['email'].forEach(selector => {
+            element.querySelector(`.field-${selector}`).value = ''
+        })
+        this.forgotPasswordDialog.open()
+    }
     openSignupDialog() {
-        const element = this.querySelector('.signup-dialog')
-        ;['legal-name', 'name', 'email', 'password'].forEach(selector => {
+        const element = this.querySelector('.signup-dialog');
+        ['legal-name', 'name', 'email', 'password'].forEach(selector => {
             element.querySelector(`.field-${selector}`).value = ''
         })
         this.signupDialog.open()
-    }
-    showError(error) {
-        setTimeout(() => {
-            alert(error)            
-        }, 100)
-    }
-    showProcessing(title) {
-        const element = this.querySelector('.processing-dialog')
-        element.querySelector('h2.mdc-dialog__title').textContent = title
-        const dialog = new MDCDialog(element)
-        dialog.open()
-        const linearProgress = new MDCLinearProgress(element.querySelector('.mdc-linear-progress'))
-        linearProgress.determinate = false
-
-        return dialog
     }
     async signin(email, password) {
         const dialog = this.showProcessing('Signing in...')
@@ -118,6 +128,10 @@ export class AppBar extends HTMLElement {
         if (!response.ok) {
             return response.error
         }
+    }
+    async forgotPassword(email) {
+        await session.forgotPassword(email)
+        this.showMessage('Password reset email sent.')
     }
     async signup(user) {
         const dialog = this.showProcessing('Signing in...')
@@ -133,9 +147,25 @@ export class AppBar extends HTMLElement {
     editProfile() {
         alert('TODO: Open My Profile dialog')
     }
+    showProcessing(title) {
+        const element = this.querySelector('.processing-dialog')
+        element.querySelector('h2.mdc-dialog__title').textContent = title
+        const dialog = new MDCDialog(element)
+        dialog.open()
+        const linearProgress = new MDCLinearProgress(element.querySelector('.mdc-linear-progress'))
+        linearProgress.determinate = false
+
+        return dialog
+    }
+    showMessage(error, type) {
+        setTimeout(() => {
+            alert(error)            
+        }, 100)
+    }
 
     refreshCallback = undefined
     signinDialog = undefined
+    forgotPasswordDialog = undefined
     signupDialog = undefined
     template = `
 <header class=" mdc-top-app-bar mdc-top-app-bar--fixed">
@@ -172,6 +202,7 @@ export class AppBar extends HTMLElement {
                 <span class="mdc-line-ripple"></span>
             </label>
         </form>
+        <div class="d-flex justify-center my-2"><a href="#forgot-password" class="forgot-password-link">Forgot Password?</a></div>
         <div class="d-flex justify-center"><span class="mr-4">Not a member?</span><a href="#sign-up" class="sign-up-link">Sign Up</a></div>
       </div>
       <div class="mdc-dialog__actions">
@@ -181,7 +212,36 @@ export class AppBar extends HTMLElement {
         </button>
         <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="accept">
             <div class="mdc-button__ripple"></div>
-            <span class="mdc-button__label">OK</span>
+            <span class="mdc-button__label">Sign In</span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="mdc-dialog__scrim"></div>
+</div>
+
+<div class="forgot-password-dialog mdc-dialog">
+  <div class="mdc-dialog__container" >
+    <div class="mdc-dialog__surface">
+      <h2 class="mdc-dialog__title">Forgot Password</h2>
+      <div class="mdc-dialog__content">
+        <form class="my-2">
+            <label class="d-block">Email</label>
+            <label class="mdc-text-field mdc-text-field--filled mdc-text-field--no-label w-100">
+                <span class="mdc-text-field__ripple"></span>
+                <input class="field-email mdc-text-field__input" type="text" tabindex="0">
+                <span class="mdc-line-ripple"></span>
+            </label>
+        </form>
+      </div>
+      <div class="mdc-dialog__actions">
+        <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="close">
+            <div class="mdc-button__ripple"></div>
+            <span class="mdc-button__label">Cancel</span>
+        </button>
+        <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="accept">
+            <div class="mdc-button__ripple"></div>
+            <span class="mdc-button__label">Reset Password</span>
         </button>
       </div>
     </div>
@@ -228,7 +288,7 @@ export class AppBar extends HTMLElement {
         </button>
         <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="accept">
             <div class="mdc-button__ripple"></div>
-            <span class="mdc-button__label">OK</span>
+            <span class="mdc-button__label">Sign Up</span>
         </button>
       </div>
     </div>

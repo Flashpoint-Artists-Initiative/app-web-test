@@ -1,29 +1,17 @@
 import { ApiUrl } from './env.js'
-import { session } from '../model/Session.js'
+import ApiBase from './ApiBase.js'
 
-export default class AuthApi {
+export default class AuthApi extends ApiBase {
     static async login(email, password) {
-        const url = new URL(`${ApiUrl}auth/login`)
-        return await fetch(url, {
-            method: 'POST',
-            body: JSON.stringify({email: email, password: password}),
-            headers: { 'Content-Type': 'application/json; charset=UTF-8' }
-        })
+        return this.post(new URL(`${ApiUrl}auth/login`), {email: email, password: password})
     }
-
+    static async forgotPassword(email) {
+        return this.post(new URL(`${ApiUrl}auth/forgot-password`), {email: email})
+    }
     static async register(user) {
-        const url = new URL(`${ApiUrl}auth/register`)
-        return await fetch(url, {
-            method: 'POST',
-            body: JSON.stringify(user),
-            headers: { 'Content-Type': 'application/json; charset=UTF-8' }
-        })
+        return this.post(new URL(`${ApiUrl}auth/register`), user)
     }
-
     static async user(token) {
-        const url = new URL(`${ApiUrl}auth/user`)
-        return await fetch(url, {
-            headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json; charset=UTF-8' }
-        })
+        return this.get(new URL(`${ApiUrl}auth/user`), token)
     }
 }

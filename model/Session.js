@@ -42,6 +42,11 @@ class SessionInfo {
         const authInfo = await response.json()
         return  await this.fetchUser(authInfo.access_token)
     }
+    async forgotPassword(email) {
+        const response = await AuthApi.forgotPassword(email)
+        const info = await response.json()
+        return { ok: response.ok, error: info.message }
+    }
     async signup(user) {
         const response = await AuthApi.register(user)
         if (!response.ok) {
