@@ -35,7 +35,6 @@ const defaults = {
 }
 export class CircularProgress extends HTMLElement {
     connectedCallback() {
-        console.log('CircularProgress.connectedCallback')
         this.refresh()
     }
     get templateData() {
