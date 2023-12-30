@@ -3,17 +3,16 @@ import EventApi from '../api/EventApi.js'
 import { CircularProgress } from './mdc/CircularProgress.js'
 
 const template = `
-{{#if visible}}
+{{#if ready}}
 <div class="pa-4">
-    <h1>{{#if signedin}}Signed In{{else}}Guest{{/if}}</h1>
+    <h1 class="mt-0">Events</h1>
     {{#if events}}
-        <h2>Events</h2>
         {{#each events}}
             <div class="mdc-card mdc-card--outlined ma-2">
                 <div class="mdc-card__primary-action pa-6">
                 <a href="/event.html?id={{id}}" class="mdc-theme--on-surface">
                     <div class="d-flex align-center">
-                        <h2 class="my-0 mr-auto text-truncate">{{this.name}}</h2>
+                        <h2 class="my-0 mr-auto text-truncate">{{name}}</h2>
                         {{#if deleted}}
                             <span class="chip mdc-theme--on-secondary mdc-theme--secondary-bg ml-2">deleted</span>
                         {{else if inactive}}
@@ -36,7 +35,7 @@ const template = `
 {{/if}}
 `
 
-export class HomePage extends HTMLElement {
+export class PageHome extends HTMLElement {
     constructor() {
         super()
         this.refreshCallback = () => { this.refresh() }
@@ -72,7 +71,7 @@ export class HomePage extends HTMLElement {
             })
             .value()
         return {
-            visible: session.loaded,
+            ready: session.loaded,
             signedin: session.isSignedIn(),
             events: events
         }
@@ -97,4 +96,4 @@ export class HomePage extends HTMLElement {
     refreshCallback = undefined
     events = undefined
 }
-customElements.define('home-page', HomePage)
+customElements.define('page-home', PageHome)
