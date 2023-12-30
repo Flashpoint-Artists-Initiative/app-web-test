@@ -1,8 +1,9 @@
 import { session } from '../model/Session.js'
 import UserApi from '../api/UserApi.js'
+import { CircularProgress } from './mdc/CircularProgress.js'
+import { TextField } from './mdc/TextField.js'
 
 const MDCDialog = mdc.dialog.MDCDialog
-const MDCLinearProgress = mdc.linearProgress.MDCLinearProgress
 
 const template = `
 <header class=" mdc-top-app-bar mdc-top-app-bar--fixed">
@@ -27,17 +28,9 @@ const template = `
             <div class="mdc-dialog__content">
                 <form class="my-2">
                     <label class="d-block">Email</label>
-                    <label class="mdc-text-field mdc-text-field--filled mdc-text-field--no-label w-100">
-                        <span class="mdc-text-field__ripple"></span>
-                        <input class="field-email mdc-text-field__input" type="text" tabindex="0">
-                        <span class="mdc-line-ripple"></span>
-                    </label>
+                    <mdc-textfield class="w-100" input-class="field-email" input-type="text" input-tabindex="0"></mdc-textfield>
                     <label class="d-block pt-2">Password</label>
-                    <label class="mdc-text-field mdc-text-field--filled mdc-text-field--no-label w-100">
-                        <span class="mdc-text-field__ripple"></span>
-                        <input class="field-password mdc-text-field__input" type="password">
-                        <span class="mdc-line-ripple"></span>
-                    </label>
+                    <mdc-textfield class="w-100" input-class="field-password" input-type="password"></mdc-textfield>
                 </form>
                 <div class="d-flex justify-center my-2"><a href="#forgot-password" class="forgot-password-link">Forgot Password?</a></div>
                 <div class="d-flex justify-center"><span class="mr-4">Not a member?</span><a href="#sign-up" class="sign-up-link">Sign Up</a></div>
@@ -64,11 +57,7 @@ const template = `
             <div class="mdc-dialog__content">
                 <form class="my-2">
                     <label class="d-block">Email</label>
-                    <label class="mdc-text-field mdc-text-field--filled mdc-text-field--no-label w-100">
-                        <span class="mdc-text-field__ripple"></span>
-                        <input class="field-email mdc-text-field__input" type="text" tabindex="0">
-                        <span class="mdc-line-ripple"></span>
-                    </label>
+                    <mdc-textfield class="w-100" input-class="field-email" input-type="text" input-tabindex="0"></mdc-textfield>
                 </form>
             </div>
             <div class="mdc-dialog__actions">
@@ -93,29 +82,13 @@ const template = `
             <div class="mdc-dialog__content">
                 <form autocomplete="off" class="my-2">
                     <label class="d-block">Legal Name</label>
-                    <label class="mdc-text-field mdc-text-field--filled mdc-text-field--no-label w-100">
-                        <span class="mdc-text-field__ripple"></span>
-                        <input class="field-legal_name mdc-text-field__input" type="text" tabindex="0">
-                        <span class="mdc-line-ripple"></span>
-                    </label>
+                    <mdc-textfield class="w-100" input-class="field-legal_name" input-type="text" input-tabindex="0"></mdc-textfield>
                     <label class="d-block pt-2">Preferred Name</label>
-                    <label class="mdc-text-field mdc-text-field--filled mdc-text-field--no-label w-100">
-                        <span class="mdc-text-field__ripple"></span>
-                        <input class="field-preferred_name mdc-text-field__input" type="text">
-                        <span class="mdc-line-ripple"></span>
-                    </label>
+                    <mdc-textfield class="w-100" input-class="field-preferred_name" input-type="text"></mdc-textfield>
                     <label class="d-block pt-2">Email</label>
-                    <label class="mdc-text-field mdc-text-field--filled mdc-text-field--no-label w-100">
-                        <span class="mdc-text-field__ripple"></span>
-                        <input autocomplete="off" class="field-email mdc-text-field__input" type="text">
-                        <span class="mdc-line-ripple"></span>
-                    </label>
+                    <mdc-textfield class="w-100" input-class="field-email" input-type="text"></mdc-textfield>
                     <label class="d-block pt-2">Password</label>
-                    <label class="mdc-text-field mdc-text-field--filled mdc-text-field--no-label w-100">
-                        <span class="mdc-text-field__ripple"></span>
-                        <input autocomplete="new-password" class="field-password mdc-text-field__input" type="password">
-                        <span class="mdc-line-ripple"></span>
-                    </label>
+                    <mdc-textfield class="w-100" input-class="field-password" input-type="password" input-autocomplete="new-password"></mdc-textfield>
                 </form>
             </div>
             <div class="mdc-dialog__actions">
@@ -140,34 +113,18 @@ const template = `
             <div class="mdc-dialog__content">
                 <form autocomplete="off" class="my-2">
                     <label class="d-block">Legal Name</label>
-                    <label class="mdc-text-field mdc-text-field--filled mdc-text-field--no-label w-100">
-                        <span class="mdc-text-field__ripple"></span>
-                        <input class="field-legal_name mdc-text-field__input" type="text" tabindex="0">
-                        <span class="mdc-line-ripple"></span>
-                    </label>
+                    <mdc-textfield class="w-100" input-class="field-legal_name" input-type="text" input-tabindex="0"></mdc-textfield>
                     <label class="d-block pt-2">Preferred Name</label>
-                    <label class="mdc-text-field mdc-text-field--filled mdc-text-field--no-label w-100">
-                        <span class="mdc-text-field__ripple"></span>
-                        <input class="field-preferred_name mdc-text-field__input" type="text">
-                        <span class="mdc-line-ripple"></span>
-                    </label>
+                    <mdc-textfield class="w-100" input-class="field-preferred_name" input-type="text"></mdc-textfield>
                     <label class="d-block pt-2">Email</label>
-                    <label class="mdc-text-field mdc-text-field--filled mdc-text-field--no-label w-100">
-                        <span class="mdc-text-field__ripple"></span>
-                        <input autocomplete="off" class="field-email mdc-text-field__input" type="text">
-                        <span class="mdc-line-ripple"></span>
-                    </label>
+                    <mdc-textfield class="w-100" input-class="field-email" input-type="text"></mdc-textfield>
                     <label class="d-block pt-2">Password</label>
                     <button class="change-password mdc-button mdc-button--outlined w-100">
                         <span class="mdc-button__ripple"></span>Change
                     </button>
                     <div class="edit-password-block w-100">
                         <div class="d-flex align-center w-100">
-                            <label class="mdc-text-field mdc-text-field--filled mdc-text-field--no-label">
-                                <span class="mdc-text-field__ripple"></span>
-                                <input autocomplete="new-password" class="field-password mdc-text-field__input" type="password">
-                                <span class="mdc-line-ripple"></span>
-                            </label>
+                            <mdc-textfield class="w-100" input-class="field-password" input-type="password" input-autocomplete="new-password"></mdc-textfield>
                             <button class="close-edit-password mdc-icon-button material-icons ml-2">
                                 <div class="mdc-icon-button__ripple"></div>
                                 close
@@ -196,15 +153,8 @@ const template = `
             <div class="mdc-dialog__surface">
             <h2 class="mdc-dialog__title"></h2>
             <div class="mdc-dialog__content">
-                <div role="progressbar" class="mdc-linear-progress mdc-linear-progress--indeterminate" tabindex="0">
-                    <div class="mdc-linear-progress__buffering-dots"></div>
-                    <div class="mdc-linear-progress__buffer"></div>
-                    <div class="mdc-linear-progress__bar mdc-linear-progress__primary-bar">
-                        <span class="mdc-linear-progress__bar-inner"></span>
-                    </div>
-                    <div class="mdc-linear-progress__bar mdc-linear-progress__secondary-bar">
-                        <span class="mdc-linear-progress__bar-inner"></span>
-                    </div>
+                <div class="d-flex justify-center" tabindex="0">
+                    <mdc-circular-progress indeterminate></mdc-circular-progress>
                 </div>
             </div>
         </div>
@@ -315,7 +265,6 @@ export class AppBar extends HTMLElement {
                         email: element.querySelector('.field-email').value.trim()
                     }
                     if (element.querySelector('.edit-password-block').style.display != 'none') {
-                        console.log(element.querySelector('.field-password'))
                         user.password = element.querySelector('.field-password').value.trim()
                     }
                     const error = await this.updateUser(user)
@@ -408,14 +357,12 @@ export class AppBar extends HTMLElement {
         element.querySelector('h2.mdc-dialog__title').textContent = title
         const dialog = new MDCDialog(element)
         dialog.open()
-        const linearProgress = new MDCLinearProgress(element.querySelector('.mdc-linear-progress'))
-        linearProgress.determinate = false
 
         return dialog
     }
     showMessage(error, type) {
         setTimeout(() => {
-            alert(error)            
+            alert(error)
         }, 100)
     }
     getDisplay(element, selector) {
