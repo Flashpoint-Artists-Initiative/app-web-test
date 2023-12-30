@@ -11,6 +11,7 @@ const template = `
         {{#each events}}
             <div class="mdc-card mdc-card--outlined ma-2">
                 <div class="mdc-card__primary-action pa-6">
+                <a href="/event.html?id={{id}}" class="mdc-theme--on-surface">
                     <div class="d-flex align-center">
                         <h2 class="my-0 mr-auto text-truncate">{{this.name}}</h2>
                         {{#if deleted}}
@@ -22,6 +23,7 @@ const template = `
                     {{#if location}}<h4 class="mt-2 text-truncate">{{location}}</h4>{{/if}}
                     <div class="text-truncate">{{startDate}} - {{endDate}}</div>
                     <div class="mdc-card__ripple"></div>
+                </a>
                 </div>
             </div>
         {{/each}}
@@ -59,6 +61,7 @@ export class HomePage extends HTMLElement {
             .sortBy('start_date')
             .map(event => {
                 return {
+                    id: event.id,
                     name: event.name,
                     location: event.location,
                     deleted: event.deleted_at,

@@ -120,3 +120,7 @@ body {
 .mdc-text-field--filled {
     height: 40px;
 }
+
+.mdc-card__primary-action > a {
+    text-decoration: none;
+}
