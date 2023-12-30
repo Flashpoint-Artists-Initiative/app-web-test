@@ -89,10 +89,7 @@ export class PageEvents extends HTMLElement {
                 meId: session.me?.id,
             }
             this.refresh()
-            const params = {
-                //sort: [{field: 'date_start', direction: 'desc'}]
-            }
-            const response = await EventApi.search(params)
+            const response = await EventApi.getEvents()
             const data = await response.json()
             this.fetch = {
                 done: true,
