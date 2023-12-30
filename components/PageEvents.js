@@ -19,7 +19,7 @@ const template = `
                             {{#if deleted}}
                                 <span class="chip mdc-theme--on-secondary mdc-theme--secondary-bg ml-2">deleted</span>
                             {{else if inactive}}
-                                <span class="chip mdc-theme--on-secondary mdc-theme--secondary-bg ml-2">inactive</span>
+                                <span class="chip text-white bg-red ml-2">inactive</span>
                             {{/if}}
                         </div>
                         {{#if location}}<h4 class="mt-2 text-truncate">{{location}}</h4>{{/if}}

@@ -117,6 +117,11 @@ body {
 .mb-6 { margin-bottom: 24px; }
 .mb-8 { margin-bottom: 32px; }
 
+.text-white { color: #FFFFFF }
+
+.bg-red { background-color: #F44336; }
+.bg-grey { background-color: #9E9E9E }
+
 .mdc-text-field--filled {
     height: 40px;
 }

@@ -20,9 +20,9 @@ const template = `
             <div class="d-flex align-center">
                 <h1 class="my-0 mr-auto text-truncate">{{event.name}}</h1>
                 {{#if event.deleted}}
-                    <span class="chip mdc-theme--on-secondary mdc-theme--secondary-bg ml-2">deleted</span>
+                    <span class="chip text-white bg-red ml-2">deleted</span>
                 {{else if event.inactive}}
-                    <span class="chip mdc-theme--on-secondary mdc-theme--secondary-bg ml-2">inactive</span>
+                    <span class="chip text-white bg-grey ml-2">inactive</span>
                 {{/if}}
             </div>
             {{#if event.location}}<h3 class="mt-2 text-truncate">{{event.location}}</h3>{{/if}}
