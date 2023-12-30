@@ -2,9 +2,20 @@ body {
     margin: 0;
 }
 
+.chip {
+    border-radius: 1rem;
+    padding: .5rem 1rem;
+}
+
 .d-block { display: block; }
 .d-flex { display: flex; }
 .d-none { display: none; }
+
+.text-truncate {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
 
 .justify-start { justify-content: flex-start; }
 .justify-center { justify-content: center; }

@@ -9,7 +9,21 @@ const template = `
     {{#if events}}
         <h2>Events</h2>
         {{#each events}}
-            <div>{{this.name}}</div>
+            <div class="mdc-card mdc-card--outlined ma-2">
+                <div class="mdc-card__primary-action pa-6">
+                    <div class="d-flex align-center">
+                        <h2 class="my-0 mr-auto text-truncate">{{this.name}}</h2>
+                        {{#if deleted}}
+                            <span class="chip mdc-theme--on-secondary mdc-theme--secondary-bg ml-2">deleted</span>
+                        {{else if inactive}}
+                            <span class="chip mdc-theme--on-secondary mdc-theme--secondary-bg ml-2">inactive</span>
+                        {{/if}}
+                    </div>
+                    {{#if location}}<h4 class="mt-2 text-truncate">{{location}}</h4>{{/if}}
+                    <div class="text-truncate">{{startDate}} - {{endDate}}</div>
+                    <div class="mdc-card__ripple"></div>
+                </div>
+            </div>
         {{/each}}
     {{else}}
         <div class="d-flex justify-center">
@@ -35,10 +49,29 @@ export class HomePage extends HTMLElement {
         session.removeEventListener('me', this.refreshCallback)
     }
     get templateData() {
+        const dateOptions = {
+            weekday: 'long',
+            month: 'numeric',
+            day: 'numeric',
+            year: 'numeric'
+        }
+        const events = _.chain(this.events?.data)
+            .sortBy('start_date')
+            .map(event => {
+                return {
+                    name: event.name,
+                    location: event.location,
+                    deleted: event.deleted_at,
+                    inactive: !event.active,
+                    startDate: new Date(event.start_date).toLocaleString(undefined, dateOptions),
+                    endDate: new Date(event.end_date).toLocaleString(undefined, dateOptions)
+                }
+            })
+            .value()
         return {
             visible: session.loaded,
             signedin: session.isSignedIn(),
-            events: this.events?.data
+            events: events
         }
     }
     async refresh() {
