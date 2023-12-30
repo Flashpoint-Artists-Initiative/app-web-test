@@ -5,23 +5,29 @@ import { CircularProgress } from './mdc/CircularProgress.js'
 const template = `
 {{#if ready}}
 <div class="pa-4">
-    {{#if notFound}}
-        <h1 class="mt-0">Not Found</h1>
-    {{else if notAuthorized}}
-        <h1 class="mt-0">Not Authorized</h1>
-    {{else if error}}
-        <h1 class="mt-0">Error</h1>
-    {{else if event}}
-        <div class="d-flex align-center">
-            <h1 class="my-0 mr-auto text-truncate">{{event.name}}</h1>
-            {{#if event.deleted}}
-                <span class="chip mdc-theme--on-secondary mdc-theme--secondary-bg ml-2">deleted</span>
-            {{else if event.inactive}}
-                <span class="chip mdc-theme--on-secondary mdc-theme--secondary-bg ml-2">inactive</span>
-            {{/if}}
-        </div>
-        {{#if event.location}}<h3 class="mt-2 text-truncate">{{event.location}}</h3>{{/if}}
-        <div class="text-truncate">{{event.startDate}} - {{event.endDate}}</div>
+    {{#if fetch.done}}
+        {{#if fetch.error}}
+            <h1 class="mt-0">
+                {{#if fetch.notFound}}
+                Not Found
+                {{else if fetch.notAuthorized}}
+                Not Authorized
+                {{else}}
+                {{fetch.error}}
+                {{/if}}
+            </h1>
+        {{else}}
+            <div class="d-flex align-center">
+                <h1 class="my-0 mr-auto text-truncate">{{event.name}}</h1>
+                {{#if event.deleted}}
+                    <span class="chip mdc-theme--on-secondary mdc-theme--secondary-bg ml-2">deleted</span>
+                {{else if event.inactive}}
+                    <span class="chip mdc-theme--on-secondary mdc-theme--secondary-bg ml-2">inactive</span>
+                {{/if}}
+            </div>
+            {{#if event.location}}<h3 class="mt-2 text-truncate">{{event.location}}</h3>{{/if}}
+            <div class="text-truncate">{{event.startDate}} - {{event.endDate}}</div>
+        {{/if}}
     {{else}}
         <div class="d-flex justify-center">
             <mdc-circular-progress indeterminate></mdc-circular-progress>
@@ -67,9 +73,7 @@ export class PageEvent extends HTMLElement {
         return {
             ready: session.loaded,
             signedin: session.isSignedIn(),
-            notFound: this.event?.status == 404,
-            notAuthorized: [401, 403].includes(this.event?.status),
-            error: this.event?.status && this.event?.status != 200,
+            fetch: this.fetch,
             event: event
           }
     }
@@ -85,13 +89,21 @@ export class PageEvent extends HTMLElement {
             this.refresh()
             const id = new URLSearchParams(window.location.search).get('id');
             const response = await EventApi.getEvent(id)
-            this.event.status = response.status
-            this.event.data = response.ok ? (await response.json()).data : undefined
+            const data = await response.json()
+            this.fetch = {
+                done: true,
+                status: response.status,
+                error: !response.ok ? data.message : '',
+                notFound: response.status == 404,
+                notAuthorized: [401, 403].includes(response.status)
+            }
+            this.event.data = response.ok ? data.data : undefined
             this.refresh()
         }
     }
 
     refreshCallback = undefined
+    fetch = {}
     event = undefined
 }
 customElements.define('page-event', PageEvent)

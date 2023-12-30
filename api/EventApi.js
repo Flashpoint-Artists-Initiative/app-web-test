@@ -9,4 +9,7 @@ export default class EventApi extends ApiBase {
     static async getEvent(id) {
         return await this.get(new URL(`${ApiUrl}events/${id}`), session.jwtToken)
     }
+    static async search(params) {
+        return await this.post(new URL(`${ApiUrl}events/search`), params, session.jwtToken)
+    }
 }
