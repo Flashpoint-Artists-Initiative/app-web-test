@@ -20,7 +20,7 @@ export class TextField extends HTMLElement {
             inputClass: this.getAttribute('input-class'),
             inputType: this.getAttribute('input-type'),
             inputAutocomplete: this.getAttribute('input-autocomplete'),
-            inputTabIndex: this.getAttribute('input-tabindex'),
+            inputTabIndex: this.getAttribute('input-tabindex')
         }
     }
     refresh() {

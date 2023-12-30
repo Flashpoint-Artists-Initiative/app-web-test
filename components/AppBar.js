@@ -1,6 +1,7 @@
 import { session } from '../model/Session.js'
 import UserApi from '../api/UserApi.js'
 import { CircularProgress } from './mdc/CircularProgress.js'
+import { DialogButton } from './mdc/DialogButton.js'
 import { TextField } from './mdc/TextField.js'
 
 const MDCDialog = mdc.dialog.MDCDialog
@@ -36,14 +37,8 @@ const template = `
                 <div class="d-flex justify-center"><span class="mr-4">Not a member?</span><a href="#sign-up" class="sign-up-link">Sign Up</a></div>
             </div>
             <div class="mdc-dialog__actions">
-                <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="close">
-                    <div class="mdc-button__ripple"></div>
-                    <span class="mdc-button__label">Cancel</span>
-                </button>
-                <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="accept">
-                    <div class="mdc-button__ripple"></div>
-                    <span class="mdc-button__label">Sign In</span>
-                </button>
+                <mdc-dialog-button action="close" title="Cancel"></mdc-dialog-button>
+                <mdc-dialog-button action="accept" title="Sign In"></mdc-dialog-button>
             </div>
             </div>
         </div>
@@ -61,14 +56,8 @@ const template = `
                 </form>
             </div>
             <div class="mdc-dialog__actions">
-                <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="close">
-                    <div class="mdc-button__ripple"></div>
-                    <span class="mdc-button__label">Cancel</span>
-                </button>
-                <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="accept">
-                    <div class="mdc-button__ripple"></div>
-                    <span class="mdc-button__label">Reset Password</span>
-                </button>
+                <mdc-dialog-button action="close" title="Cancel"></mdc-dialog-button>
+                <mdc-dialog-button action="accept" title="Reset Password"></mdc-dialog-button>
             </div>
             </div>
         </div>
@@ -92,14 +81,8 @@ const template = `
                 </form>
             </div>
             <div class="mdc-dialog__actions">
-                <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="close">
-                    <div class="mdc-button__ripple"></div>
-                    <span class="mdc-button__label">Cancel</span>
-                </button>
-                <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="accept">
-                    <div class="mdc-button__ripple"></div>
-                    <span class="mdc-button__label">Sign Up</span>
-                </button>
+                <mdc-dialog-button action="close" title="Cancel"></mdc-dialog-button>
+                <mdc-dialog-button action="accept" title="Sign Up"></mdc-dialog-button>
             </div>
             </div>
         </div>
@@ -134,14 +117,8 @@ const template = `
                 </form>
             </div>
             <div class="mdc-dialog__actions">
-                <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="close">
-                    <div class="mdc-button__ripple"></div>
-                    <span class="mdc-button__label">Cancel</span>
-                </button>
-                <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="accept">
-                    <div class="mdc-button__ripple"></div>
-                    <span class="mdc-button__label">Save</span>
-                </button>
+                <mdc-dialog-button action="close" title="Cancel"></mdc-dialog-button>
+                <mdc-dialog-button action="accept" title="Save"></mdc-dialog-button>
             </div>
             </div>
         </div>
