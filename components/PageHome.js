@@ -12,8 +12,8 @@ const template = `
             <h1 class="mt-0">Events</h1>
             {{#each events}}
                 <div class="mdc-card mdc-card--outlined ma-2">
-                    <div class="mdc-card__primary-action pa-6">
-                    <a href="/event.html?id={{id}}" class="mdc-theme--on-surface">
+                    <div class="mdc-card__primary-action">
+                    <a href="/event.html?id={{id}}" class="mdc-theme--on-surface pa-6">
                         <div class="d-flex align-center">
                             <h2 class="my-0 mr-auto text-truncate">{{name}}</h2>
                             {{#if deleted}}
@@ -69,8 +69,8 @@ export class PageHome extends HTMLElement {
                     location: event.location,
                     deleted: event.deleted_at,
                     inactive: !event.active,
-                    startDate: new Date(event.start_date).toLocaleString(undefined, dateOptions),
-                    endDate: new Date(event.end_date).toLocaleString(undefined, dateOptions)
+                    startDate: new Date(event.start_date.slice(0,-1)).toLocaleString(undefined, dateOptions),
+                    endDate: new Date(event.end_date.slice(0,-1)).toLocaleString(undefined, dateOptions)
                 }
             })
             .value()

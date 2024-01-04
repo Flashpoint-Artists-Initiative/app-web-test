@@ -35,6 +35,13 @@ class SessionInfo {
     isSignedIn() {
         return this.me?.id 
     }
+    getRoles() {
+        if (!this.me) {
+            return {}
+        } else {
+            return _.keyBy(this.me.roles, 'name')
+        }
+    }
     async signinWithCookie() {
         const token = document.cookie
             .split('; ')

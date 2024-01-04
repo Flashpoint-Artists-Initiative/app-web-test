@@ -11,6 +11,9 @@ body {
 .d-flex { display: flex; }
 .d-none { display: none; }
 
+.flex-column { flex-direction: column; }
+.flex-grow-1 { flex-grow: 1; }
+
 .text-truncate {
     text-overflow: ellipsis;
     overflow: hidden;
@@ -122,10 +125,14 @@ body {
 .bg-red { background-color: #F44336; }
 .bg-grey { background-color: #9E9E9E }
 
-.mdc-text-field--filled {
+.mdc-text-field--filled,
+.mdc-select--filled .mdc-select__anchor {
     height: 40px;
 }
-
+.mdc-select__dropdown-icon {
+    margin-left: 6px;
+    margin-right: 6px;
+}
 .mdc-card__primary-action > a {
     text-decoration: none;
 }

@@ -144,13 +144,13 @@ export class AppBar extends HTMLElement {
     constructor() {
         super()
         this.refreshCallback = () => { this.refresh() }
-        this.addEventListener('click-signin', (event) => {
+        this.addEventListener('click-signin', event => {
             this.openSigninDialog()
         })
-        this.addEventListener('click-signout', (event) => {
+        this.addEventListener('click-signout', event => {
             this.signout()
         })
-        this.addEventListener('click-profile', (event) => {
+        this.addEventListener('click-profile', event => {
             this.openMyProfileDialog()
         })
     }
@@ -186,12 +186,12 @@ export class AppBar extends HTMLElement {
                     }
                 }
             })
-            element.querySelector('.forgot-password-link').addEventListener('click', (event) => {
+            element.querySelector('.forgot-password-link').addEventListener('click', event => {
                 event.preventDefault()
                 this.signinDialog.close()
                 this.openForgotPasswordDialog()
             })
-            element.querySelector('.sign-up-link').addEventListener('click', (event) => {
+            element.querySelector('.sign-up-link').addEventListener('click', event => {
                 event.preventDefault()
                 this.signinDialog.close()
                 this.openSignupDialog()
@@ -250,13 +250,13 @@ export class AppBar extends HTMLElement {
                     }
                 }
             })
-            element.querySelector('.change-password').addEventListener('click', (event) => {
+            element.querySelector('.change-password').addEventListener('click', event => {
                 event.preventDefault()
                 this.setDisplay(element, '.change-password', 'none')
                 this.setDisplay(element, '.edit-password-block', 'block')
                 element.querySelector('.field-password').focus()
             })
-            element.querySelector('.close-edit-password').addEventListener('click', (event) => {
+            element.querySelector('.close-edit-password').addEventListener('click', event => {
                 event.preventDefault()
                 this.setDisplay(element, '.change-password', 'block')
                 this.setDisplay(element, '.edit-password-block', 'none')
@@ -264,7 +264,7 @@ export class AppBar extends HTMLElement {
         }
     }
     addButtonClickDispatcher(selector, eventName) {
-        this.querySelector(selector)?.addEventListener('click', (event) => {
+        this.querySelector(selector)?.addEventListener('click', event => {
             this.dispatchEvent(new Event(eventName))
         })
     }

@@ -66,13 +66,14 @@ export class PageEvent extends HTMLElement {
                 location: event.location,
                 deleted: event.deleted_at,
                 inactive: !event.active,
-                startDate: new Date(event.start_date).toLocaleString(undefined, dateOptions),
-                endDate: new Date(event.end_date).toLocaleString(undefined, dateOptions)
+                startDate: new Date(event.start_date.slice(0,-1)).toLocaleString(undefined, dateOptions),
+                endDate: new Date(event.end_date.slice(0,-1)).toLocaleString(undefined, dateOptions)
             }
         }
         return {
             ready: session.loaded,
             signedin: session.isSignedIn(),
+            roles: session.getRoles(),
             fetch: this.fetch,
             event: event
           }
