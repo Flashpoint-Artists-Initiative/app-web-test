@@ -96,11 +96,11 @@ export class PageHome extends HTMLElement {
             to.setFullYear(to.getFullYear() + 1)
             const params = {
                 filters : [
-                //    { field: 'active', operator: '=', value: 1 },
-                //    { type: 'and', field: 'start_date', operator: '>=', value: from.toISOString().substring(0, 10) },
-                //    { type: 'and', field: 'start_date', operator: '<', value: to.toISOString().substring(0, 10) }
+                    { field: 'active', operator: '=', value: 1 },
+                    { type: 'and', field: 'start_date', operator: '>=', value: from.toISOString().substring(0, 10) },
+                    { type: 'and', field: 'start_date', operator: '<', value: to.toISOString().substring(0, 10) }
                 ],
-                //sort: [{field: 'date_start', direction: 'desc'}]
+                sort: [{field: 'start_date', direction: 'desc'}]
             }
             const response = await EventApi.search(params)
             const data = await response.json()

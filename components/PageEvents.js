@@ -186,7 +186,7 @@ export class PageEvents extends HTMLElement {
             this.refresh()
             const params = {
                 with_trashed: true,
-                //sort: [{field: 'date_start', direction: 'desc'}]
+                sort: [{field: 'start_date', direction: 'desc'}]
             }
             const response = await EventApi.search(params)
             const data = await response.json()
