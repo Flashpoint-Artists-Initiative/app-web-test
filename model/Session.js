@@ -80,8 +80,9 @@ class SessionInfo {
             return { ok: false, error: 'Error reading user info.' }
         }
         this.me = (await response.json()).data
-        this.jwtToken = token
-        this.setTokenCookie(token)
+        if (!this.jwtToken) {
+            this.setToken(token)
+        }
         this.triggerEvent('me')
         return { ok: true }
     }
@@ -92,14 +93,15 @@ class SessionInfo {
     }
     signout() {
         this.me = undefined
-        this.jwtToken = undefined
-        this.deleteTokenCookie()
+        this.deleteToken()
         this.triggerEvent('me')
     }
-    setTokenCookie(token) {
+    setToken(token) {
+        this.jwtToken = token
         document.cookie = `${AuthTokenCookie}=${token}; Path=/;`
     }
-    deleteTokenCookie() {
+    deleteToken() {
+        this.jwtToken = undefined
         document.cookie = `${AuthTokenCookie}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;`
     }
 }

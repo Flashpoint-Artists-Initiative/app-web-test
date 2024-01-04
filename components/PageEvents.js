@@ -167,8 +167,6 @@ export class PageEvents extends HTMLElement {
                         start_date: element.querySelector('.field-start_date').isoDate,
                         end_date: element.querySelector('.field-end_date').isoDate
                     }
-                    console.log(event)
-                    return
                     const error = await this.addEvent(event)
                     if (error) {
                         this.showMessage(error, 'info')

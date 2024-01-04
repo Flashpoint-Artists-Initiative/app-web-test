@@ -1,12 +1,8 @@
+import { session } from '../model/Session.js'
+
 export default class ApiBase {
     static async get(url, token) {
-        const options = {
-            headers: { 'Content-Type': 'application/json; charset=UTF-8' }
-        }
-        if (token) {
-            options.headers['Authorization'] = `Bearer ${token}`
-        }
-        return await fetch(url, options)
+        return await this.request('GET', url, null, token)
     }
     static async post(url, data, token) {
         return await this.request('POST', url, data, token)
@@ -23,6 +19,13 @@ export default class ApiBase {
         if (token) {
             options.headers['Authorization'] = `Bearer ${token}`
         }
-        return await fetch(url, options)
+        const response = await fetch(url, options)
+        if (response.ok) {
+            const authorization = response.headers?.get('Authorization')?.split(' ')
+            if (authorization?.length > 1 && authorization[0] == 'Bearer') {
+                session.setToken(authorization[1])
+            }
+        }
+        return response
     }
 }
