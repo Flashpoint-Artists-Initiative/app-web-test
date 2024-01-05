@@ -34,7 +34,7 @@ const template = `
             {{#each events}}
                 <div class="mdc-card mdc-card--outlined ma-2">
                     <div class="mdc-card__primary-action">
-                    <a href="/event.html?id={{id}}" class="mdc-theme--on-surface pa-6">
+                    <a href="./event.html?id={{id}}" class="mdc-theme--on-surface pa-6">
                         <div class="d-flex align-center">
                             <h2 class="my-0 mr-auto text-truncate">{{name}}</h2>
                             {{#if deleted}}
