@@ -21,11 +21,9 @@ export default class ApiBase {
         }
         try {
             const response = await fetch(url, options)
-            if (response.ok) {
-                const authorization = response.headers?.get('Authorization')?.split(' ')
-                if (authorization?.length > 1 && authorization[0] == 'Bearer') {
-                    session.setToken(authorization[1])
-                }
+            const authorization = response.headers?.get('Authorization')?.split(' ')
+            if (authorization?.length > 1 && authorization[0] == 'Bearer') {
+                session.setToken(authorization[1])
             }
             return response
         } catch {
