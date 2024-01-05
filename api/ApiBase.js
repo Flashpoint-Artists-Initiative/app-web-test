@@ -19,13 +19,17 @@ export default class ApiBase {
         if (token) {
             options.headers['Authorization'] = `Bearer ${token}`
         }
-        const response = await fetch(url, options)
-        if (response.ok) {
-            const authorization = response.headers?.get('Authorization')?.split(' ')
-            if (authorization?.length > 1 && authorization[0] == 'Bearer') {
-                session.setToken(authorization[1])
+        try {
+            const response = await fetch(url, options)
+            if (response.ok) {
+                const authorization = response.headers?.get('Authorization')?.split(' ')
+                if (authorization?.length > 1 && authorization[0] == 'Bearer') {
+                    session.setToken(authorization[1])
+                }
             }
+            return response
+        } catch {
+            return {ok: false, status: 500, json: function() { return {message: 'server error'}}}
         }
-        return response
     }
 }

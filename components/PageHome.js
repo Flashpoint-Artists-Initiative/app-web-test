@@ -6,10 +6,20 @@ const template = `
 {{#if ready}}
 <div class="pa-4">
     {{#if fetch.done}}
+        <div class="d-flex">
+            <h1 class="mt-0 mr-auto">Events</h1>
+            {{#if roles.admin}}
+                <a href="./events">
+                    <button type="button" class="events-button mdc-button mdc-button--unelevated">
+                        <div class="mdc-button__ripple"></div>
+                        <span class="mdc-button__label">Events</span>
+                    </button>
+                </a>
+            {{/if}}
+        </div>
         {{#if fetch.error}}
-            <h1 class="mt-0">{{fetch.error}}</h1>
+            <h2 class="text-red mt-0"><i class="material-icons mr-4">error_outline</i>{{fetch.error}} [{{fetch.status}}]</h2>
         {{else}}
-            <h1 class="mt-0">Events</h1>
             {{#each events}}
                 <div class="mdc-card mdc-card--outlined ma-2">
                     <div class="mdc-card__primary-action">
@@ -77,6 +87,7 @@ export class PageHome extends HTMLElement {
         return {
             ready: session.loaded,
             signedin: session.isSignedIn(),
+            roles: session.getRoles(),
             fetch: this.fetch,
             events: events
         }

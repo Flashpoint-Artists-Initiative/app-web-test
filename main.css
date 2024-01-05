@@ -121,6 +121,7 @@ body {
 .mb-8 { margin-bottom: 32px; }
 
 .text-white { color: #FFFFFF }
+.text-red { color: #F44336; }
 
 .bg-red { background-color: #F44336; }
 .bg-grey { background-color: #9E9E9E }

@@ -7,7 +7,7 @@ const template = `
 <div class="pa-4">
     {{#if fetch.done}}
         {{#if fetch.error}}
-            <h1 class="mt-0">
+            <h2 class="text-red mt-0"><i class="material-icons mr-4">error_outline</i>
                 {{#if fetch.notFound}}
                 Not Found
                 {{else if fetch.notAuthorized}}
@@ -15,7 +15,7 @@ const template = `
                 {{else}}
                 {{fetch.error}}
                 {{/if}}
-            </h1>
+            </h2>
         {{else}}
             <div class="d-flex align-center">
                 <h1 class="my-0 mr-auto text-truncate">{{event.name}}</h1>

@@ -11,26 +11,18 @@ const template = `
 {{#if ready}}
 <div class="pa-4">
     {{#if fetch.done}}
+        <div class="d-flex">
+            <h1 class="mt-0 mr-auto">Events</h1>
+            {{#if roles.admin}}
+                <button type="button" class="add-event-button mdc-button mdc-button--unelevated">
+                    <div class="mdc-button__ripple"></div>
+                    <span class="mdc-button__label">Add Event</span>
+                </button>
+            {{/if}}
+        </div>
         {{#if fetch.error}}
-            <div class="d-flex">
-                <h1 class="mt-0">{{fetch.error}}</h1>
-                {{#if roles.admin}}
-                    <button type="button" class="add-event-button mdc-button mdc-button--unelevated">
-                        <div class="mdc-button__ripple"></div>
-                        <span class="mdc-button__label">Add Event</span>
-                    </button>
-                {{/if}}
-            </div>
+            <h2 class="text-red mt-0"><i class="material-icons mr-4">error_outline</i>{{fetch.error}} [{{fetch.status}}]</h2>
         {{else}}
-            <div class="d-flex">
-                <h1 class="mt-0 mr-auto">Events</h1>
-                {{#if roles.admin}}
-                    <button type="button" class="add-event-button mdc-button mdc-button--unelevated">
-                        <div class="mdc-button__ripple"></div>
-                        <span class="mdc-button__label">Add Event</span>
-                    </button>
-                {{/if}}
-            </div>
             {{#each events}}
                 <div class="mdc-card mdc-card--outlined ma-2">
                     <div class="mdc-card__primary-action">
