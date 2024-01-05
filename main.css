@@ -122,6 +122,7 @@ body {
 
 .text-white { color: #FFFFFF }
 .text-red { color: #F44336; }
+.text-green { color: #4CAF50; }
 
 .bg-red { background-color: #F44336; }
 .bg-grey { background-color: #9E9E9E }
@@ -133,6 +134,19 @@ body {
 .mdc-select__dropdown-icon {
     margin-left: 6px;
     margin-right: 6px;
+
+}
+tr.mdc-data-table__header-row,
+tr.mdc-data-table__row {
+    height: 32px;
+}
+th.mdc-data-table__header-cell {
+    font-weight: bold;
+}
+th.mdc-data-table__header-cell,
+td.mdc-data-table__cell,
+td.mdc-data-table__cell i.material-icons {
+    vertical-align: middle;
 }
 .mdc-card__primary-action > a {
     text-decoration: none;
