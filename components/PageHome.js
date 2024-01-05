@@ -7,7 +7,7 @@ const template = `
 <div class="pa-4">
     {{#if fetch.done}}
         <div class="d-flex">
-            <h1 class="mt-0 mr-auto">Events</h1>
+            <h1 class="mt-0 mr-auto">Upcoming Events</h1>
             {{#if roles.admin}}
                 <a href="./events" class="mr-2">
                     <button type="button" class="events-button mdc-button mdc-button--unelevated">
@@ -117,7 +117,7 @@ export class PageHome extends HTMLElement {
                     { type: 'and', field: 'start_date', operator: '>=', value: from.toISOString().substring(0, 10) },
                     { type: 'and', field: 'start_date', operator: '<', value: to.toISOString().substring(0, 10) }
                 ],
-                sort: [{field: 'start_date', direction: 'desc'}]
+                sort: [{field: 'start_date', direction: 'asc'}]
             }
             const response = await EventApi.search(params)
             const data = await response.json()

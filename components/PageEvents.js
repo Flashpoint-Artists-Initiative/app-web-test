@@ -176,11 +176,23 @@ export class PageEvents extends HTMLElement {
                 meId: session.me?.id,
             }
             this.refresh()
-            const params = {
-                with_trashed: true,
-                sort: [{field: 'start_date', direction: 'desc'}]
+            let params = {}
+            if (session.getRoles().admin) {
+                params = {
+                    with_trashed: true,
+                    sort: [{field: 'start_date', direction: 'desc'}]
+                }
+            } else {
+                const from = new Date()
+                params = {
+                    filters : [
+                        { field: 'active', operator: '=', value: 1 },
+                        { type: 'and', field: 'start_date', operator: '>=', value: from.toISOString().substring(0, 10) }
+                    ],
+                    sort: [{field: 'start_date', direction: 'asc'}]
+                }
             }
-            const response = await EventApi.search(params)
+            const response = await EventApi.search(params)            
             const data = await response.json()
             this.fetch = {
                 done: true,
