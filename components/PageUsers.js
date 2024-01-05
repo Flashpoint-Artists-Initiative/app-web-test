@@ -22,8 +22,9 @@ const template = `
                     <table class="mdc-data-table__table">
                         <thead>
                             <tr class="mdc-data-table__header-row">
-                                <th class="mdc-data-table__header-cell" >Name</th>
+                                <th class="mdc-data-table__header-cell">Name</th>
                                 <th class="mdc-data-table__header-cell">Email</th>
+                                <th class="mdc-data-table__header-cell">Sign Up Date</th>
                             </tr>
                         </thead>
                         <tbody class="mdc-data-table__content">
@@ -31,6 +32,7 @@ const template = `
                             <tr class="mdc-data-table__row">
                                 <td class="mdc-data-table__cell">{{name}}</td>
                                 <td class="mdc-data-table__cell">{{email}}{{#if email_verified}}<i class="material-icons text-green ml-2">check_circle</i>{{/if}}</td>
+                                <td class="mdc-data-table__cell">{{signupDate}}</td>
                             </tr>
                             {{/each}}
                         </tbody>
@@ -63,15 +65,14 @@ export class PageUsers extends HTMLElement {
     }
     get templateData() {
         const dateOptions = {
-            weekday: 'long',
-            month: 'numeric',
-            day: 'numeric',
-            year: 'numeric'
+            dateStyle: 'long',
+            timeStyle: 'short'
         }
         const users = _.map(this.users?.data, user => {
             return {
                 id: user.id,
                 name: user.display_name,
+                signupDate: new Date(user.created_at).toLocaleString(undefined, dateOptions),
                 email: user.email,
                 email_verified: user.email_verified,
                 deleted: user.deleted_at,
