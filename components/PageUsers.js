@@ -99,7 +99,7 @@ export class PageUsers extends HTMLElement {
             this.refresh()
             const params = {
                 with_trashed: true,
-                //sort: [{field: 'display_name', direction: 'asc'}]
+                sort: [{field: 'display_name', direction: 'asc'}]
             }
             const response = await UserApi.search(params)
             const data = await response.json()

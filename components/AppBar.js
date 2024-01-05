@@ -10,7 +10,14 @@ const template = `
 <header class=" mdc-top-app-bar mdc-top-app-bar--fixed">
     <div class="mdc-top-app-bar__row">
         <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
-            <span class="mdc-top-app-bar__title">app-web-test</span>
+            <span class="mdc-top-app-bar__title">
+                <a href="./">
+                    <button class="profile-button mdc-button mdc-top-app-bar__action-item mdc-button--unelevated">
+                    <i class="material-icons mr-2">home</i>
+                    app-web-test
+                    </button>
+                </a>
+            </span>
         </section>
         <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end">
             {{#if signedIn}}
