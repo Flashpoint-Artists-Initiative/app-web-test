@@ -19,6 +19,8 @@ body {
     overflow: hidden;
     white-space: nowrap;
 }
+.text-medium-emphasis { opacity: .6; }
+.text-disabled { opacity: .38; }
 
 .justify-start { justify-content: flex-start; }
 .justify-center { justify-content: center; }
@@ -120,8 +122,11 @@ body {
 .mb-6 { margin-bottom: 24px; }
 .mb-8 { margin-bottom: 32px; }
 
+.b-bottom { border-bottom: 1px solid rgba(0,0,0,.12); }
+
 .text-white { color: #FFFFFF }
 .text-red { color: #F44336; }
+.text-blue { color: #2196F3; }
 .text-green { color: #4CAF50; }
 
 .bg-red { background-color: #F44336; }
@@ -134,7 +139,6 @@ body {
 .mdc-select__dropdown-icon {
     margin-left: 6px;
     margin-right: 6px;
-
 }
 tr.mdc-data-table__header-row,
 tr.mdc-data-table__row {
@@ -150,4 +154,8 @@ td.mdc-data-table__cell i.material-icons {
 }
 .mdc-card__primary-action > a {
     text-decoration: none;
+}
+
+.app-ticket {
+    max-width: 40rem;
 }
