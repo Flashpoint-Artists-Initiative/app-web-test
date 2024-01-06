@@ -293,7 +293,7 @@ export class PageEvent extends HTMLElement {
             event.sold.forEach(ticket => {
                 ticket.orderDate = this.getDateData(ticket.orderDate)
             })
-            event.reserved = _.orderBy(TicketType.getReservedTicketData(eventData.reserved_tickets, eventData.ticket_types), 'issueDate', 'desc')
+            event.reserved = _.sortBy(TicketType.getReservedTicketData(eventData.reserved_tickets, eventData.ticket_types), 'email')
             event.reserved.forEach(ticket => {
                 ticket.issueDate = this.getDateData(ticket.issueDate)
                 if (ticket.expirationDate) {
