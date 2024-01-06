@@ -31,6 +31,14 @@ body {
 .align-end { align-items: flex-end; }
 .align-stretch { align-items: stretch; }
 
+.text-left { text-align: left; }
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+
+.font-weight-bold { font-weight: bold; }
+
+.text-uppercase { text-transform: uppercase;}
+
 .opacity-0 { opacity: 0 }
 .opacity-1 { opacity: 1 }
 
@@ -130,6 +138,8 @@ body {
 .text-green { color: #4CAF50; }
 
 .bg-red { background-color: #F44336; }
+.bg-blue { background-color: #2196F3; }
+.bg-green { background-color: #4CAF50; }
 .bg-grey { background-color: #9E9E9E }
 
 .mdc-text-field--filled,

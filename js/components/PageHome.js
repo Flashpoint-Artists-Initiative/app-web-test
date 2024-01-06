@@ -113,7 +113,7 @@ export class PageHome extends HTMLElement {
             const to = new Date()
             to.setFullYear(to.getFullYear() + 1)
             const params = {
-                filters : [
+                filters: [
                     { field: 'active', operator: '=', value: 1 },
                     { type: 'and', field: 'start_date', operator: '>=', value: from.toISOString().substring(0, 10) },
                     { type: 'and', field: 'start_date', operator: '<', value: to.toISOString().substring(0, 10) }

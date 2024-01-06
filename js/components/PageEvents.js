@@ -185,14 +185,14 @@ export class PageEvents extends HTMLElement {
             } else {
                 const from = new Date()
                 params = {
-                    filters : [
+                    filters: [
                         { field: 'active', operator: '=', value: 1 },
                         { type: 'and', field: 'start_date', operator: '>=', value: from.toISOString().substring(0, 10) }
                     ],
                     sort: [{field: 'start_date', direction: 'asc'}]
                 }
             }
-            const response = await EventApi.search(params)            
+            const response = await EventApi.search(params)
             const data = await response.json()
             this.fetch = {
                 done: true,
