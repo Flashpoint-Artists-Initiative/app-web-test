@@ -115,7 +115,7 @@ export class PageEvents extends HTMLElement {
     get templateData() {
         const dateOptions = {
             weekday: 'long',
-            month: 'numeric',
+            month: 'long',
             day: 'numeric',
             year: 'numeric'
         }
