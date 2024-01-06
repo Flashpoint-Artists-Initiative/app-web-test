@@ -104,6 +104,7 @@ export class PageHome extends HTMLElement {
             return 
         }
         if (!this.events || this.events.meId != session.me?.id) {
+            this.fetch.done = false
             this.events = {
                 meId: session.me?.id,
             }
