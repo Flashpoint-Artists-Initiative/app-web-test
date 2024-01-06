@@ -15,7 +15,15 @@ const template = `
             <h1 class="mt-0 mr-auto">Users</h1>
         </div>
         {{#if fetch.error}}
-            <h2 class="text-red mt-0"><i class="material-icons mr-4">error_outline</i>{{fetch.error}} [{{fetch.status}}]</h2>
+            <h2 class="text-red mt-0"><i class="material-icons mr-4">error_outline</i>
+                {{#if fetch.notFound}}
+                Not Found
+                {{else if fetch.notAuthorized}}
+                Not Authorized
+                {{else}}
+                {{fetch.error}} [{{fetch.status}}]
+                {{/if}}
+            </h2>
         {{else}}
             <div class="mdc-data-table w-100">
                 <div class="mdc-data-table__table-container">
