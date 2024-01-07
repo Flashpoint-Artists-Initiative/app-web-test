@@ -137,7 +137,7 @@ body {
 .mb-8 { margin-bottom: 32px; }
 
 .rounded { border-radius: 8px; }
-.b-bottom { border-bottom: 1px solid rgba(0,0,0,.12); }
+.b-border { border-bottom: 1px solid rgba(0,0,0,.12); }
 
 .icon-medium { font-size: 32px; }
 .icon-large { font-size: 48px; }
@@ -185,6 +185,7 @@ tr.mdc-data-table__row {
     height: 32px;
 }
 th.mdc-data-table__header-cell {
+    background-color: rgba(0,0,0,.04);
     font-weight: bold;
 }
 th.mdc-data-table__header-cell,

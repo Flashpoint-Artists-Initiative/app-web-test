@@ -82,7 +82,15 @@ class SessionInfo {
         }
         const user = (await response.json()).data
         const options = {
-            include: 'roles,purchasedTickets,purchasedTickets.ticketType,reservedTickets,reservedTickets.ticketType'
+            include: [
+                'roles',
+                'purchasedTickets',
+                'purchasedTickets.ticketType',
+                'purchasedTickets.ticketType.event',
+                'reservedTickets',
+                'reservedTickets.ticketType',
+                'reservedTickets.ticketType.event'
+            ].join(',')
         }
         response = await UserApi.getUser(user.id, options)
         if (!response.ok) {

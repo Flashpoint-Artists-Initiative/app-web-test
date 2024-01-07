@@ -1,3 +1,4 @@
+import DateTime from '../model/DateTime.js'
 import { session } from '../model/Session.js'
 import TicketType from '../model/TicketType.js'
 import EventApi from '../api/EventApi.js'
@@ -201,7 +202,7 @@ const template = `
                             <div {{#if canBuy}}class="mdc-card__primary-action"{{/if}}>
                             {{#if canBuy}}<a href="./purchase?ticketId={{id}}" class="mdc-theme--on-surface">{{/if}}
                                 <div class="d-flex flex-column">
-                                    <div class="d-flex b-bottom pa-4">
+                                    <div class="d-flex b-border pa-4">
                                         <div class="d-flex flex-column mr-auto">
                                             <h2 class="text-blue mt-0 mb-2">{{name}}</h2>
                                             <div>
@@ -225,7 +226,7 @@ const template = `
                             </div>
                         </div>
                     {{/each}}
-                    <div class="b-bottom py-8"></div>
+                    <div class="b-border my-8"></div>
                 {{/if}}
 
                 <h2>{{#if event.reserved.count}}General Availability Tickets{{else}}Available Tickets{{/if}}</h2>
@@ -238,7 +239,7 @@ const template = `
                         <div {{#if canBuy}}class="mdc-card__primary-action"{{/if}}>
                         {{#if canBuy}}<a href="./purchase?ticketId={{id}}" class="mdc-theme--on-surface">{{/if}}
                             <div class="d-flex flex-column">
-                                <div class="d-flex b-bottom pa-4">
+                                <div class="d-flex b-border pa-4">
                                     <div class="d-flex flex-column mr-auto">
                                         <h2 class="text-blue mt-0 mb-2">{{name}}</h2>
                                         <div>
@@ -343,18 +344,18 @@ export class PageEvent extends HTMLElement {
         if (session.getRoles().admin) {
             event.tickets = _.sortBy(TicketType.getTicketData(eventData.ticket_types), ['startDate', 'name'])
             event.tickets.forEach(ticket => {
-                ticket.start = this.getDateData(ticket.startDate)
-                ticket.end = this.getDateData(ticket.endDate)
+                ticket.start = DateTime.getDateData(ticket.startDate)
+                ticket.end = DateTime.getDateData(ticket.endDate)
             })
             event.sold = _.orderBy(TicketType.getPurchasedTicketData(eventData.purchased_tickets, eventData.ticket_types), 'orderDate', 'desc')
             event.sold.forEach(ticket => {
-                ticket.orderDate = this.getDateData(ticket.orderDate)
+                ticket.orderDate = DateTime.getDateData(ticket.orderDate)
             })
             event.reserved = _.sortBy(TicketType.getReservedTicketData(eventData.reserved_tickets, eventData.ticket_types), 'email')
             event.reserved.forEach(ticket => {
-                ticket.issueDate = this.getDateData(ticket.issueDate)
+                ticket.issueDate = DateTime.getDateData(ticket.issueDate)
                 if (ticket.expirationDate) {
-                    ticket.expirationDate = this.getDateData(ticket.expirationDate)
+                    ticket.expirationDate = DateTime.getDateData(ticket.expirationDate)
                 }
             })
 
@@ -399,13 +400,6 @@ export class PageEvent extends HTMLElement {
         }
         return event
     }
-    getDateData(date) {
-        return {
-            dayOfWeek: date.toLocaleString(undefined, {weekday:'short'}),
-            date: date.toLocaleString(undefined, {dateStyle:'medium'}),
-            time: date.toLocaleString(undefined, {timeStyle:'short'})
-        }
-    }
     getPurchasedData(event) {
         if (event.ended) {
             return {count:0}
@@ -429,10 +423,10 @@ export class PageEvent extends HTMLElement {
         const now = new Date()
         let tickets = _.chain(session.me?.reserved_tickets)
             .filter(ticket => {
-                const saleStartDate = ticket.ticket_type?.sale_start_date ? new Date(ticket.ticket_type?.sale_start_date) : null
-                const saleEndDate = ticket.ticket_type?.sale_end_date ? new Date(ticket.ticket_type?.sale_end_date) : null
+                const saleStartDate = ticket.ticket_type.sale_start_date ? new Date(ticket.ticket_type.sale_start_date) : null
+                const saleEndDate = ticket.ticket_type.sale_end_date ? new Date(ticket.ticket_type.sale_end_date) : null
                 const expirationDate = ticket.expiration_date ? new Date(ticket.expiration_date) : null
-                return ticket.ticket_type?.active &&
+                return ticket.ticket_type.active &&
                     saleStartDate < now && saleEndDate > now &&
                     (!expirationDate || expirationDate > now) &&
                     !ticket.purchased_ticket_id
@@ -454,8 +448,6 @@ export class PageEvent extends HTMLElement {
             .sortBy(['startDate', 'name'])
             .value()
         
-        console.log(tickets)
-        console.log(countByType)
         return {
             tickets: tickets,
             count: tickets.length
