@@ -39,9 +39,9 @@ const template = `
             </div>
 
             {{#if event.purchased.count}}
-                <div class="d-flex text-green bg-green-lighten-5 rounded pa-6 mt-6 mb-2">
+                <div class="d-flex align-center text-green py-4">
                     <i class="material-icons icon-medium vertical-align-middle mr-4">check_circle</i>
-                    <h3 class="font-weight-normal mr-auto my-0">
+                    <h3 class="font-weight-normal my-0">
                     {{#if event.purchased.multiple}}
                         You have {{event.purchased.count}} tickets for this event
                     {{else}}
