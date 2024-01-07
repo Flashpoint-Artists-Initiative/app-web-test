@@ -18,7 +18,7 @@ const template = `
             </a>
         </button>
         <button class="mdc-button mdc-button--unelevated bg-grey ml-2 mb-2">
-            <a href="./my-tickets" class="text-white">
+            <a href="./tickets" class="text-white">
                 <span class="mdc-button__ripple"></span>Transfer
             </a>
         </button>

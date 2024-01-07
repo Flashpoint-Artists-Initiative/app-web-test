@@ -17,11 +17,15 @@ body {
 .flex-shrink-0 { flex-shrink: 0; }
 .flex-shrink-1 { flex-shrink: 1; }
 
+.font-weight-bold { font-weight: bold; }
+.font-weight-normal { font-weight: normal; }
+
 .text-truncate {
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
 }
+.text-uppercase { text-transform: uppercase;}
 .text-medium-emphasis { opacity: .6; }
 .text-disabled { opacity: .38; }
 
@@ -39,11 +43,6 @@ body {
 .text-right { text-align: right; }
 
 .vertical-align-middle { vertical-align: middle; }
-
-.font-weight-bold { font-weight: bold; }
-.font-weight-normal { font-weight: normal; }
-
-.text-uppercase { text-transform: uppercase;}
 
 .opacity-0 { opacity: 0 }
 .opacity-1 { opacity: 1 }

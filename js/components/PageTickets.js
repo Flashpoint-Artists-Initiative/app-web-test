@@ -142,7 +142,7 @@ const template = `
 {{/if}}
 `
 
-export class PageMyTickets extends HTMLElement {
+export class PageTickets extends HTMLElement {
     constructor() {
         super()
         this.refreshCallback = () => { this.refresh() }
@@ -243,4 +243,4 @@ export class PageMyTickets extends HTMLElement {
     refreshCallback = undefined
     fetch = {}
 }
-customElements.define('page-my-tickets', PageMyTickets)
+customElements.define('page-tickets', PageTickets)

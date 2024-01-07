@@ -51,7 +51,7 @@ const template = `
                     </h3>
                     <div class="ml-6 flex-shrink-0">
                         <button class="mdc-button mdc-button--unelevated bg-green text-white">
-                            <a href="./my-tickets" class="text-white">    
+                            <a href="./tickets" class="text-white">    
                                 <span class="mdc-button__ripple"></span>Show Tickets
                             </a>
                         </button>
@@ -221,7 +221,7 @@ const template = `
                                         </div>
                                         <div class="d-flex flex-column align-end">
                                             <h2 class="my-0">{{#unless soldOut}}{{price}}{{/unless}}</h2>
-                                            {{#if showQtyAvailable}}{{qtyAvailable}} available
+                                            {{#if showQtyAvailable}}<div class="text-medium-emphasis">{{qtyAvailable}} available</div>
                                             {{else if showSoldOutSoon}}<div class="text-red font-weight-bold text-uppercase mt-2">only {{qtyAvailable}} left</div>
                                             {{/if}}
                                         </div>
@@ -260,7 +260,7 @@ const template = `
                                     </div>
                                     <div class="d-flex flex-column align-end">
                                         <h2 class="my-0">{{#unless soldOut}}{{price}}{{/unless}}</h2>
-                                        {{#if showQtyAvailable}}{{qtyAvailable}} available
+                                        {{#if showQtyAvailable}}<div class="text-medium-emphasis">{{qtyAvailable}} available</div>
                                         {{else if showSoldOutSoon}}<div class="text-red font-weight-bold text-uppercase mt-2">only {{qtyAvailable}} left</div>
                                         {{/if}}
                                     </div>
