@@ -1,6 +1,15 @@
 import { session } from '../model/Session.js'
 
 export default class ApiBase {
+    static createUrl(url, options) {
+        const theUrl = new URL(url)
+        if (options) {
+            for(const param in options) {
+                theUrl.searchParams.set(param, options[param])
+            }
+        }
+        return theUrl
+    }
     static async get(url, token) {
         return await this.request('GET', url, null, token)
     }
