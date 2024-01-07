@@ -335,6 +335,7 @@ export class AppBar extends HTMLElement {
     }
     signout() {
         session.signout()
+        window.location.replace('./')
     }
     showProcessing(title) {
         const element = this.querySelector('.processing-dialog')
