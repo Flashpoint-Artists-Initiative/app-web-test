@@ -201,6 +201,7 @@ const template = `
                 </div>
 
             {{else}}
+                {{#unless event.ended}}
                 {{#if event.reserved.count}}
                     <h2>Reserved Tickets</h2>
                     {{#each event.reserved.tickets}}
@@ -273,6 +274,7 @@ const template = `
                         </div>
                     </div>
                 {{/each}}
+                {{/unless}}
             {{/if}}
         {{/if}}
     {{else}}
