@@ -9,7 +9,7 @@ const template = `
 <div class="pa-4">
     {{#if fetch.done}}
         <div class="d-flex">
-            <h1 class="mt-0 mr-auto">My Tickets</h1>
+            <h1 class="mt-0 mr-auto">Event Tickets</h1>
         </div>
         {{#if fetch.error}}
             <h2 class="text-red mt-0"><i class="material-icons mr-4">error_outline</i>
@@ -22,7 +22,7 @@ const template = `
         {{else}}
             {{#if future}}
                 <h2 class="mt-0">Upcoming Events</h2>
-                <div class="mdc-data-table mb-6">
+                <div class="future-ticket-list mdc-data-table mb-6">
                     <div class="mdc-data-table__table-container">
                         <table class="mdc-data-table__table">
                             <thead>
@@ -36,7 +36,7 @@ const template = `
                             </thead>
                             <tbody class="mdc-data-table__content">
                                 {{#each future}}
-                                <tr class="mdc-data-table__row">
+                                <tr class="mdc-data-table__row" data-event-id="{{eventId}}">
                                     <td class="mdc-data-table__cell font-weight-bold">{{eventName}}</td>
                                     <td class="mdc-data-table__cell pr-0">{{eventStart.dayOfWeek}}, </td>
                                     <td class="mdc-data-table__cell px-2">{{eventStart.date}}</td>
@@ -58,7 +58,7 @@ const template = `
             {{#if reserved}}
                 <h2>Reserved Tickets</h2>
                 <div class="mb-4">These tickets can be bought before the expiration date listed below</div>
-                <div class="mdc-data-table mb-6">
+                <div class="reserved-ticket-list mdc-data-table mb-6">
                     <div class="mdc-data-table__table-container">
                         <table class="mdc-data-table__table">
                             <thead>
@@ -73,7 +73,7 @@ const template = `
                             </thead>
                             <tbody class="mdc-data-table__content">
                                 {{#each reserved}}
-                                <tr class="mdc-data-table__row">
+                                <tr class="mdc-data-table__row" data-event-id="{{eventId}}">
                                     <td class="mdc-data-table__cell font-weight-bold py-2">{{eventName}}</td>
                                     <td class="mdc-data-table__cell pr-0 py-2">{{eventStart.dayOfWeek}}, </td>
                                     <td class="mdc-data-table__cell px-2 py-2">{{eventStart.date}}</td>
@@ -100,7 +100,7 @@ const template = `
             <div class="b-border my-8"></div>
             {{#if past}}
                 <h1 class="mt-0">Past Events</h1>
-                <div class="mdc-data-table mb-6">
+                <div class="past-ticket-list mdc-data-table mb-6">
                     <div class="mdc-data-table__table-container">
                         <table class="mdc-data-table__table">
                             <thead>
@@ -114,7 +114,7 @@ const template = `
                             </thead>
                             <tbody class="mdc-data-table__content">
                                 {{#each past}}
-                                <tr class="mdc-data-table__row">
+                                <tr class="mdc-data-table__row" data-event-id="{{eventId}}">
                                     <td class="mdc-data-table__cell font-weight-bold">{{eventName}}</td>
                                     <td class="mdc-data-table__cell pr-0">{{eventEnd.dayOfWeek}}, </td>
                                     <td class="mdc-data-table__cell px-2">{{eventEnd.date}}</td>
@@ -188,13 +188,14 @@ export class PageTickets extends HTMLElement {
                     name: ticket.ticket_type.name,
                     purchaseDate: purchaseDate,
                     price: '$' + ticket.ticket_type.price.toLocaleString(undefined, {minimumFractionDigits: 2}),
+                    eventId: ticket.ticket_type.event.id,
                     eventName: ticket.ticket_type.event.name,
                     eventLocation: ticket.ticket_type.event.location,
                     eventStartDate: eventStartDate,
                     eventEndDate: eventEndDate,
                     purchase: DateTime.getDateData(purchaseDate),
                     eventStart: DateTime.getDateData(eventStartDate),
-                    eventEnd: DateTime.getDateData(eventEndDate)
+                    eventEnd: DateTime.getDateData(eventEndDate),
                 }
             })
             .sortBy(['eventStartDate','name','purchaseDate'])
@@ -212,6 +213,7 @@ export class PageTickets extends HTMLElement {
                     purchased: ticket.purchased_ticket_id,
                     name: ticket.ticket_type.name,
                     price: '$' + ticket.ticket_type.price.toLocaleString(undefined, {minimumFractionDigits: 2}),
+                    eventId: ticket.ticket_type.event.id,
                     eventName: ticket.ticket_type.event.name,
                     eventLocation: ticket.ticket_type.event.location,
                     eventStartDate: eventStartDate,
@@ -238,6 +240,24 @@ export class PageTickets extends HTMLElement {
             notAuthorized: !session.isSignedIn()
         }
         this.innerHTML = Handlebars.compile(template)(this.templateData)
+        this.querySelectorAll('.reserved-ticket-list tbody tr').forEach(element => {
+            element.addEventListener('click', event => {
+                this.goToEvent(event.currentTarget.dataset.eventId)
+            })
+        })
+        this.querySelectorAll('.future-ticket-list tbody tr').forEach(element => {
+            element.addEventListener('click', event => {
+                this.goToEvent(event.currentTarget.dataset.eventId)
+            })
+        })
+        this.querySelectorAll('.past-ticket-list tbody tr').forEach(element => {
+            element.addEventListener('click', event => {
+                this.goToEvent(event.currentTarget.dataset.eventId)
+            })
+        })
+    }
+    goToEvent(eventId) {
+        window.location.href = `./event?id=${eventId}`
     }
 
     refreshCallback = undefined
