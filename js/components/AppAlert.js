@@ -11,13 +11,13 @@ const template = `
             1 reserved ticket available for: {{reservedTickets.names}}
         {{/if}}
     </h2>
-    <div class="ml-6">
-        <button class="mdc-button mdc-button--unelevated bg-blue">
+    <div class="ml-6 text-right">
+        <button class="mdc-button mdc-button--unelevated bg-blue mb-2">
             <a href="./purchase?ticketId={{reservedTickets.id}}" class="text-white">
                 <span class="mdc-button__ripple"></span>Buy
             </a>
         </button>
-        <button class="mdc-button mdc-button--unelevated bg-grey ml-2">
+        <button class="mdc-button mdc-button--unelevated bg-grey ml-2 mb-2">
             <a href="./my-tickets" class="text-white">
                 <span class="mdc-button__ripple"></span>Transfer
             </a>

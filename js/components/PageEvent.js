@@ -48,7 +48,7 @@ const template = `
                         You have 1 ticket for this event
                     {{/if}}
                     </h3>
-                    <div class="ml-6">
+                    <div class="ml-6 flex-shrink-0">
                         <button class="mdc-button mdc-button--unelevated bg-green text-white">
                             <a href="./my-tickets" class="text-white">    
                                 <span class="mdc-button__ripple"></span>Show Tickets
