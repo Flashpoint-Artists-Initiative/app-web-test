@@ -157,18 +157,19 @@ const template = `
                                             <th class="mdc-data-table__header-cell text-center">Status</th>
                                             <th class="mdc-data-table__header-cell">Email</th>
                                             <th class="mdc-data-table__header-cell">Ticket</th>
-                                            <th class="mdc-data-table__header-cell">Assigned Name</th>
-                                            <th class="mdc-data-table__header-cell">Assigned Email</th>
+                                            <th class="mdc-data-table__header-cell">Assigned To</th>
                                             <th class="mdc-data-table__header-cell" colspan="3">Issue Date</th>
-                                            <th class="mdc-data-table__header-cell" colspan="3">Expiration Date</th>
+                                            <th class="mdc-data-table__header-cell" colspan="3">Offer Ends</th>
                                         </tr>
                                     </thead>
                                     <tbody class="mdc-data-table__content">
                                         {{#each event.reserved}}
-                                        <tr class="mdc-data-table__row{{#if inactive}} text-disabled{{/if}}">
+                                        <tr class="mdc-data-table__row{{#if saleEnded}} text-disabled{{/if}}">
                                             <td class="mdc-data-table__cell text-center">
                                                 {{#if sold}}
                                                     <span class="text-green">sold</span>
+                                                {{else if saleEnded}}
+                                                    <span>expired</span>
                                                 {{else if assigned}}
                                                     <span class="">claimed</span>
                                                 {{else}}
@@ -177,14 +178,19 @@ const template = `
                                             </td>
                                             <td class="mdc-data-table__cell">{{email}}</td>
                                             <td class="mdc-data-table__cell">{{ticketType}}</td>
-                                            <td class="mdc-data-table__cell">{{assignedName}}</td>
-                                            <td class="mdc-data-table__cell">{{assignedEmail}}</td>
-                                            <td class="mdc-data-table__cell pr-0">{{issueDate.dayOfWeek}}, </td>
-                                            <td class="mdc-data-table__cell px-2">{{issueDate.date}}</td>
-                                            <td class="mdc-data-table__cell pl-0">{{issueDate.time}}</td>
-                                            <td class="mdc-data-table__cell pr-0">{{#if expirationDate}}{{expirationDate.dayOfWeek}}, {{/if}}</td>
-                                            <td class="mdc-data-table__cell px-2">{{expirationDate.date}}</td>
-                                            <td class="mdc-data-table__cell pl-0">{{expirationDate.time}}</td>
+                                            <td class="mdc-data-table__cell">
+                                                <span class="font-weight-bold">{{assignedName}}</span>{{#if assignedEmail}} ({{assignedEmail}}){{/if}}
+                                            </td>
+                                            <td class="mdc-data-table__cell pr-0">{{issued.dayOfWeek}}, </td>
+                                            <td class="mdc-data-table__cell px-2">{{issued.date}}</td>
+                                            <td class="mdc-data-table__cell pl-0">{{issued.time}}</td>
+                                            {{#if sold}}
+                                                <td class="mdc-data-table__cell" colspan="3"></td>
+                                            {{else}}
+                                                <td class="mdc-data-table__cell pr-0">{{saleEnd.dayOfWeek}}, </td>
+                                                <td class="mdc-data-table__cell px-2">{{saleEnd.date}}</td>
+                                                <td class="mdc-data-table__cell pl-0">{{saleEnd.time}}</td>
+                                            {{/if}}
                                         </tr>
                                         {{/each}}
                                     </tbody>
@@ -209,13 +215,15 @@ const template = `
                                                 {{#if saleEnded}}Sale ended {{saleEnded}}
                                                 {{else if availableOn}}<span class="text-blue">Available on {{availableOn}}</span>
                                                 {{else if soldOut}}<span class="text-red">Sold out</span>
-                                                {{else}}<span class="font-weight-bold">{{myReservedQty}} Available<span>{{#if timeRemaining}}, {{timeRemaining}}{{/if}}
+                                                {{else}}{{timeRemaining}}
                                                 {{/if}}
                                             </div>
                                         </div>
                                         <div class="d-flex flex-column align-end">
                                             <h2 class="my-0">{{#unless soldOut}}{{price}}{{/unless}}</h2>
-                                            {{#if showQtyAvailable}}<div class="text-red font-weight-bold text-uppercase mt-2">only {{qtyAvailable}} left</div>{{/if}}
+                                            {{#if showQtyAvailable}}{{qtyAvailable}} available
+                                            {{else if showSoldOutSoon}}<div class="text-red font-weight-bold text-uppercase mt-2">only {{qtyAvailable}} left</div>
+                                            {{/if}}
                                         </div>
                                         
                                     </div>
@@ -252,7 +260,9 @@ const template = `
                                     </div>
                                     <div class="d-flex flex-column align-end">
                                         <h2 class="my-0">{{#unless soldOut}}{{price}}{{/unless}}</h2>
-                                        {{#if showQtyAvailable}}<div class="text-red font-weight-bold text-uppercase mt-2">only {{qtyAvailable}} left</div>{{/if}}
+                                        {{#if showQtyAvailable}}{{qtyAvailable}} available
+                                        {{else if showSoldOutSoon}}<div class="text-red font-weight-bold text-uppercase mt-2">only {{qtyAvailable}} left</div>
+                                        {{/if}}
                                     </div>
                                     
                                 </div>
@@ -338,8 +348,8 @@ export class PageEvent extends HTMLElement {
             daysUntil: daysUntil
         }
 
-        event.purchased = this.getPurchasedData(event)
-        event.reserved = this.getReservedTicketData(event)
+        event.purchased = this.getMyPurchasedData(event)
+        event.reserved = this.getMyReservedTicketData(event)
 
         if (session.getRoles().admin) {
             event.tickets = _.sortBy(TicketType.getTicketData(eventData.ticket_types), ['startDate', 'name'])
@@ -353,10 +363,9 @@ export class PageEvent extends HTMLElement {
             })
             event.reserved = _.sortBy(TicketType.getReservedTicketData(eventData.reserved_tickets, eventData.ticket_types), 'email')
             event.reserved.forEach(ticket => {
-                ticket.issueDate = DateTime.getDateData(ticket.issueDate)
-                if (ticket.expirationDate) {
-                    ticket.expirationDate = DateTime.getDateData(ticket.expirationDate)
-                }
+                ticket.issued = DateTime.getDateData(ticket.issueDate)
+                ticket.saleEnd = DateTime.getDateData(ticket.expirationDate || ticket.saleEndDate)
+                ticket.saleEnded = (ticket.expirationDate || ticket.saleEndDate) < now
             })
 
         } else {
@@ -400,7 +409,7 @@ export class PageEvent extends HTMLElement {
         }
         return event
     }
-    getPurchasedData(event) {
+    getMyPurchasedData(event) {
         if (event.ended) {
             return {count:0}
         }
@@ -415,42 +424,45 @@ export class PageEvent extends HTMLElement {
             multiple: purchasedCount > 1
         }
     }
-    getReservedTicketData(event) {
+    getMyReservedTicketData(event) {
         if (event.ended) {
             return {count:0}
         }
 
         const now = new Date()
-        let tickets = _.chain(session.me?.reserved_tickets)
+        const availableReserved = _.chain(session.me?.reserved_tickets)
             .filter(ticket => {
-                const saleStartDate = ticket.ticket_type.sale_start_date ? new Date(ticket.ticket_type.sale_start_date) : null
-                const saleEndDate = ticket.ticket_type.sale_end_date ? new Date(ticket.ticket_type.sale_end_date) : null
-                const expirationDate = ticket.expiration_date ? new Date(ticket.expiration_date) : null
-                return ticket.ticket_type.active &&
-                    saleStartDate < now && saleEndDate > now &&
-                    (!expirationDate || expirationDate > now) &&
-                    !ticket.purchased_ticket_id
+                const saleStartDate = new Date(ticket.ticket_type.sale_start_date)
+                const saleEndDate = new Date(ticket.expiration_date || ticket.ticket_type.sale_end_date)
+                return ticket.ticket_type.active && !ticket.purchased_ticket_id && saleStartDate < now && saleEndDate > now
             })
-            .map(ticket => { return ticket.ticket_type })
-            .value()
-        const countByType = _.countBy(tickets, 'id')
-        tickets = TicketType.getTicketData(_.uniqBy(tickets, 'id'))
-        tickets = _.chain(tickets)
-            .map(ticket => {
-                Object.assign(ticket, {
-                    myReservedQty: countByType[ticket.id],
-                    timeRemaining: '',
-                    soldOut: false,
-                    canBuy: true
+            .map(ticket => { 
+                // Adjust the end date if the reserved ticket has an expiration date
+                const saleEndDate = ticket.expiration_date || ticket.ticket_type.sale_end_date
+                return Object.assign(_.cloneDeep(ticket.ticket_type), {
+                    sale_end_date: saleEndDate,
+                    groupKey: `${ticket.ticket_type.id}:${saleEndDate}`
                 })
-                return ticket
             })
-            .sortBy(['startDate', 'name'])
             .value()
+
+        // Group the available tickets by the ticket type and exiration date
+        const ticketGroups = _.uniqBy(availableReserved, 'groupKey')
+        const countByTypeSaleEndDate = _.countBy(availableReserved, 'groupKey')
+        // Set the available quantity to the reserved count per group, and the sold count to zero
+        ticketGroups.forEach(ticketGroup => {
+            ticketGroup.quantity = countByTypeSaleEndDate[ticketGroup.groupKey]
+            ticketGroup.purchased_tickets_count = 0
+        })
+
+        const tickets = _.sortBy(TicketType.getTicketData(ticketGroups), ['endDate','name'])
+        tickets.forEach(ticket => {
+            ticket.showQtyAvailable = true
+        })
         
         return {
             tickets: tickets,
-            count: tickets.length
+            count: availableReserved.length
         }
     }
     async refresh() {

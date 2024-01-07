@@ -68,7 +68,7 @@ const template = `
                                     <th class="mdc-data-table__header-cell">Ticket</th>
                                     <th class="mdc-data-table__header-cell text-right">Price</th>
                                     <th class="mdc-data-table__header-cell" colspan="3">On Sale</th>
-                                    <th class="mdc-data-table__header-cell text-center" colspan="3">Ticket Expiration</th>
+                                    <th class="mdc-data-table__header-cell text-center" colspan="3">Offer Ends</th>
                                 </tr>
                             </thead>
                             <tbody class="mdc-data-table__content">
@@ -87,13 +87,9 @@ const template = `
                                         <td class="mdc-data-table__cell px-2 py-2">{{saleStart.date}}</td>
                                         <td class="mdc-data-table__cell pl-0 py-2">{{saleStart.time}}</td>
                                     {{/if}}
-                                    {{#if expiration}}
-                                        <td class="mdc-data-table__cell pr-0 py-2">{{expiration.dayOfWeek}}, </td>
-                                        <td class="mdc-data-table__cell px-2 py-2">{{expiration.date}}</td>
-                                        <td class="mdc-data-table__cell pl-0 py-2">{{expiration.time}}</td>
-                                    {{else}}
-                                        <td class="mdc-data-table__cell text-center py-2" colspan="3">-none-</td>
-                                    {{/if}}
+                                    <td class="mdc-data-table__cell pr-0 py-2">{{saleEnd.dayOfWeek}}, </td>
+                                    <td class="mdc-data-table__cell px-2 py-2">{{saleEnd.date}}</td>
+                                    <td class="mdc-data-table__cell pl-0 py-2">{{saleEnd.time}}</td>
                                 </tr>
                                 {{/each}}
                             </tbody>
@@ -209,9 +205,8 @@ export class PageMyTickets extends HTMLElement {
         const tickets = _.chain(session.me?.reserved_tickets)
             .map(ticket => {
                 const eventStartDate = new Date(ticket.ticket_type.event.start_date)
-                const saleStartDate = ticket.ticket_type.sale_start_date ? new Date(ticket.ticket_type.sale_start_date) : null
-                const saleEndDate = ticket.ticket_type.sale_end_date ? new Date(ticket.ticket_type.sale_end_date) : null
-                const expirationDate = ticket.expiration_date ? new Date(ticket.expiration_date) : null
+                const saleStartDate = new Date(ticket.ticket_type.sale_start_date)
+                const saleEndDate = new Date(ticket.expiration_date || ticket.ticket_type.sale_end_date)
                 return {
                     active: ticket.ticket_type.active,
                     purchased: ticket.purchased_ticket_id,
@@ -222,20 +217,17 @@ export class PageMyTickets extends HTMLElement {
                     eventStartDate: eventStartDate,
                     saleStartDate: saleStartDate,
                     saleEndDate: saleEndDate,
-                    expirationDate: expirationDate,
                     onSaleNow: saleStartDate < now && saleEndDate > now
                 }
             })
             .filter(ticket => {
-                return ticket.active &&!ticket.purchased && 
-                    ticket.saleEndDate > now &&
-                    (!ticket.expirationDate || ticket.expirationDate > now)
+                return ticket.active &&!ticket.purchased && ticket.saleStartDate < now && ticket.saleEndDate > now
             })
             .value()
         tickets.forEach(ticket => {
             ticket.eventStart = DateTime.getDateData(ticket.eventStartDate)
             ticket.saleStart = DateTime.getDateData(ticket.saleStartDate)
-            ticket.expiration = ticket.expirationDate ? DateTime.getDateData(ticket.expirationDate) : null
+            ticket.saleEnd = DateTime.getDateData(ticket.saleEndDate)
         })
         return tickets
     }

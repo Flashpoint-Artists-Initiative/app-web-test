@@ -48,16 +48,12 @@ export class AppAlert extends HTMLElement {
         const now = new Date()
         const unsoldReservedTickets = _.chain(session.me?.reserved_tickets)
             .filter(ticket => {
-                const saleStartDate = ticket.ticket_type?.sale_start_date ? new Date(ticket.ticket_type?.sale_start_date) : null
-                const saleEndDate = ticket.ticket_type?.sale_end_date ? new Date(ticket.ticket_type?.sale_end_date) : null
-                const expirationDate = ticket.expiration_date ? new Date(ticket.expiration_date) : null
-                return ticket.ticket_type?.active &&
-                    saleStartDate < now && saleEndDate > now &&
-                    (!expirationDate || expirationDate > now) &&
-                    !ticket.purchased_ticket_id
+                const saleStartDate = new Date(ticket.ticket_type.sale_start_date)
+                const saleEndDate = new Date(ticket.expiration_date || ticket.ticket_type.sale_end_date)
+                return ticket.ticket_type.active && !ticket.purchased_ticket_id && saleStartDate < now && saleEndDate > now
             })
             .sortBy(ticket => {
-                return ticket.ticket_type.sale_end_date
+                return ticket.expiration_date || ticket.ticket_type.sale_end_date
             })
             .map(ticket => {
                 return {

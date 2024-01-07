@@ -18,10 +18,10 @@ export default class TicketType {
                 qty: ticket.quantity,
                 qtySold: ticket.purchased_tickets_count,
                 qtyReserved: ticket.reserved_tickets_count,
-                qtyAvailable: Math.max(0, ticket.quantity - ticket.purchased_tickets_count - ticket.reserved_tickets_count),
+                qtyAvailable: Math.max(0, ticket.quantity - ticket.purchased_tickets_count),
                 canBuy: false
             }
-            ticketData.showQtyAvailable = ticketData.qtyAvailable > 0 && ticketData.qtyAvailable < 10
+            ticketData.showSoldOutSoon = ticketData.qtyAvailable > 0 && ticketData.qtyAvailable < 10
             if (saleEndDate < now) {
                 ticketData.saleEnded = saleEndDate.toLocaleString()
             } else if (saleStartDate > now) {
@@ -73,6 +73,7 @@ export default class TicketType {
                 assignedEmail: ticket.user?.email,
                 ticketType: type?.name,
                 issueDate: new Date(ticket.created_at),
+                saleEndDate: new Date(type.sale_end_date),
                 expirationDate: ticket.expiration_date ? new Date(ticket.expiration_date) : null,
                 sold: ticket.purchased_ticket_id > 0
             }
