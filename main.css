@@ -8,6 +8,7 @@ body {
 }
 
 .d-block { display: block; }
+.d-inline-block { display: inline-block; }
 .d-flex { display: flex; }
 .d-none { display: none; }
 
@@ -199,4 +200,9 @@ td.mdc-data-table__cell i.material-icons {
 
 .app-ticket {
     max-width: 40rem;
+}
+
+label.data-label {
+    font-weight: bold;
+    padding: 4px 0;
 }

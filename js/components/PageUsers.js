@@ -25,7 +25,7 @@ const template = `
                 {{/if}}
             </h2>
         {{else}}
-            <div class="mdc-data-table w-100">
+            <div class="user-list mdc-data-table w-100">
                 <div class="mdc-data-table__table-container">
                     <table class="mdc-data-table__table">
                         <thead>
@@ -37,7 +37,7 @@ const template = `
                         </thead>
                         <tbody class="mdc-data-table__content">
                             {{#each users}}
-                            <tr class="mdc-data-table__row">
+                            <tr class="mdc-data-table__row" data-user-id="{{id}}">
                                 <td class="mdc-data-table__cell">{{name}}</td>
                                 <td class="mdc-data-table__cell">{{email}}{{#if email_verified}}<i class="material-icons text-green ml-2">check_circle</i>{{/if}}</td>
                                 <td class="mdc-data-table__cell">{{signupDate}}</td>
@@ -96,6 +96,11 @@ export class PageUsers extends HTMLElement {
     }
     async refresh() {
         this.innerHTML = Handlebars.compile(template)(this.templateData)
+        this.querySelectorAll('.user-list tbody tr').forEach(element => {
+            element.addEventListener('click', event => {
+                this.goToUser(event.currentTarget.dataset.userId)
+            })
+        })
 
         if (!session.loaded) {
             return 
@@ -122,6 +127,9 @@ export class PageUsers extends HTMLElement {
             this.users.data = response.ok ? data?.data : []
             this.refresh()
         }
+    }
+    goToUser(userId) {
+        window.location.href = `./user?id=${userId}`
     }
 
     refreshCallback = undefined
