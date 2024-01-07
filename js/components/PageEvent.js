@@ -40,7 +40,7 @@ const template = `
 
             {{#if event.purchased.count}}
                 <div class="d-flex align-center text-green py-4">
-                    <i class="material-icons icon-medium vertical-align-middle mr-4">check_circle</i>
+                    <i class="material-icons icon-medium vertical-align-middle mr-4">local_activity</i>
                     <h3 class="font-weight-normal my-0">
                     {{#if event.purchased.multiple}}
                         You have {{event.purchased.count}} tickets for this event

@@ -2,15 +2,15 @@ import { session } from '../model/Session.js'
 
 const template = `
 {{#if reservedTickets.count}}
-<div class="d-flex text-blue bg-blue-lighten-5 rounded pa-6 ma-2">
-    <i class="material-icons icon-large vertical-align-middle mr-4">new_releases</i>
-    <h2 class="font-weight-normal mr-auto my-0">
+<div class="d-flex align-center text-blue bg-blue-lighten-5 rounded pa-4 ma-2">
+    <i class="material-icons icon-large mr-4">new_releases</i>
+    <h3 class="font-weight-normal mr-auto my-0">
         {{#if reservedTickets.multiple}}
             {{reservedTickets.count}} reserved tickets available for: {{reservedTickets.names}}
         {{else}}
             1 reserved ticket available for: {{reservedTickets.names}}
         {{/if}}
-    </h2>
+    </h3>
     <div class="ml-6 text-right">
         <button class="mdc-button mdc-button--unelevated bg-blue mb-2">
             <a href="./purchase?ticketId={{reservedTickets.id}}" class="text-white">
