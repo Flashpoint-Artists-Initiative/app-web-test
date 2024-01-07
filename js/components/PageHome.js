@@ -10,7 +10,7 @@ const template = `
             <h1 class="mt-0 mr-auto">Upcoming Events</h1>
             {{#if roles.admin}}
                 <button type="button" class="events-button mdc-button mdc-button--unelevated">
-                    <a href="./events" class="text-white mr-2">
+                    <a href="./events" class="text-white">
                         <div class="mdc-button__ripple"></div>
                         <span class="mdc-button__label">Events</span>
                     </a>

@@ -32,7 +32,7 @@ const template = `
 
 <div class="signin-dialog mdc-dialog">
     <div class="mdc-dialog__container" >
-        <div class="mdc-dialog__surface">
+        <div class="mdc-dialog__surface" style="width:480px">
         <h2 class="mdc-dialog__title">Sign In</h2>
         <div class="mdc-dialog__content">
             <form class="my-2">
@@ -41,7 +41,7 @@ const template = `
                 <label class="d-block pt-2">Password</label>
                 <mdc-textfield class="w-100" input-class="field-password" input-type="password"></mdc-textfield>
             </form>
-            <div class="d-flex justify-center my-2"><a href="#forgot-password" class="forgot-password-link">Forgot Password?</a></div>
+            <div class="d-flex justify-center my-4"><a href="#forgot-password" class="forgot-password-link">Forgot Password?</a></div>
             <div class="d-flex justify-center"><span class="mr-4">Not a member?</span><a href="#sign-up" class="sign-up-link">Sign Up</a></div>
         </div>
         <div class="mdc-dialog__actions">
@@ -55,7 +55,7 @@ const template = `
 
 <div class="forgot-password-dialog mdc-dialog">
     <div class="mdc-dialog__container" >
-        <div class="mdc-dialog__surface">
+        <div class="mdc-dialog__surface" style="width:480px">
         <h2 class="mdc-dialog__title">Forgot Password</h2>
         <div class="mdc-dialog__content">
             <form class="my-2">
@@ -74,7 +74,7 @@ const template = `
 
 <div class="signup-dialog mdc-dialog">
     <div class="mdc-dialog__container" >
-        <div class="mdc-dialog__surface">
+        <div class="mdc-dialog__surface" style="width:480px">
         <h2 class="mdc-dialog__title">Sign Up</h2>
         <div class="mdc-dialog__content">
             <form autocomplete="off" class="my-2">
@@ -99,7 +99,7 @@ const template = `
 
 <div class="my-profile-dialog mdc-dialog">
     <div class="mdc-dialog__container" >
-        <div class="mdc-dialog__surface">
+        <div class="mdc-dialog__surface" style="width:480px">
         <h2 class="mdc-dialog__title">Profile</h2>
         <div class="mdc-dialog__content">
             <form autocomplete="off" class="my-2">

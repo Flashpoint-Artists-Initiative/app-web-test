@@ -53,7 +53,7 @@ const template = `
 
 <div class="add-event-dialog mdc-dialog">
     <div class="mdc-dialog__container" >
-        <div class="mdc-dialog__surface" style="min-width:640px">
+        <div class="mdc-dialog__surface" style="width:640px">
         <h2 class="mdc-dialog__title">Add Event</h2>
         <div class="mdc-dialog__content">
             <form autocomplete="off" class="my-2">

@@ -166,6 +166,12 @@ body {
     overflow-y: auto;
 }
 
+.mdc-dialog .mdc-dialog__title {
+    background-color: rgba(0,0,0,.08);
+    border-bottom: 1px solid rgba(0,0,0,.2);
+    margin-bottom: 24px;
+}
+
 .mdc-text-field--filled,
 .mdc-select--filled .mdc-select__anchor {
     height: 40px;
