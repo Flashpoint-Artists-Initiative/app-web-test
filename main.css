@@ -35,7 +35,10 @@ body {
 .text-center { text-align: center; }
 .text-right { text-align: right; }
 
+.vertical-align-middle { vertical-align: middle; }
+
 .font-weight-bold { font-weight: bold; }
+.font-weight-normal { font-weight: normal; }
 
 .text-uppercase { text-transform: uppercase;}
 
@@ -132,15 +135,29 @@ body {
 
 .b-bottom { border-bottom: 1px solid rgba(0,0,0,.12); }
 
-.text-white { color: #FFFFFF }
-.text-red { color: #F44336; }
-.text-blue { color: #2196F3; }
-.text-green { color: #4CAF50; }
+.icon-medium { font-size: 32px; }
+.icon-large { font-size: 48px; }
 
-.bg-red { background-color: #F44336; }
-.bg-blue { background-color: #2196F3; }
-.bg-green { background-color: #4CAF50; }
-.bg-grey { background-color: #9E9E9E }
+.text-white { color: #FFFFFF !important; }
+.text-red { color: #F44336 !important; }
+.text-blue { color: #2196F3 !important; }
+.text-green { color: #4CAF50 !important; }
+
+.bg-red { background-color: #F44336 !important; }
+.bg-blue { background-color: #2196F3 !important; }
+.bg-blue-lighten-3 { background-color: #90CAF9 !important; }
+.bg-blue-lighten-5 { background-color: #E3F2FD !important; }
+.bg-green { background-color: #4CAF50 !important; }
+.bg-grey { background-color: #9E9E9E !important; }
+
+.mdc-top-app-bar--fixed-adjust {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 64px);    
+}
+.mdc-top-app-bar--fixed-adjust .main-content {
+    overflow-y: auto;
+}
 
 .mdc-text-field--filled,
 .mdc-select--filled .mdc-select__anchor {

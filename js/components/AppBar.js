@@ -28,123 +28,123 @@ const template = `
             {{/if}}
         </section>
     </div>
-
-    <div class="signin-dialog mdc-dialog">
-        <div class="mdc-dialog__container" >
-            <div class="mdc-dialog__surface">
-            <h2 class="mdc-dialog__title">Sign In</h2>
-            <div class="mdc-dialog__content">
-                <form class="my-2">
-                    <label class="d-block">Email</label>
-                    <mdc-textfield class="w-100" input-class="field-email" input-type="text" input-tabindex="0"></mdc-textfield>
-                    <label class="d-block pt-2">Password</label>
-                    <mdc-textfield class="w-100" input-class="field-password" input-type="password"></mdc-textfield>
-                </form>
-                <div class="d-flex justify-center my-2"><a href="#forgot-password" class="forgot-password-link">Forgot Password?</a></div>
-                <div class="d-flex justify-center"><span class="mr-4">Not a member?</span><a href="#sign-up" class="sign-up-link">Sign Up</a></div>
-            </div>
-            <div class="mdc-dialog__actions">
-                <mdc-dialog-button action="close" title="Cancel"></mdc-dialog-button>
-                <mdc-dialog-button action="accept" title="Sign In"></mdc-dialog-button>
-            </div>
-            </div>
-        </div>
-        <div class="mdc-dialog__scrim"></div>
-    </div>
-
-    <div class="forgot-password-dialog mdc-dialog">
-        <div class="mdc-dialog__container" >
-            <div class="mdc-dialog__surface">
-            <h2 class="mdc-dialog__title">Forgot Password</h2>
-            <div class="mdc-dialog__content">
-                <form class="my-2">
-                    <label class="d-block">Email</label>
-                    <mdc-textfield class="w-100" input-class="field-email" input-type="text" input-tabindex="0"></mdc-textfield>
-                </form>
-            </div>
-            <div class="mdc-dialog__actions">
-                <mdc-dialog-button action="close" title="Cancel"></mdc-dialog-button>
-                <mdc-dialog-button action="accept" title="Reset Password"></mdc-dialog-button>
-            </div>
-            </div>
-        </div>
-        <div class="mdc-dialog__scrim"></div>
-    </div>
-
-    <div class="signup-dialog mdc-dialog">
-        <div class="mdc-dialog__container" >
-            <div class="mdc-dialog__surface">
-            <h2 class="mdc-dialog__title">Sign Up</h2>
-            <div class="mdc-dialog__content">
-                <form autocomplete="off" class="my-2">
-                    <label class="d-block">Legal Name</label>
-                    <mdc-textfield class="w-100" input-class="field-legal_name" input-type="text" input-tabindex="0"></mdc-textfield>
-                    <label class="d-block pt-2">Preferred Name</label>
-                    <mdc-textfield class="w-100" input-class="field-preferred_name" input-type="text"></mdc-textfield>
-                    <label class="d-block pt-2">Email</label>
-                    <mdc-textfield class="w-100" input-class="field-email" input-type="text"></mdc-textfield>
-                    <label class="d-block pt-2">Password</label>
-                    <mdc-textfield class="w-100" input-class="field-password" input-type="password" input-autocomplete="new-password"></mdc-textfield>
-                </form>
-            </div>
-            <div class="mdc-dialog__actions">
-                <mdc-dialog-button action="close" title="Cancel"></mdc-dialog-button>
-                <mdc-dialog-button action="accept" title="Sign Up"></mdc-dialog-button>
-            </div>
-            </div>
-        </div>
-        <div class="mdc-dialog__scrim"></div>
-    </div>
-
-    <div class="my-profile-dialog mdc-dialog">
-        <div class="mdc-dialog__container" >
-            <div class="mdc-dialog__surface">
-            <h2 class="mdc-dialog__title">Profile</h2>
-            <div class="mdc-dialog__content">
-                <form autocomplete="off" class="my-2">
-                    <label class="d-block">Legal Name</label>
-                    <mdc-textfield class="w-100" input-class="field-legal_name" input-type="text" input-tabindex="0"></mdc-textfield>
-                    <label class="d-block pt-2">Preferred Name</label>
-                    <mdc-textfield class="w-100" input-class="field-preferred_name" input-type="text"></mdc-textfield>
-                    <label class="d-block pt-2">Email</label>
-                    <mdc-textfield class="w-100" input-class="field-email" input-type="text"></mdc-textfield>
-                    <label class="d-block pt-2">Password</label>
-                    <button class="change-password mdc-button mdc-button--outlined w-100">
-                        <span class="mdc-button__ripple"></span>Change
-                    </button>
-                    <div class="edit-password-block w-100">
-                        <div class="d-flex align-center w-100">
-                            <mdc-textfield class="w-100" input-class="field-password" input-type="password" input-autocomplete="new-password"></mdc-textfield>
-                            <button class="close-edit-password mdc-icon-button material-icons ml-2">
-                                <div class="mdc-icon-button__ripple"></div>
-                                close
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="mdc-dialog__actions">
-                <mdc-dialog-button action="close" title="Cancel"></mdc-dialog-button>
-                <mdc-dialog-button action="accept" title="Save"></mdc-dialog-button>
-            </div>
-            </div>
-        </div>
-        <div class="mdc-dialog__scrim"></div>
-    </div>
-
-    <div class="processing-dialog mdc-dialog">
-        <div class="mdc-dialog__container" >
-            <div class="mdc-dialog__surface">
-            <h2 class="mdc-dialog__title"></h2>
-            <div class="mdc-dialog__content">
-                <div class="d-flex justify-center" tabindex="0">
-                    <mdc-circular-progress indeterminate></mdc-circular-progress>
-                </div>
-            </div>
-        </div>
-        <div class="mdc-dialog__scrim"></div>
-    </div>
 </header>
+
+<div class="signin-dialog mdc-dialog">
+    <div class="mdc-dialog__container" >
+        <div class="mdc-dialog__surface">
+        <h2 class="mdc-dialog__title">Sign In</h2>
+        <div class="mdc-dialog__content">
+            <form class="my-2">
+                <label class="d-block">Email</label>
+                <mdc-textfield class="w-100" input-class="field-email" input-type="text" input-tabindex="0"></mdc-textfield>
+                <label class="d-block pt-2">Password</label>
+                <mdc-textfield class="w-100" input-class="field-password" input-type="password"></mdc-textfield>
+            </form>
+            <div class="d-flex justify-center my-2"><a href="#forgot-password" class="forgot-password-link">Forgot Password?</a></div>
+            <div class="d-flex justify-center"><span class="mr-4">Not a member?</span><a href="#sign-up" class="sign-up-link">Sign Up</a></div>
+        </div>
+        <div class="mdc-dialog__actions">
+            <mdc-dialog-button action="close" title="Cancel"></mdc-dialog-button>
+            <mdc-dialog-button action="accept" title="Sign In"></mdc-dialog-button>
+        </div>
+        </div>
+    </div>
+    <div class="mdc-dialog__scrim"></div>
+</div>
+
+<div class="forgot-password-dialog mdc-dialog">
+    <div class="mdc-dialog__container" >
+        <div class="mdc-dialog__surface">
+        <h2 class="mdc-dialog__title">Forgot Password</h2>
+        <div class="mdc-dialog__content">
+            <form class="my-2">
+                <label class="d-block">Email</label>
+                <mdc-textfield class="w-100" input-class="field-email" input-type="text" input-tabindex="0"></mdc-textfield>
+            </form>
+        </div>
+        <div class="mdc-dialog__actions">
+            <mdc-dialog-button action="close" title="Cancel"></mdc-dialog-button>
+            <mdc-dialog-button action="accept" title="Reset Password"></mdc-dialog-button>
+        </div>
+        </div>
+    </div>
+    <div class="mdc-dialog__scrim"></div>
+</div>
+
+<div class="signup-dialog mdc-dialog">
+    <div class="mdc-dialog__container" >
+        <div class="mdc-dialog__surface">
+        <h2 class="mdc-dialog__title">Sign Up</h2>
+        <div class="mdc-dialog__content">
+            <form autocomplete="off" class="my-2">
+                <label class="d-block">Legal Name</label>
+                <mdc-textfield class="w-100" input-class="field-legal_name" input-type="text" input-tabindex="0"></mdc-textfield>
+                <label class="d-block pt-2">Preferred Name</label>
+                <mdc-textfield class="w-100" input-class="field-preferred_name" input-type="text"></mdc-textfield>
+                <label class="d-block pt-2">Email</label>
+                <mdc-textfield class="w-100" input-class="field-email" input-type="text"></mdc-textfield>
+                <label class="d-block pt-2">Password</label>
+                <mdc-textfield class="w-100" input-class="field-password" input-type="password" input-autocomplete="new-password"></mdc-textfield>
+            </form>
+        </div>
+        <div class="mdc-dialog__actions">
+            <mdc-dialog-button action="close" title="Cancel"></mdc-dialog-button>
+            <mdc-dialog-button action="accept" title="Sign Up"></mdc-dialog-button>
+        </div>
+        </div>
+    </div>
+    <div class="mdc-dialog__scrim"></div>
+</div>
+
+<div class="my-profile-dialog mdc-dialog">
+    <div class="mdc-dialog__container" >
+        <div class="mdc-dialog__surface">
+        <h2 class="mdc-dialog__title">Profile</h2>
+        <div class="mdc-dialog__content">
+            <form autocomplete="off" class="my-2">
+                <label class="d-block">Legal Name</label>
+                <mdc-textfield class="w-100" input-class="field-legal_name" input-type="text" input-tabindex="0"></mdc-textfield>
+                <label class="d-block pt-2">Preferred Name</label>
+                <mdc-textfield class="w-100" input-class="field-preferred_name" input-type="text"></mdc-textfield>
+                <label class="d-block pt-2">Email</label>
+                <mdc-textfield class="w-100" input-class="field-email" input-type="text"></mdc-textfield>
+                <label class="d-block pt-2">Password</label>
+                <button class="change-password mdc-button mdc-button--outlined w-100">
+                    <span class="mdc-button__ripple"></span>Change
+                </button>
+                <div class="edit-password-block w-100">
+                    <div class="d-flex align-center w-100">
+                        <mdc-textfield class="w-100" input-class="field-password" input-type="password" input-autocomplete="new-password"></mdc-textfield>
+                        <button class="close-edit-password mdc-icon-button material-icons ml-2">
+                            <div class="mdc-icon-button__ripple"></div>
+                            close
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="mdc-dialog__actions">
+            <mdc-dialog-button action="close" title="Cancel"></mdc-dialog-button>
+            <mdc-dialog-button action="accept" title="Save"></mdc-dialog-button>
+        </div>
+        </div>
+    </div>
+    <div class="mdc-dialog__scrim"></div>
+</div>
+
+<div class="processing-dialog mdc-dialog">
+    <div class="mdc-dialog__container" >
+        <div class="mdc-dialog__surface">
+        <h2 class="mdc-dialog__title"></h2>
+        <div class="mdc-dialog__content">
+            <div class="d-flex justify-center" tabindex="0">
+                <mdc-circular-progress indeterminate></mdc-circular-progress>
+            </div>
+        </div>
+    </div>
+    <div class="mdc-dialog__scrim"></div>
+</div>
 `
 
 export class AppBar extends HTMLElement {
