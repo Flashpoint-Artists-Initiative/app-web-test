@@ -12,7 +12,7 @@ const template = `
         <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
             <span class="mdc-top-app-bar__title">
                 <a href="./">
-                    <button class="profile-button mdc-button mdc-top-app-bar__action-item mdc-button--unelevated">
+                    <button class="home-button mdc-button mdc-top-app-bar__action-item mdc-button--unelevated">
                     <i class="material-icons mr-2">home</i>
                     app-web-test
                     </button>
