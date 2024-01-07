@@ -38,6 +38,26 @@ const template = `
                 {{#if event.daysUntil}}<span>{{event.daysUntil}} days until event</span>{{/if}}
             </div>
 
+            {{#if event.purchased.count}}
+                <div class="d-flex text-green bg-green-lighten-5 rounded pa-6 mt-6 mb-2">
+                    <i class="material-icons icon-medium vertical-align-middle mr-4">check_circle</i>
+                    <h3 class="font-weight-normal mr-auto my-0">
+                    {{#if event.purchased.multiple}}
+                        You have {{event.purchased.count}} tickets for this event
+                    {{else}}
+                        You have 1 ticket for this event
+                    {{/if}}
+                    </h3>
+                    <div class="ml-6">
+                        <button class="mdc-button mdc-button--unelevated bg-green text-white">
+                            <a href="./my-tickets" class="text-white">    
+                                <span class="mdc-button__ripple"></span>Show Tickets
+                            </a>
+                        </button>
+                    </div>
+                </div>
+            {{/if}}
+
             {{#if roles.admin}}
                 <mdc-tab-bar class="main-tab-bar">
                     {{#each mainTabs}}
@@ -174,7 +194,41 @@ const template = `
                 </div>
 
             {{else}}
-                <h1>Available Tickets</h1>
+                {{#if event.reserved.count}}
+                    <h2>Reserved Tickets</h2>
+                    {{#each event.reserved.tickets}}
+                        <div class="app-ticket mdc-card mdc-card--outlined ma-2{{#if soldOut}} text-medium-emphasis{{/if}}">
+                            <div {{#if canBuy}}class="mdc-card__primary-action"{{/if}}>
+                            {{#if canBuy}}<a href="./purchase?ticketId={{id}}" class="mdc-theme--on-surface">{{/if}}
+                                <div class="d-flex flex-column">
+                                    <div class="d-flex b-bottom pa-4">
+                                        <div class="d-flex flex-column mr-auto">
+                                            <h2 class="text-blue mt-0 mb-2">{{name}}</h2>
+                                            <div>
+                                                {{#if saleEnded}}Sale ended {{saleEnded}}
+                                                {{else if availableOn}}<span class="text-blue">Available on {{availableOn}}</span>
+                                                {{else if soldOut}}<span class="text-red">Sold out</span>
+                                                {{else}}<span class="font-weight-bold">{{myReservedQty}} Available<span>{{#if timeRemaining}}, {{timeRemaining}}{{/if}}
+                                                {{/if}}
+                                            </div>
+                                        </div>
+                                        <div class="d-flex flex-column align-end">
+                                            <h2 class="my-0">{{#unless soldOut}}{{price}}{{/unless}}</h2>
+                                            {{#if showQtyAvailable}}<div class="text-red font-weight-bold text-uppercase mt-2">only {{qtyAvailable}} left</div>{{/if}}
+                                        </div>
+                                        
+                                    </div>
+                                    <div class="pa-4">{{description}}</div>
+                                </div>
+                                <div class="mdc-card__ripple"></div>
+                            {{#if canBuy}}</a>{{/if}}
+                            </div>
+                        </div>
+                    {{/each}}
+                    <div class="b-bottom py-8"></div>
+                {{/if}}
+
+                <h2>{{#if event.reserved.count}}General Availability Tickets{{else}}Available Tickets{{/if}}</h2>
                 {{#if event.noneAvailable}}<h3 class="text-blue">No tickets available for this event yet</h3>{{/if}}
                 {{#if event.saleEnded}}<h3 class="text-blue">Ticket sales ended</h3>{{/if}}
                 {{#if event.availableOn}}<h3 class="text-blue">Tickets go on sale {{event.availableOn}}</h3>{{/if}}
@@ -190,8 +244,8 @@ const template = `
                                         <div>
                                             {{#if saleEnded}}Sale ended {{saleEnded}}
                                             {{else if availableOn}}<span class="text-blue">Available on {{availableOn}}</span>
-                                            {{else if timeRemaining}}{{timeRemaining}}
                                             {{else if soldOut}}<span class="text-red">Sold out</span>
+                                            {{else}}{{timeRemaining}}
                                             {{/if}}
                                         </div>
                                     </div>
@@ -280,8 +334,11 @@ export class PageEvent extends HTMLElement {
             endDate: endDate.toLocaleString(undefined, dateOptions),
             ended: endDate < now,
             happeningNow: startDate <= now && endDate >= now,
-            daysUntil: daysUntil,
+            daysUntil: daysUntil
         }
+
+        event.purchased = this.getPurchasedData(event)
+        event.reserved = this.getReservedTicketData(event)
 
         if (session.getRoles().admin) {
             event.tickets = _.sortBy(TicketType.getTicketData(eventData.ticket_types), ['startDate', 'name'])
@@ -349,6 +406,61 @@ export class PageEvent extends HTMLElement {
             time: date.toLocaleString(undefined, {timeStyle:'short'})
         }
     }
+    getPurchasedData(event) {
+        if (event.ended) {
+            return {count:0}
+        }
+        const purchasedCount = _.chain(session.me?.purchased_tickets)
+            .filter(ticket => {
+                return ticket.ticket_type.event_id == event.id
+            })
+            .value()
+            .length
+        return {
+            count: purchasedCount,
+            multiple: purchasedCount > 1
+        }
+    }
+    getReservedTicketData(event) {
+        if (event.ended) {
+            return {count:0}
+        }
+
+        const now = new Date()
+        let tickets = _.chain(session.me?.reserved_tickets)
+            .filter(ticket => {
+                const saleStartDate = ticket.ticket_type?.sale_start_date ? new Date(ticket.ticket_type?.sale_start_date) : null
+                const saleEndDate = ticket.ticket_type?.sale_end_date ? new Date(ticket.ticket_type?.sale_end_date) : null
+                const expirationDate = ticket.expiration_date ? new Date(ticket.expiration_date) : null
+                return ticket.ticket_type?.active &&
+                    saleStartDate < now && saleEndDate > now &&
+                    (!expirationDate || expirationDate > now) &&
+                    !ticket.purchased_ticket_id
+            })
+            .map(ticket => { return ticket.ticket_type })
+            .value()
+        const countByType = _.countBy(tickets, 'id')
+        tickets = TicketType.getTicketData(_.uniqBy(tickets, 'id'))
+        tickets = _.chain(tickets)
+            .map(ticket => {
+                Object.assign(ticket, {
+                    myReservedQty: countByType[ticket.id],
+                    timeRemaining: '',
+                    soldOut: false,
+                    canBuy: true
+                })
+                return ticket
+            })
+            .sortBy(['startDate', 'name'])
+            .value()
+        
+        console.log(tickets)
+        console.log(countByType)
+        return {
+            tickets: tickets,
+            count: tickets.length
+        }
+    }
     async refresh() {
         this.innerHTML = Handlebars.compile(template)(this.templateData)
         const tabPages = this.querySelector('.tab-pages')
@@ -389,20 +501,6 @@ export class PageEvent extends HTMLElement {
                 notAuthorized: [401, 403].includes(response.status)
             }
             this.event.data = response.ok ? data.data : undefined
-
-            if (session.getRoles().admin && response.ok) {
-                /*
-                const params = {
-                    with_trashed: true,
-                    filters: [
-                        { field: 'event_id', operator: '=', value: id },
-                    ],
-                    //sort: [{field: 'start_date', direction: 'asc'}]
-                }
-                response = await TicketTypeApi.getTicketTypes(id)
-                */
-                //this.event.data.ticket_types = 
-            }
 
             this.refresh()
         }

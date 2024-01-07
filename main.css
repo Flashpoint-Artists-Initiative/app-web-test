@@ -133,21 +133,25 @@ body {
 .mb-6 { margin-bottom: 24px; }
 .mb-8 { margin-bottom: 32px; }
 
+.rounded { border-radius: 8px; }
 .b-bottom { border-bottom: 1px solid rgba(0,0,0,.12); }
 
 .icon-medium { font-size: 32px; }
 .icon-large { font-size: 48px; }
 
-.text-white { color: #FFFFFF !important; }
 .text-red { color: #F44336 !important; }
 .text-blue { color: #2196F3 !important; }
 .text-green { color: #4CAF50 !important; }
+.text-white { color: #FFF !important; }
+.text-black { color: #000 !important; }
 
 .bg-red { background-color: #F44336 !important; }
 .bg-blue { background-color: #2196F3 !important; }
 .bg-blue-lighten-3 { background-color: #90CAF9 !important; }
 .bg-blue-lighten-5 { background-color: #E3F2FD !important; }
 .bg-green { background-color: #4CAF50 !important; }
+.bg-green-lighten-3 { background-color: #A5D6A7 !important; }
+.bg-green-lighten-5 { background-color: #E8F5E9!important; }
 .bg-grey { background-color: #9E9E9E !important; }
 
 .mdc-top-app-bar--fixed-adjust {
@@ -179,6 +183,7 @@ td.mdc-data-table__cell,
 td.mdc-data-table__cell i.material-icons {
     vertical-align: middle;
 }
+.mdc-button a,
 .mdc-card__primary-action > a {
     text-decoration: none;
 }

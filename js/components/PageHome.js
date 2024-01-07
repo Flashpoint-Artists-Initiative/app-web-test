@@ -9,18 +9,18 @@ const template = `
         <div class="d-flex">
             <h1 class="mt-0 mr-auto">Upcoming Events</h1>
             {{#if roles.admin}}
-                <a href="./events" class="mr-2">
-                    <button type="button" class="events-button mdc-button mdc-button--unelevated">
+                <button type="button" class="events-button mdc-button mdc-button--unelevated">
+                    <a href="./events" class="text-white mr-2">
                         <div class="mdc-button__ripple"></div>
                         <span class="mdc-button__label">Events</span>
-                    </button>
-                </a>
-                <a href="./users">
-                    <button type="button" class="events-button mdc-button mdc-button--unelevated">
+                    </a>
+                </button>
+                <button type="button" class="events-button mdc-button mdc-button--unelevated ml-2">
+                    <a href="./users" class="text-white">
                         <div class="mdc-button__ripple"></div>
                         <span class="mdc-button__label">Users</span>
-                    </button>
-                </a>
+                    </a>
+                </button>
             {{/if}}
         </div>
         {{#if fetch.error}}

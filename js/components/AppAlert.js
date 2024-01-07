@@ -2,20 +2,26 @@ import { session } from '../model/Session.js'
 
 const template = `
 {{#if reservedTickets.count}}
-<div class="d-flex text-blue bg-blue-lighten-5 pa-6 ma-2">
-    <i class="material-icons icon-large vertical-align-middle mr-2">new_releases</i>
-    <h2 class="font-weight-normal mr-auto my-0">{{#if reservedTickets.multiple}}    
-            {{reservedTickets.count}} reserved tickets available to buy for: {{reservedTickets.names}}
+<div class="d-flex text-blue bg-blue-lighten-5 rounded pa-6 ma-2">
+    <i class="material-icons icon-large vertical-align-middle mr-4">new_releases</i>
+    <h2 class="font-weight-normal mr-auto my-0">
+        {{#if reservedTickets.multiple}}
+            {{reservedTickets.count}} reserved tickets available for: {{reservedTickets.names}}
         {{else}}
-            1 reserved ticket available to buy for: {{reservedTickets.names}}
+            1 reserved ticket available for: {{reservedTickets.names}}
         {{/if}}
     </h2>
     <div class="ml-6">
-        <a href="./purchase?ticketId={{reservedTickets.id}}">    
-            <button class="mdc-button mdc-button--unelevated bg-blue text-white">
+        <button class="mdc-button mdc-button--unelevated bg-blue">
+            <a href="./purchase?ticketId={{reservedTickets.id}}" class="text-white">
                 <span class="mdc-button__ripple"></span>Buy
-            </button>
-        </a>
+            </a>
+        </button>
+        <button class="mdc-button mdc-button--unelevated bg-grey ml-2">
+            <a href="./my-tickets" class="text-white">
+                <span class="mdc-button__ripple"></span>Transfer
+            </a>
+        </button>
     </div>
 </div>
 {{/if}}

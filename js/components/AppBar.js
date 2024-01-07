@@ -11,12 +11,12 @@ const template = `
     <div class="mdc-top-app-bar__row">
         <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
             <span class="mdc-top-app-bar__title">
-                <a href="./">
-                    <button class="home-button mdc-button mdc-top-app-bar__action-item mdc-button--unelevated">
-                    <i class="material-icons mr-2">home</i>
-                    app-web-test
-                    </button>
-                </a>
+                <button class="home-button mdc-button mdc-top-app-bar__action-item mdc-button--unelevated">
+                    <a href="./" class="text-white">
+                        <i class="material-icons vertical-align-middle mr-2">home</i>
+                        app-web-test
+                    </a>
+                </button>
             </span>
         </section>
         <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end">
