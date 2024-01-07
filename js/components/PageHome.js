@@ -40,6 +40,18 @@ const template = `
                         </div>
                         {{#if location}}<h4 class="mt-2 text-truncate">{{location}}</h4>{{/if}}
                         <div class="text-truncate">{{startDate}} - {{endDate}}</div>
+                        {{#if purchased.count}}
+                            <div class="d-flex align-center text-green pt-4">
+                                <i class="material-icons icon-medium vertical-align-middle mr-4">local_activity</i>
+                                <h3 class="font-weight-normal my-0">
+                                {{#if purchased.multiple}}
+                                    You have {{purchased.count}} tickets for this event
+                                {{else}}
+                                    You have 1 ticket for this event
+                                {{/if}}
+                                </h3>
+                            </div>
+                        {{/if}}
                         <div class="mdc-card__ripple"></div>
                     </a>
                     </div>
@@ -86,7 +98,8 @@ export class PageHome extends HTMLElement {
                     deleted: event.deleted_at,
                     inactive: !event.active,
                     startDate: new Date(event.start_date.slice(0,-1)).toLocaleString(undefined, dateOptions),
-                    endDate: new Date(event.end_date.slice(0,-1)).toLocaleString(undefined, dateOptions)
+                    endDate: new Date(event.end_date.slice(0,-1)).toLocaleString(undefined, dateOptions),
+                    purchased: this.getMyPurchasedData(event.id)
                 }
             })
             .value()
@@ -96,6 +109,18 @@ export class PageHome extends HTMLElement {
             roles: session.getRoles(),
             fetch: this.fetch,
             events: events
+        }
+    }
+    getMyPurchasedData(event) {
+        const purchasedCount = _.chain(session.me?.purchased_tickets)
+            .filter(ticket => {
+                return ticket.ticket_type.event_id == event
+            })
+            .value()
+            .length
+        return {
+            count: purchasedCount,
+            multiple: purchasedCount > 1
         }
     }
     async refresh() {
