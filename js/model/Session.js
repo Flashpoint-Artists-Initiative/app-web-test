@@ -1,4 +1,5 @@
 import AuthApi from '../api/AuthApi.js'
+import UserApi from '../api/UserApi.js'
 
 const AuthTokenCookie = 'App-Web-Test.JWTToken'
 
@@ -75,7 +76,15 @@ class SessionInfo {
         return  await this.fetchUser(authInfo.access_token)
     }
     async fetchUser(token) {
-        const response = await AuthApi.user(token)
+        let response = await AuthApi.user(token)
+        if (!response.ok) {
+            return { ok: false, error: 'Error reading user info.' }
+        }
+        const user = (await response.json()).data
+        const options = {
+            include: 'roles,purchasedTickets,purchasedTickets.ticketType,reservedTickets,reservedTickets.ticketType'
+        }
+        response = await UserApi.getUser(user.id, options)
         if (!response.ok) {
             return { ok: false, error: 'Error reading user info.' }
         }
