@@ -28,7 +28,7 @@ const template = `
     <span class="mdc-line-ripple"></span>
   </div>
 
-  <div class="mdc-select__menu mdc-menu mdc-menu-surface mdc-menu-surface--fixed">
+  <div class="mdc-select__menu mdc-menu mdc-menu-surface{{#if surfaceFixed}} mdc-menu-surface--fixed{{/if}}{{#if surfaceFullwidth}} mdc-menu-surface--fullwidth{{/if}}">
     <ul class="mdc-list">
         {{#each items}}
             <li class="mdc-list-item{{#if selected}} mdc-list-item--selected{{/if}}" data-value="{{value}}">
@@ -47,6 +47,8 @@ export class Select extends HTMLElement {
     }
     get templateData() {
         const data = {
+            surfaceFixed: this.hasAttribute('surface-fixed'),
+            surfaceFullwidth: this.hasAttribute('surface-fullwidth'),
             selected: '',
             items: _.cloneDeep(this.items)
         }

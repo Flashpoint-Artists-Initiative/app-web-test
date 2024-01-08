@@ -1,5 +1,6 @@
 import { DatePicker } from '../DatePicker.js'
 import { DialogButton } from '../mdc/DialogButton.js'
+import { Select } from '../mdc/Select.js'
 import { TextField } from '../mdc/TextField.js'
 
 const MDCDialog = mdc.dialog.MDCDialog
@@ -9,11 +10,15 @@ const template = `
 <div class="mdc-dialog">
     <div class="mdc-dialog__container" >
         <div class="mdc-dialog__surface" style="width:640px">
-        <h2 class="mdc-dialog__title">Add Event</h2>
+        <h2 class="mdc-dialog__title">{{#if event.id}}Edit Event{{else}}Add Event{{/if}}</h2>
         <div class="mdc-dialog__content">
             <form autocomplete="off" class="my-2">
                 <label class="d-block">Name</label>
                 <mdc-textfield class="w-100" input-class="field-name" input-type="text" input-tabindex="0"></mdc-textfield>
+                {{#if event.id}}
+                    <label class="d-block pt-2">Status</label>
+                    <mdc-select surface-fullwidth class="field-active w-100"></mdc-select>
+                {{/if}}
                 <label class="d-block pt-2">Location</label>
                 <mdc-textfield class="w-100" input-class="field-location" input-type="text"></mdc-textfield>
                 <label class="d-block pt-2">Contact Email</label>
@@ -32,7 +37,7 @@ const template = `
         </div>
         <div class="mdc-dialog__actions">
             <mdc-dialog-button action="close" title="Cancel"></mdc-dialog-button>
-            <mdc-dialog-button action="accept" title="Save"></mdc-dialog-button>
+            <mdc-dialog-button action="save" title="Save"></mdc-dialog-button>
         </div>
         </div>
     </div>
@@ -63,7 +68,7 @@ export class EventDialog extends HTMLElement {
         if (element) {
             this.mdcDialog = new MDCDialog(element)
             this.mdcDialog.listen('MDCDialog:closing', async (event) => {
-                if (event.detail.action == 'accept') {
+                if (event.detail.action == 'save') {
                     Object.assign(this.event, {
                         name: element.querySelector('.field-name').value.trim(),
                         location: element.querySelector('.field-location').value.trim(),
@@ -76,6 +81,13 @@ export class EventDialog extends HTMLElement {
                 this.isOpen = false
                 this.refresh()
             })
+
+            if (this.event.id) {
+                const activeSelect = this.querySelector('.field-active')
+                activeSelect.addEventListener('change', event => {
+                    this.event.active = parseInt(event.detail.value)
+                })
+            }
         }
     }
     set open(value) {
@@ -88,7 +100,15 @@ export class EventDialog extends HTMLElement {
             })
             element.querySelector('.field-start_date').date = this.event.start_date ? new Date(this.event.start_date.slice(0,-1)) : null 
             element.querySelector('.field-end_date').date = this.event.end_date ? new Date(this.event.end_date.slice(0,-1)) : null
-            this.mdcDialog.open()    
+            if (this.event.id) {{
+                const activeSelect = this.querySelector('.field-active')
+                activeSelect.items = [
+                    {text:'Active', value:1},
+                    {text:'Inactive', value:0}
+                ]
+                activeSelect.selected = this.event.active
+            }}
+            this.mdcDialog.open()
         } else {
             this.mdcDialog?.close()
             this.refresh()

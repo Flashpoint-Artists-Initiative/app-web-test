@@ -3,9 +3,9 @@ import { Select } from './mdc/Select.js'
 const template = `
 <div class="d-flex flex-column">
     <div class="d-flex">
-        <mdc-select class="field-datepicker_month flex-grow-1 flex-shrink-1 pr-1"></mdc-select>
-        <mdc-select class="field-datepicker_day flex-grow-1 flex-shrink-1 px-2"></mdc-select>
-        <mdc-select class="field-datepicker_year flex-grow-1 flex-shrink-1 pl-1"></mdc-select>
+        <mdc-select surface-fixed class="field-datepicker_month flex-grow-1 flex-shrink-1 pr-1"></mdc-select>
+        <mdc-select surface-fixed class="field-datepicker_day flex-grow-1 flex-shrink-1 px-2"></mdc-select>
+        <mdc-select surface-fixed class="field-datepicker_year flex-grow-1 flex-shrink-1 pl-1"></mdc-select>
     </div>
     <div>{{dayName}}</div>
 </div>
