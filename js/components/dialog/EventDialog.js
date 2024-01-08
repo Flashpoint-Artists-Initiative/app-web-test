@@ -74,7 +74,9 @@ export class EventDialog extends HTMLElement {
                     }
                     this.dispatchEvent(new CustomEvent('save', {detail: this.event}))
                 }
-            })    
+                this.isOpen = false
+                this.refresh()
+            })
         }
     }
     set open(value) {
