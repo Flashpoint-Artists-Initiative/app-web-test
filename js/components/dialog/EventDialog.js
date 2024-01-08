@@ -44,7 +44,7 @@ const template = `
                     </button>
                 </div>
             {{/if}}
-            <mdc-dialog-button action="close" title="Cancel"></mdc-dialog-button>
+            <mdc-dialog-button action="cancel" title="Cancel" class="mr-2"></mdc-dialog-button>
             <mdc-dialog-button action="save" title="Save"></mdc-dialog-button>
         </div>
         </div>

@@ -46,8 +46,8 @@ const template = `
             <div class="d-flex justify-center"><span class="mr-4">Not a member?</span><a href="#sign-up" class="sign-up-link">Sign Up</a></div>
         </div>
         <div class="mdc-dialog__actions">
-            <mdc-dialog-button action="close" title="Cancel"></mdc-dialog-button>
-            <mdc-dialog-button action="accept" title="Sign In"></mdc-dialog-button>
+            <mdc-dialog-button action="cancel" title="Cancel" class="mr-2"></mdc-dialog-button>
+            <mdc-dialog-button action="save" title="Sign In"></mdc-dialog-button>
         </div>
         </div>
     </div>
@@ -65,8 +65,8 @@ const template = `
             </form>
         </div>
         <div class="mdc-dialog__actions">
-            <mdc-dialog-button action="close" title="Cancel"></mdc-dialog-button>
-            <mdc-dialog-button action="accept" title="Reset Password"></mdc-dialog-button>
+            <mdc-dialog-button action="cancel" title="Cancel" class="mr-2"></mdc-dialog-button>
+            <mdc-dialog-button action="save" title="Reset Password"></mdc-dialog-button>
         </div>
         </div>
     </div>
@@ -90,8 +90,8 @@ const template = `
             </form>
         </div>
         <div class="mdc-dialog__actions">
-            <mdc-dialog-button action="close" title="Cancel"></mdc-dialog-button>
-            <mdc-dialog-button action="accept" title="Sign Up"></mdc-dialog-button>
+            <mdc-dialog-button action="cancel" title="Cancel" class="mr-2"></mdc-dialog-button>
+            <mdc-dialog-button action="save" title="Sign Up"></mdc-dialog-button>
         </div>
         </div>
     </div>
@@ -126,8 +126,8 @@ const template = `
             </form>
         </div>
         <div class="mdc-dialog__actions">
-            <mdc-dialog-button action="close" title="Cancel"></mdc-dialog-button>
-            <mdc-dialog-button action="accept" title="Save"></mdc-dialog-button>
+            <mdc-dialog-button action="cancel" title="Cancel" class="mr-2"></mdc-dialog-button>
+            <mdc-dialog-button action="save" title="Save"></mdc-dialog-button>
         </div>
         </div>
     </div>
@@ -172,7 +172,7 @@ export class AppBar extends HTMLElement {
             const element = this.querySelector('.signin-dialog')
             this.signinDialog = new MDCDialog(element)
             this.signinDialog.listen('MDCDialog:closing', async (event) => {
-                if (event.detail.action == 'accept') {
+                if (event.detail.action == 'save') {
                     const email = element.querySelector('.field-email').value.trim()
                     const password = element.querySelector('.field-password').value.trim()
                     await this.signin(email, password)
@@ -194,7 +194,7 @@ export class AppBar extends HTMLElement {
             const element = this.querySelector('.forgot-password-dialog')
             this.forgotPasswordDialog = new MDCDialog(element)
             this.forgotPasswordDialog.listen('MDCDialog:closing', async (event) => {
-                if (event.detail.action == 'accept') {
+                if (event.detail.action == 'save') {
                     const email = element.querySelector('.field-email').value.trim()
                     await this.forgotPassword(email)
                 }
@@ -205,7 +205,7 @@ export class AppBar extends HTMLElement {
             const element = this.querySelector('.signup-dialog')
             this.signupDialog = new MDCDialog(element)
             this.signupDialog.listen('MDCDialog:closing', async (event) => {
-                if (event.detail.action == 'accept') {
+                if (event.detail.action == 'save') {
                     const user = {
                         legal_name: element.querySelector('.field-legal-name').value.trim(),
                         preferred_name: element.querySelector('.field-preferred_name').value.trim(),
@@ -221,7 +221,7 @@ export class AppBar extends HTMLElement {
             const element = this.querySelector('.my-profile-dialog')
             this.myProfileDialog = new MDCDialog(element)
             this.myProfileDialog.listen('MDCDialog:closing', async (event) => {
-                if (event.detail.action == 'accept') {
+                if (event.detail.action == 'save') {
                     const user = {
                         legal_name: element.querySelector('.field-legal_name').value.trim(),
                         preferred_name: element.querySelector('.field-preferred_name').value.trim(),
