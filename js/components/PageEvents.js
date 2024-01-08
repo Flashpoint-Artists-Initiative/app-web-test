@@ -48,7 +48,7 @@ const template = `
         </div>
     {{/if}}
 </div>
-<event-dialog class="add-event-dialog"></event-dialog>
+<event-dialog></event-dialog>
 {{/if}}
 `
 
@@ -139,7 +139,7 @@ export class PageEvents extends HTMLElement {
         }
     }
     openAddEventDialog() {
-        const dialog = this.querySelector('.add-event-dialog')
+        const dialog = this.querySelector('event-dialog')
         dialog.addEventListener('save', async (event) => {
             await this.addEvent(event.detail)
         })

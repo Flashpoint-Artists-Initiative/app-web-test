@@ -148,10 +148,9 @@ body {
 .text-white { color: #FFF !important; }
 .text-black { color: #000 !important; }
 
-.mdc-button.text-red .mdc-button__ripple::before, 
-.mdc-button.text-red .mdc-button__ripple::after {
-    background-color: #F44336;
-}
+.mdc-button.text-red .mdc-button__ripple::before,.mdc-button.text-red .mdc-button__ripple::after { background-color: #F44336; }
+.mdc-button.text-white .mdc-button__ripple::before,.mdc-button.text-red .mdc-button__ripple::after { background-color: #FFF; }
+.mdc-button.mdc-button--outlined.text-white { border-color: #FFF; }
 
 .bg-red { background-color: #F44336 !important; }
 .bg-blue { background-color: #2196F3 !important; }

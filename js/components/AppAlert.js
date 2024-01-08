@@ -2,7 +2,7 @@ import { session } from '../model/Session.js'
 
 const template = `
 {{#if reservedTickets.count}}
-<div class="d-flex align-center text-blue bg-blue-lighten-5 rounded pa-4 ma-2">
+<div class="d-flex align-center text-white bg-blue pa-4">
     <i class="material-icons icon-large mr-4">new_releases</i>
     <h3 class="font-weight-normal mr-auto my-0">
         {{#if reservedTickets.multiple}}
@@ -12,12 +12,12 @@ const template = `
         {{/if}}
     </h3>
     <div class="ml-6 text-right">
-        <button class="mdc-button mdc-button--unelevated bg-blue mb-2">
+        <button class="mdc-button mdc-button--outlined text-white bg-blue mb-2">
             <a href="./purchase?ticketId={{reservedTickets.id}}" class="text-white">
                 <span class="mdc-button__ripple"></span>Buy
             </a>
         </button>
-        <button class="mdc-button mdc-button--unelevated bg-grey ml-2 mb-2">
+        <button class="mdc-button mdc-button--outlined text-white bg-blue ml-2 mb-2">
             <a href="./tickets" class="text-white">
                 <span class="mdc-button__ripple"></span>Transfer
             </a>

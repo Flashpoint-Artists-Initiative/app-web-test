@@ -22,10 +22,16 @@ const template = `
         </section>
         <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end">
             {{#if signedIn}}
-            <button class="profile-button mdc-button mdc-top-app-bar__action-item mdc-button--unelevated">{{name}}</button>
-            <button class="sign-out-button mdc-button mdc-top-app-bar__action-item mdc-button--unelevated">Sign Out</button>
+            <button class="profile-button mdc-button mdc-top-app-bar__action-item mdc-button mdc-button--outlined text-white">
+                <span class="mdc-button__ripple"></span>{{name}}
+            </button>
+            <button class="sign-out-button mdc-button mdc-top-app-bar__action-item mdc-button mdc-button--outlined text-white ml-2">
+                <span class="mdc-button__ripple"></span>Sign Out
+            </button>
             {{else}}
-            <button class="sign-in-button mdc-button mdc-top-app-bar__action-item mdc-button--unelevated">Sign In</button>
+            <button class="sign-in-button mdc-button mdc-top-app-bar__action-item mdc-button mdc-button--outlined text-white">
+                <span class="mdc-button__ripple"></span>Sign In
+            </button>
             {{/if}}
         </section>
     </div>

@@ -54,13 +54,8 @@ const template = `
 {{/if}}`
 
 export class EventDialog extends HTMLElement {
-    constructor() {
-        super()
-    }
     async connectedCallback() {
         await this.refresh()
-    }
-    disconnectedCallback() {
     }
     get templateData() {
         return {
