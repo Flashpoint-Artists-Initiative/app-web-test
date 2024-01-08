@@ -1,5 +1,6 @@
 import { session } from '../model/Session.js'
 import EventApi from '../api/EventApi.js'
+import { EventDialog } from './dialog/EventDialog.js'
 import { CircularProgress } from './mdc/CircularProgress.js'
 import { DatePicker } from './DatePicker.js'
 import { DialogButton } from './mdc/DialogButton.js'
@@ -51,38 +52,7 @@ const template = `
 </div>
 {{/if}}
 
-<div class="add-event-dialog mdc-dialog">
-    <div class="mdc-dialog__container" >
-        <div class="mdc-dialog__surface" style="width:640px">
-        <h2 class="mdc-dialog__title">Add Event</h2>
-        <div class="mdc-dialog__content">
-            <form autocomplete="off" class="my-2">
-                <label class="d-block">Name</label>
-                <mdc-textfield class="w-100" input-class="field-name" input-type="text" input-tabindex="0"></mdc-textfield>
-                <label class="d-block pt-2">Location</label>
-                <mdc-textfield class="w-100" input-class="field-location" input-type="text"></mdc-textfield>
-                <label class="d-block pt-2">Contact Email</label>
-                <mdc-textfield class="w-100" input-class="field-contact_email" input-type="text"></mdc-textfield>
-                <div class="d-flex pt-2">
-                    <div class="d-flex flex-column flex-grow-1 pr-2">
-                        <label class="d-block">Start Date</label>
-                        <date-picker class="field-start_date"></date-picker>
-                    </div>
-                    <div class="d-flex flex-column flex-grow-1 pl-2">
-                        <label class="d-block">End Date</label>
-                        <date-picker class="field-end_date"></date-picker>
-                    </div>
-                </div>
-            </form>
-        </div>
-        <div class="mdc-dialog__actions">
-            <mdc-dialog-button action="close" title="Cancel"></mdc-dialog-button>
-            <mdc-dialog-button action="accept" title="Save"></mdc-dialog-button>
-        </div>
-        </div>
-    </div>
-    <div class="mdc-dialog__scrim"></div>
-</div>
+<event-dialog class="add-event-dialog"></event-dialog>
 
 <div class="processing-dialog mdc-dialog">
     <div class="mdc-dialog__container" >
@@ -146,27 +116,6 @@ export class PageEvents extends HTMLElement {
             })
         })
 
-        {
-            const element = this.querySelector('.add-event-dialog')
-            this.addEventDialog = new MDCDialog(element)
-            this.addEventDialog.listen('MDCDialog:closing', async (event) => {
-                if (event.detail.action == 'accept') {
-                    const event = {
-                        active: 0,
-                        name: element.querySelector('.field-name').value.trim(),
-                        location: element.querySelector('.field-location').value.trim(),
-                        contact_email: element.querySelector('.field-contact_email').value.trim(),
-                        start_date: element.querySelector('.field-start_date').isoDate,
-                        end_date: element.querySelector('.field-end_date').isoDate
-                    }
-                    const error = await this.addEvent(event)
-                    if (error) {
-                        this.showMessage(error, 'info')
-                    }
-                }
-            })
-        }
-
         if (!session.loaded) {
             return 
         }
@@ -206,21 +155,22 @@ export class PageEvents extends HTMLElement {
         }
     }
     openAddEventDialog() {
-        const element = this.querySelector('.add-event-dialog');
-        ['name', 'location', 'contact_email'].forEach(prop => {
-            element.querySelector(`.field-${prop}`).value = ''
+        const dialog = this.querySelector('.add-event-dialog')
+        dialog.addEventListener('save', async (event) => {
+            const error = await this.addEvent(event.detail)
+            if (error) {
+                this.showMessage(error, 'info')
+            }
         })
-        element.querySelector('.field-start_date').date = undefined
-        element.querySelector('.field-end_date').date = undefined
-        this.addEventDialog.open()
+        dialog.open = true
     }
     async addEvent(event) {
         const dialog = this.showProcessing('Saving event...')
         const response = await EventApi.addEvent(event)
         dialog.close()
         if (response.ok) {
-            this.events = undefined
-            this.refresh()
+            const saved = await response.json()
+            window.location.href = `./event?id=${saved.data.id}`
         } else {
             return response.error
         }

@@ -490,7 +490,7 @@ export class PageEvent extends HTMLElement {
                 meId: session.me?.id,
             }
             this.refresh()
-            const id = new URLSearchParams(window.location.search).get('id');
+            const id = new URLSearchParams(window.location.search).get('id')
             const options = {}
             if (session.getRoles().admin) {
                 options.include = 'ticketTypes,purchasedTickets,purchasedTickets.user,reservedTickets,reservedTickets.user'

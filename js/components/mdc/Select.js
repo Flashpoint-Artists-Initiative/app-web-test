@@ -60,7 +60,7 @@ export class Select extends HTMLElement {
     }
     refresh() {
         this.innerHTML = Handlebars.compile(template)(this.templateData)
-        this.select = new MDCSelect(this.querySelector('.mdc-select'));
+        this.select = new MDCSelect(this.querySelector('.mdc-select'))
 
         this.select.listen('MDCSelect:change', () => {
             this.dispatchEvent(new CustomEvent('change', {detail: {value: this.select.value, index: this.select.selectedIndex}}))
