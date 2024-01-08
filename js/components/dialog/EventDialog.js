@@ -64,14 +64,13 @@ export class EventDialog extends HTMLElement {
             this.mdcDialog = new MDCDialog(element)
             this.mdcDialog.listen('MDCDialog:closing', async (event) => {
                 if (event.detail.action == 'accept') {
-                    this.event = {
-                        active: 0,
+                    Object.assign(this.event, {
                         name: element.querySelector('.field-name').value.trim(),
                         location: element.querySelector('.field-location').value.trim(),
                         contact_email: element.querySelector('.field-contact_email').value.trim(),
                         start_date: element.querySelector('.field-start_date').isoDate,
                         end_date: element.querySelector('.field-end_date').isoDate
-                    }
+                    })
                     this.dispatchEvent(new CustomEvent('save', {detail: this.event}))
                 }
                 this.isOpen = false
@@ -87,8 +86,8 @@ export class EventDialog extends HTMLElement {
             ['name', 'location', 'contact_email'].forEach(prop => {
                 element.querySelector(`.field-${prop}`).value = this.event[prop]
             })
-            element.querySelector('.field-start_date').date = this.event.start_date
-            element.querySelector('.field-end_date').date = this.event.end_date
+            element.querySelector('.field-start_date').date = this.event.start_date ? new Date(this.event.start_date.slice(0,-1)) : null 
+            element.querySelector('.field-end_date').date = this.event.end_date ? new Date(this.event.end_date.slice(0,-1)) : null
             this.mdcDialog.open()    
         } else {
             this.mdcDialog?.close()
@@ -101,6 +100,7 @@ export class EventDialog extends HTMLElement {
     event = {
         id: null,
         name: '',
+        active: 0,
         location: '',
         contact_email: '',
         start_date: null,

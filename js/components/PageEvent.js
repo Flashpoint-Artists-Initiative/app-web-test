@@ -3,6 +3,8 @@ import { session } from '../model/Session.js'
 import TicketType from '../model/TicketType.js'
 import EventApi from '../api/EventApi.js'
 import TicketTypeApi from '../api/TicketTypeApi.js'
+import { EventDialog } from './dialog/EventDialog.js'
+import { MessageDialog } from './dialog/MessageDialog.js'
 import { CircularProgress } from './mdc/CircularProgress.js'
 import { TabBar } from './mdc/TabBar.js'
 import { Tab } from './mdc/Tab.js'
@@ -23,11 +25,19 @@ const template = `
             </h2>
         {{else}}
             <div class="d-flex align-center">
-                <h1 class="my-0 mr-auto text-truncate">{{event.name}}</h1>
-                {{#if event.deleted}}
-                    <span class="chip text-white bg-red ml-2">deleted</span>
-                {{else if event.inactive}}
-                    <span class="chip text-white bg-grey ml-2">inactive</span>
+                <h1 class="my-0 mr-2 text-truncate">{{event.name}}</h1>
+                <div class="mr-auto">
+                    {{#if event.deleted}}
+                        <span class="chip text-white bg-red ml-2">deleted</span>
+                    {{else if event.inactive}}
+                        <span class="chip text-white bg-grey ml-2">inactive</span>
+                    {{/if}}
+                </div>
+                {{#if roles.admin}}
+                    <button type="button" class="edit-button mdc-button mdc-button--unelevated ml-2">
+                        <div class="mdc-button__ripple"></div>
+                        <span class="mdc-button__label">Edit</span>
+                    </button>
                 {{/if}}
             </div>
             {{#if event.location}}<h3 class="mt-2 text-truncate">{{event.location}}</h3>{{/if}}
@@ -283,6 +293,8 @@ const template = `
         </div>
     {{/if}}
 </div>
+
+<event-dialog class="edit-event-dialog"></event-dialog>
 {{/if}}
 `
 
@@ -469,6 +481,11 @@ export class PageEvent extends HTMLElement {
     }
     async refresh() {
         this.innerHTML = Handlebars.compile(template)(this.templateData)
+        this.querySelectorAll('.edit-button').forEach(element => {
+            element.addEventListener('click', event => {
+                this.openEditEventDialog()
+            })
+        })
         const tabPages = this.querySelector('.tab-pages')
         if (tabPages?.children) {
             tabPages.children[this.activeTab].style.display = 'block'
@@ -509,6 +526,28 @@ export class PageEvent extends HTMLElement {
             this.event.data = response.ok ? data.data : undefined
 
             this.refresh()
+        }
+    }
+    openEditEventDialog() {
+        if (!this.event) return
+        const dialog = this.querySelector('.edit-event-dialog')
+        dialog.addEventListener('save', async (event) => {
+            await this.updateEvent(event.detail)
+        })
+        dialog.event = _.cloneDeep(this.event.data)
+        dialog.open = true
+    }
+    async updateEvent(event) {
+        const dialog = new MessageDialog()
+        dialog.showProcessing('Saving event...')
+        const response = await EventApi.updateEvent(event)
+        const data = await response.json()
+        dialog.close()
+        if (response.ok) {
+            this.event.data = data.data
+            this.refresh()
+        } else {
+            dialog.showMessage('Error', data.message)
         }
     }
 
