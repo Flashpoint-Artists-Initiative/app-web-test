@@ -293,7 +293,6 @@ const template = `
         </div>
     {{/if}}
 </div>
-
 <event-dialog class="edit-event-dialog"></event-dialog>
 {{/if}}
 `

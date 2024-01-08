@@ -1,10 +1,8 @@
 import { session } from '../model/Session.js'
 import EventApi from '../api/EventApi.js'
 import { EventDialog } from './dialog/EventDialog.js'
+import { MessageDialog } from './dialog/MessageDialog.js'
 import { CircularProgress } from './mdc/CircularProgress.js'
-import { DatePicker } from './DatePicker.js'
-import { DialogButton } from './mdc/DialogButton.js'
-import { TextField } from './mdc/TextField.js'
 
 const MDCDialog = mdc.dialog.MDCDialog
 
@@ -50,22 +48,8 @@ const template = `
         </div>
     {{/if}}
 </div>
-{{/if}}
-
 <event-dialog class="add-event-dialog"></event-dialog>
-
-<div class="processing-dialog mdc-dialog">
-    <div class="mdc-dialog__container" >
-        <div class="mdc-dialog__surface">
-        <h2 class="mdc-dialog__title"></h2>
-        <div class="mdc-dialog__content">
-            <div class="d-flex justify-center" tabindex="0">
-                <mdc-circular-progress indeterminate></mdc-circular-progress>
-            </div>
-        </div>
-    </div>
-    <div class="mdc-dialog__scrim"></div>
-</div>
+{{/if}}
 `
 
 export class PageEvents extends HTMLElement {
@@ -157,36 +141,21 @@ export class PageEvents extends HTMLElement {
     openAddEventDialog() {
         const dialog = this.querySelector('.add-event-dialog')
         dialog.addEventListener('save', async (event) => {
-            const error = await this.addEvent(event.detail)
-            if (error) {
-                this.showMessage(error, 'info')
-            }
+            await this.addEvent(event.detail)
         })
         dialog.open = true
     }
     async addEvent(event) {
-        const dialog = this.showProcessing('Saving event...')
+        const dialog = new MessageDialog()
+        dialog.showProcessing('Saving event...')
         const response = await EventApi.addEvent(event)
+        const data = await response.json()
         dialog.close()
         if (response.ok) {
-            const saved = await response.json()
-            window.location.href = `./event?id=${saved.data.id}`
+            window.location.href = `./event?id=${data.data.id}`
         } else {
-            return response.error
+            dialog.showMessage('Error', data.message)
         }
-    }
-    showProcessing(title) {
-        const element = this.querySelector('.processing-dialog')
-        element.querySelector('h2.mdc-dialog__title').textContent = title
-        const dialog = new MDCDialog(element)
-        dialog.open()
-
-        return dialog
-    }
-    showMessage(error, type) {
-        setTimeout(() => {
-            alert(error)
-        }, 100)
     }
 
     refreshCallback = undefined

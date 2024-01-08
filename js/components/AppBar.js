@@ -1,5 +1,6 @@
 import { session } from '../model/Session.js'
 import UserApi from '../api/UserApi.js'
+import { MessageDialog } from './dialog/MessageDialog.js'
 import { CircularProgress } from './mdc/CircularProgress.js'
 import { DialogButton } from './mdc/DialogButton.js'
 import { TextField } from './mdc/TextField.js'
@@ -132,19 +133,6 @@ const template = `
     </div>
     <div class="mdc-dialog__scrim"></div>
 </div>
-
-<div class="processing-dialog mdc-dialog">
-    <div class="mdc-dialog__container" >
-        <div class="mdc-dialog__surface">
-        <h2 class="mdc-dialog__title"></h2>
-        <div class="mdc-dialog__content">
-            <div class="d-flex justify-center" tabindex="0">
-                <mdc-circular-progress indeterminate></mdc-circular-progress>
-            </div>
-        </div>
-    </div>
-    <div class="mdc-dialog__scrim"></div>
-</div>
 `
 
 export class AppBar extends HTMLElement {
@@ -187,10 +175,7 @@ export class AppBar extends HTMLElement {
                 if (event.detail.action == 'accept') {
                     const email = element.querySelector('.field-email').value.trim()
                     const password = element.querySelector('.field-password').value.trim()
-                    const error = await this.signin(email, password)
-                    if (error) {
-                        this.showMessage(error, 'error')
-                    }
+                    await this.signin(email, password)
                 }
             })
             element.querySelector('.forgot-password-link').addEventListener('click', event => {
@@ -211,10 +196,7 @@ export class AppBar extends HTMLElement {
             this.forgotPasswordDialog.listen('MDCDialog:closing', async (event) => {
                 if (event.detail.action == 'accept') {
                     const email = element.querySelector('.field-email').value.trim()
-                    const error = await this.forgotPassword(email)
-                    if (error) {
-                        this.showMessage(error, 'info')
-                    }
+                    await this.forgotPassword(email)
                 }
             })
         }
@@ -230,10 +212,7 @@ export class AppBar extends HTMLElement {
                         email: element.querySelector('.field-email').value.trim(),
                         password: element.querySelector('.field-password').value.trim()
                     }
-                    const error = await this.signup(user)
-                    if (error) {
-                        this.showMessage(error, 'error')
-                    }
+                    await this.signup(user)
                 }
             })
         }
@@ -251,10 +230,7 @@ export class AppBar extends HTMLElement {
                     if (element.querySelector('.edit-password-block').style.display != 'none') {
                         user.password = element.querySelector('.field-password').value.trim()
                     }
-                    const error = await this.updateUser(user)
-                    if (error) {
-                        this.showMessage(error, 'error')
-                    }
+                    await this.updateUser(user)
                 }
             })
             element.querySelector('.change-password').addEventListener('click', event => {
@@ -308,47 +284,40 @@ export class AppBar extends HTMLElement {
         this.myProfileDialog.open()
     }
     async signin(email, password) {
-        const dialog = this.showProcessing('Signing in...')
+        const dialog = new MessageDialog()
+        dialog.showProcessing('Signing in...')
         const response = await session.signin(email, password)
         dialog.close()
         if (!response.ok) {
-            return response.error
+            dialog.showMessage('Could not sign in', response.error)
         }
     }
     async forgotPassword(email) {
-        await session.forgotPassword(email)
-        this.showMessage('Password reset email sent.')
+        const dialog = new MessageDialog()
+        dialog.showProcessing('Forgot Password')
+        const response = await session.forgotPassword(email)
+        dialog.showMessage('Forgot Password', response.ok ? 'Password reset email sent.' : response.error)
     }
     async signup(user) {
-        const dialog = this.showProcessing('Signing in...')
+        const dialog = new MessageDialog()
+        dialog.showProcessing('Signing up...')
         const response = await session.signup(user)
         dialog.close()
         if (!response.ok) {
-            return response.error
+            dialog.showMessage('Could not sign up', response.error)
         }
     }
     async updateUser(user) {
+        const dialog = new MessageDialog()
+        dialog.showProcessing('Saving...')
         const response = await UserApi.updateUser(session.me.id, user)
         if (!response.ok) {
-            return response.error
+            dialog.showMessage('Could not save', response.error)
         }
     }
     signout() {
         session.signout()
         window.location.replace('./')
-    }
-    showProcessing(title) {
-        const element = this.querySelector('.processing-dialog')
-        element.querySelector('h2.mdc-dialog__title').textContent = title
-        const dialog = new MDCDialog(element)
-        dialog.open()
-
-        return dialog
-    }
-    showMessage(error, type) {
-        setTimeout(() => {
-            alert(error)
-        }, 100)
     }
     getDisplay(element, selector) {
         return  element.querySelector(selector).style.display
