@@ -533,6 +533,9 @@ export class PageEvent extends HTMLElement {
         dialog.addEventListener('save', async (event) => {
             await this.updateEvent(event.detail)
         })
+        dialog.addEventListener('delete', async (event) => {
+            await this.deleteEvent(event.detail.id)
+        })
         dialog.event = _.cloneDeep(this.event.data)
         dialog.open = true
     }
@@ -546,6 +549,18 @@ export class PageEvent extends HTMLElement {
             this.event.data = data.data
             this.refresh()
         } else {
+            dialog.showMessage('Error', data.message)
+        }
+    }
+    async deleteEvent(eventId) {
+        const dialog = new MessageDialog()
+        dialog.showProcessing('Deleting event...')
+        const response = await EventApi.deleteEvent(eventId)
+        dialog.close()
+        if (response.ok) {
+            window.location.href = './events'
+        } else {
+            const data = await response.json()
             dialog.showMessage('Error', data.message)
         }
     }

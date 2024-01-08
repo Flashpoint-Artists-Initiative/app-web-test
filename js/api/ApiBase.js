@@ -19,6 +19,9 @@ export default class ApiBase {
     static async patch(url, data, token) {
         return await this.request('PATCH', url, data, token)
     }
+    static async delete(url, token) {
+        return await this.request('DELETE', url, null, token)
+    }
     static async request(method, url, data, token) {
         const options = { method: method, headers: {} }
         if (data) {

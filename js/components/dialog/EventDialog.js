@@ -36,6 +36,14 @@ const template = `
             </form>
         </div>
         <div class="mdc-dialog__actions">
+            {{#if event.id}}
+                <div class="mr-auto">
+                    <button type="button" class="mdc-button mdc-dialog__button text-red" data-mdc-dialog-action="delete">
+                        <div class="mdc-button__ripple"></div>
+                        <span class="mdc-button__label">Delete</span>
+                    </button>
+                </div>
+            {{/if}}
             <mdc-dialog-button action="close" title="Cancel"></mdc-dialog-button>
             <mdc-dialog-button action="save" title="Save"></mdc-dialog-button>
         </div>
@@ -68,15 +76,20 @@ export class EventDialog extends HTMLElement {
         if (element) {
             this.mdcDialog = new MDCDialog(element)
             this.mdcDialog.listen('MDCDialog:closing', async (event) => {
-                if (event.detail.action == 'save') {
-                    Object.assign(this.event, {
-                        name: element.querySelector('.field-name').value.trim(),
-                        location: element.querySelector('.field-location').value.trim(),
-                        contact_email: element.querySelector('.field-contact_email').value.trim(),
-                        start_date: element.querySelector('.field-start_date').isoDate,
-                        end_date: element.querySelector('.field-end_date').isoDate
-                    })
-                    this.dispatchEvent(new CustomEvent('save', {detail: this.event}))
+                switch(event.detail.action) {
+                    case 'save':
+                        Object.assign(this.event, {
+                            name: element.querySelector('.field-name').value.trim(),
+                            location: element.querySelector('.field-location').value.trim(),
+                            contact_email: element.querySelector('.field-contact_email').value.trim(),
+                            start_date: element.querySelector('.field-start_date').isoDate,
+                            end_date: element.querySelector('.field-end_date').isoDate
+                        })
+                        this.dispatchEvent(new CustomEvent('save', {detail: this.event}))
+                        break
+                    case 'delete':
+                        this.dispatchEvent(new CustomEvent('delete', {detail: this.event}))
+                        break
                 }
                 this.isOpen = false
                 this.refresh()

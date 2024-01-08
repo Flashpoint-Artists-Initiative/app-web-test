@@ -19,4 +19,7 @@ export default class EventApi extends ApiBase {
     static async updateEvent(event) {
         return await this.patch(new URL(`${ApiUrl}events/${event.id}`), event, session.jwtToken)
     }
+    static async deleteEvent(id) {
+        return await this.delete(new URL(`${ApiUrl}events/${id}`), session.jwtToken)
+    }
 }

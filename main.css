@@ -148,6 +148,11 @@ body {
 .text-white { color: #FFF !important; }
 .text-black { color: #000 !important; }
 
+.mdc-button.text-red .mdc-button__ripple::before, 
+.mdc-button.text-red .mdc-button__ripple::after {
+    background-color: #F44336;
+}
+
 .bg-red { background-color: #F44336 !important; }
 .bg-blue { background-color: #2196F3 !important; }
 .bg-blue-lighten-3 { background-color: #90CAF9 !important; }
