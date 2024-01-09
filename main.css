@@ -180,6 +180,13 @@ body {
 .mdc-select--filled .mdc-select__anchor {
     height: 40px;
 }
+.mdc-text-field.mdc-text-field--textarea {
+    height: auto;
+}
+textarea {
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
 .mdc-select__dropdown-icon {
     margin-left: 6px;
     margin-right: 6px;
