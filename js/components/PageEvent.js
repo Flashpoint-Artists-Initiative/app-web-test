@@ -5,6 +5,7 @@ import EventApi from '../api/EventApi.js'
 import TicketTypeApi from '../api/TicketTypeApi.js'
 import { EventDialog } from './dialog/EventDialog.js'
 import { MessageDialog } from './dialog/MessageDialog.js'
+import { TicketTypeDialog } from './dialog/TicketTypeDialog.js'
 import { CircularProgress } from './mdc/CircularProgress.js'
 import { TabBar } from './mdc/TabBar.js'
 import { Tab } from './mdc/Tab.js'
@@ -77,7 +78,13 @@ const template = `
                 </mdc-tab-bar>
                 <div class="tab-pages my-4">
                     <div style="display:none">
-                        <div class="mdc-data-table">
+                        <div class="mb-2">
+                            <button type="button" class="add-ticket-type-button mdc-button mdc-button--unelevated bg-grey text-white mr-2">
+                                <div class="mdc-button__ripple"></div>
+                                <span class="mdc-button__label">Add Ticket</span>
+                            </button>
+                        </div>
+                        <div class="ticket-type-list mdc-data-table">
                             <div class="mdc-data-table__table-container">
                                 <table class="mdc-data-table__table">
                                     <thead>
@@ -94,36 +101,51 @@ const template = `
                                         </tr>
                                     </thead>
                                     <tbody class="mdc-data-table__content">
-                                        {{#each event.tickets}}
-                                        <tr class="mdc-data-table__row{{#if inactive}} text-disabled{{/if}}">
-                                            <td class="mdc-data-table__cell text-center">
-                                                {{#if deleted}}
-                                                    <span class="text-red">deleted</span>
-                                                {{else if inactive}}
-                                                    <span class="">inactive</span>
-                                                {{else if canBuy}}
-                                                    <span class="text-green font-weight-bold">on sale</span>
-                                                {{else if soldOut}}
-                                                    <span class="text-blue font-weight-bold">sold out</span>
-                                                {{else if saleEnded}}
-                                                    <span>sale ended</span>
-                                                {{else}}
-                                                    <span>active</span>
-                                                {{/if}}
-                                            </td>
-                                            <td class="mdc-data-table__cell font-weight-bold">{{name}}</td>
-                                            <td class="mdc-data-table__cell pr-0">{{start.dayOfWeek}}, </td>
-                                            <td class="mdc-data-table__cell px-2">{{start.date}}</td>
-                                            <td class="mdc-data-table__cell pl-0">{{start.time}}</td>
-                                            <td class="mdc-data-table__cell pr-0">{{end.dayOfWeek}}, </td>
-                                            <td class="mdc-data-table__cell px-2">{{end.date}}</td>
-                                            <td class="mdc-data-table__cell pl-0">{{end.time}}</td>
-                                            <td class="mdc-data-table__cell text-right font-weight-bold">{{price}}</td>
-                                            <td class="mdc-data-table__cell text-right">{{qty}}</td>
-                                            <td class="mdc-data-table__cell text-right">{{qtySold}}</td>
-                                            <td class="mdc-data-table__cell text-right">{{qtyReserved}}</td>
-                                            <td class="mdc-data-table__cell text-right">{{qtyAvailable}}</td>
-                                        </tr>
+                                        {{#each event.ticketGroups}}
+                                            {{#if inactive}}
+                                                <tr class="mdc-data-table__row">
+                                                    <td colspan="13" class="font-weight-bold text-center b-border pt-6 pb-2">Inactive Tickets</td>
+                                                </tr>
+                                            {{/if}}
+                                            {{#each tickets}}
+                                            <tr class="mdc-data-table__row{{#if inactive}} text-disabled{{/if}}" data-ticket-type-id="{{id}}">
+                                                <td class="mdc-data-table__cell text-center">
+                                                    {{#if deleted}}
+                                                        <span class="text-red">deleted</span>
+                                                    {{else if inactive}}
+                                                        <span class="">inactive</span>
+                                                    {{else if qty}}
+                                                        {{#if canBuy}}
+                                                            <span class="text-green font-weight-bold">on sale</span>
+                                                        {{else if soldOut}}
+                                                            <span class="text-blue font-weight-bold">sold out</span>
+                                                        {{else if saleEnded}}
+                                                            <span>sale ended</span>
+                                                        {{else}}
+                                                            <span>active</span>
+                                                        {{/if}}
+                                                    {{else}}
+                                                        {{#if saleEnded}}
+                                                            <span>expired</span>
+                                                        {{else}}
+                                                            <span class="text-green font-weight-bold">available</span>
+                                                        {{/if}}
+                                                    {{/if}}
+                                                </td>
+                                                <td class="mdc-data-table__cell font-weight-bold">{{name}}</td>
+                                                <td class="mdc-data-table__cell pr-0">{{start.dayOfWeek}}, </td>
+                                                <td class="mdc-data-table__cell px-2">{{start.date}}</td>
+                                                <td class="mdc-data-table__cell pl-0">{{start.time}}</td>
+                                                <td class="mdc-data-table__cell pr-0">{{end.dayOfWeek}}, </td>
+                                                <td class="mdc-data-table__cell px-2">{{end.date}}</td>
+                                                <td class="mdc-data-table__cell pl-0">{{end.time}}</td>
+                                                <td class="mdc-data-table__cell text-right font-weight-bold">{{price}}</td>
+                                                <td class="mdc-data-table__cell text-right">{{qty}}</td>
+                                                <td class="mdc-data-table__cell text-right">{{qtySold}}</td>
+                                                <td class="mdc-data-table__cell text-right">{{qtyReserved}}</td>
+                                                <td class="mdc-data-table__cell text-right">{{qtyAvailable}}</td>
+                                            </tr>
+                                            {{/each}}
                                         {{/each}}
                                     </tbody>
                                 </table>
@@ -293,7 +315,8 @@ const template = `
         </div>
     {{/if}}
 </div>
-<event-dialog class="edit-event-dialog"></event-dialog>
+<event-dialog></event-dialog>
+<ticket-type-dialog></ticket-type-dialog>
 {{/if}}
 `
 
@@ -365,11 +388,15 @@ export class PageEvent extends HTMLElement {
         event.reserved = this.getMyReservedTicketData(event)
 
         if (session.getRoles().admin) {
-            event.tickets = _.sortBy(TicketType.getTicketData(eventData.ticket_types), ['startDate', 'name'])
-            event.tickets.forEach(ticket => {
+            const tickets = _.sortBy(TicketType.getTicketData(eventData.ticket_types), ['startDate', 'name'])
+            tickets.forEach(ticket => {
                 ticket.start = DateTime.getDateData(ticket.startDate)
                 ticket.end = DateTime.getDateData(ticket.endDate)
             })
+            event.ticketGroups = [
+                {inactive: false, tickets: _.filter(tickets, ticket => !ticket.inactive)},
+                {inactive: true, tickets: _.filter(tickets, ticket => ticket.inactive)}
+            ]
             event.sold = _.orderBy(TicketType.getPurchasedTicketData(eventData.purchased_tickets, eventData.ticket_types), 'orderDate', 'desc')
             event.sold.forEach(ticket => {
                 ticket.orderDate = DateTime.getDateData(ticket.orderDate)
@@ -496,6 +523,17 @@ export class PageEvent extends HTMLElement {
                 this.refresh()
             })    
         }
+        this.querySelector('.add-ticket-type-button')?.addEventListener('click', event => {
+            this.openAddTicketTypeDialog()
+        })
+        this.querySelectorAll('.ticket-type-list tbody tr').forEach(element => {
+            element.addEventListener('click', event => {
+                const ticketTypeId = event.currentTarget.dataset.ticketTypeId
+                if (ticketTypeId) {
+                    this.openEditTicketTypeDialog(ticketTypeId)
+                }
+            })
+        })
 
         if (!session.loaded) {
             return 
@@ -528,8 +566,7 @@ export class PageEvent extends HTMLElement {
         }
     }
     openEditEventDialog() {
-        if (!this.event) return
-        const dialog = this.querySelector('.edit-event-dialog')
+        const dialog = this.querySelector('event-dialog')
         dialog.addEventListener('save', async (event) => {
             await this.updateEvent(event.detail)
         })
@@ -538,6 +575,44 @@ export class PageEvent extends HTMLElement {
         })
         dialog.event = _.cloneDeep(this.event.data)
         dialog.open = true
+    }
+    openAddTicketTypeDialog() {
+        const dialog = this.querySelector('ticket-type-dialog')
+        dialog.event = this.event.data
+        dialog.ticketType = this.getDefaultTicketType()
+
+        dialog.addEventListener('save', async (event) => {
+            await this.addTicketType(event.detail)
+        })
+        dialog.open = true
+    }
+    openEditTicketTypeDialog(ticketTypeId) {
+        const ticketType = _.find(this.event.data.ticket_types, ticket => {
+            return ticket.id == ticketTypeId
+        })
+        const dialog = this.querySelector('ticket-type-dialog')
+        dialog.event = this.event.data
+        dialog.ticketType = _.cloneDeep(ticketType)
+
+        dialog.addEventListener('save', async (event) => {
+            await this.updateTicketType(event.detail)
+        })
+        dialog.addEventListener('delete', async (event) => {
+            await this.deleteTicketType(event.detail.id)
+        })
+        dialog.open = true
+    }
+    getDefaultTicketType() {
+        const ticket = new TicketType()
+        ticket.event_id = this.event.data.id
+
+        const nowIsh = new Date()
+        nowIsh.setHours(nowIsh.getHours(), 0, 0, 0)
+        const endDate = new Date(this.event.data.start_date)
+        endDate.setHours(23, 0, 0, 0)
+        ticket.sale_start_date = nowIsh.toISOString()
+        ticket.sale_end_date = endDate.toISOString()
+        return ticket
     }
     async updateEvent(event) {
         const dialog = new MessageDialog()
@@ -559,6 +634,53 @@ export class PageEvent extends HTMLElement {
         dialog.close()
         if (response.ok) {
             window.location.href = './events'
+        } else {
+            const data = await response.json()
+            dialog.showMessage('Error', data.message)
+        }
+    }
+    async addTicketType(ticketType) {
+        const dialog = new MessageDialog()
+        dialog.showProcessing('Adding ticket...')
+        const response = await TicketTypeApi.addTicketType(ticketType)
+        const data = await response.json()
+        dialog.close()
+        if (response.ok) {
+            this.event.data.ticket_types.push(data.data)
+            this.refresh()
+        } else {
+            dialog.showMessage('Error', data.message)
+        }
+    }
+    async updateTicketType(ticketType) {
+        const dialog = new MessageDialog()
+        dialog.showProcessing('Saving ticket...')
+        const response = await TicketTypeApi.updateTicketType(ticketType)
+        const data = await response.json()
+        dialog.close()
+        if (response.ok) {
+            const ticketType = _.find(this.event.data.ticket_types, ticket => {
+                return ticket.id == data.data.id
+            })
+            Object.assign(ticketType, data.data)
+            this.refresh()
+        } else {
+            dialog.showMessage('Error', data.message)
+        }
+    }
+    async deleteTicketType(ticketTypeId) {
+        const ticketType = _.find(this.event.data.ticket_types, ticket => {
+            return ticket.id == ticketTypeId
+        })
+        const dialog = new MessageDialog()
+        dialog.showProcessing('Deleting ticket...')
+        const response = await TicketTypeApi.deleteTicketType(ticketType.event_id, ticketTypeId)
+        dialog.close()
+        if (response.ok) {
+            var removed = _.remove(this.event.data.ticket_types, ticket => {
+                return ticket.id == ticketTypeId
+            })
+            this.refresh()
         } else {
             const data = await response.json()
             dialog.showMessage('Error', data.message)
