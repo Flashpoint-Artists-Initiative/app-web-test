@@ -1,4 +1,14 @@
 export default class TicketType {
+    id = null
+    event_id = 0
+    name = ''
+    description = ''
+    active = true
+    price = 0
+    quantity = 0
+    sale_start_date = null
+    sale_end_date = null
+    
     static getTicketData(ticketTypes) {
         const now = new Date()
         return _.map(_.sortBy(ticketTypes, 'name'), ticket => {
