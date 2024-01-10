@@ -26,6 +26,18 @@ const template = `
 </div>
 `
 export class MessageDialog {
+    static async doRequestWithProcessing(processingText, request) {
+        const dialog = new MessageDialog()
+        dialog.showProcessing(processingText)
+        const response = await request()
+        const data = await response.json()
+        dialog.close()
+        if (!response.ok) {
+            dialog.showMessage('Error', data.message)
+        }
+        return {ok: response.ok, response: response, data: data}
+    }
+
     showProcessing(title) {
         const templateData = {
             title: title,

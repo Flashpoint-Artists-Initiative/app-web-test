@@ -153,7 +153,7 @@ const template = `
                         </div>
                     </div>
                     <div style="display:none">
-                        <div class="mdc-data-table">
+                        <div class="sold-ticket-list mdc-data-table">
                             <div class="mdc-data-table__table-container">
                                 <table class="mdc-data-table__table">
                                     <thead>
@@ -181,7 +181,7 @@ const template = `
                         </div>
                     </div>
                     <div style="display:none">
-                        <div class="mdc-data-table">
+                        <div class="reserved-ticket-list mdc-data-table">
                             <div class="mdc-data-table__table-container">
                                 <table class="mdc-data-table__table">
                                     <thead>
@@ -211,7 +211,7 @@ const template = `
                                             <td class="mdc-data-table__cell">{{email}}</td>
                                             <td class="mdc-data-table__cell">{{ticketType}}</td>
                                             <td class="mdc-data-table__cell">
-                                                <span class="font-weight-bold">{{assignedName}}</span>{{#if assignedEmail}} ({{assignedEmail}}){{/if}}
+                                                <span class="font-weight-bold">{{assignedName}}</span>{{#if assignedEmail}} <{{assignedEmail}}>{{/if}}
                                             </td>
                                             <td class="mdc-data-table__cell pr-0">{{issued.dayOfWeek}}, </td>
                                             <td class="mdc-data-table__cell px-2">{{issued.date}}</td>
@@ -615,75 +615,58 @@ export class PageEvent extends HTMLElement {
         return ticket
     }
     async updateEvent(event) {
-        const dialog = new MessageDialog()
-        dialog.showProcessing('Saving event...')
-        const response = await EventApi.updateEvent(event)
-        const data = await response.json()
-        dialog.close()
-        if (response.ok) {
-            this.event.data = data.data
+        const results = await MessageDialog.doRequestWithProcessing('Saving event', async () => {
+            return await EventApi.updateEvent(event)
+        })
+        if (results.ok) {
+            this.event.data = results.data.data
             this.refresh()
-        } else {
-            dialog.showMessage('Error', data.message)
         }
     }
     async deleteEvent(eventId) {
-        const dialog = new MessageDialog()
-        dialog.showProcessing('Deleting event...')
-        const response = await EventApi.deleteEvent(eventId)
-        dialog.close()
-        if (response.ok) {
+        const results = await MessageDialog.doRequestWithProcessing('Deleting event', async () => {
+            return await EventApi.deleteEvent(eventId)
+        })
+        if (results.ok) {
             window.location.href = './events'
-        } else {
-            const data = await response.json()
-            dialog.showMessage('Error', data.message)
         }
     }
     async addTicketType(ticketType) {
-        const dialog = new MessageDialog()
-        dialog.showProcessing('Adding ticket...')
-        const response = await TicketTypeApi.addTicketType(ticketType)
-        const data = await response.json()
-        dialog.close()
-        if (response.ok) {
-            this.event.data.ticket_types.push(data.data)
+        const results = await MessageDialog.doRequestWithProcessing('Adding ticket', async () => {
+            return await TicketTypeApi.addTicketType(ticketType)
+        })
+        if (results.ok) {
+            if (!this.event.ticket_types) {
+                this.event.ticket_types = []
+            }
+            this.event.data.ticket_types.push(results.data.data)
             this.refresh()
-        } else {
-            dialog.showMessage('Error', data.message)
         }
     }
     async updateTicketType(ticketType) {
-        const dialog = new MessageDialog()
-        dialog.showProcessing('Saving ticket...')
-        const response = await TicketTypeApi.updateTicketType(ticketType)
-        const data = await response.json()
-        dialog.close()
-        if (response.ok) {
+        const results = await MessageDialog.doRequestWithProcessing('Saving ticket', async () => {
+            return await TicketTypeApi.updateTicketType(ticketType)
+        })
+        if (results.ok) {
             const ticketType = _.find(this.event.data.ticket_types, ticket => {
-                return ticket.id == data.data.id
+                return ticket.id == results.data.data.id
             })
-            Object.assign(ticketType, data.data)
+            Object.assign(ticketType, results.data.data)
             this.refresh()
-        } else {
-            dialog.showMessage('Error', data.message)
         }
     }
     async deleteTicketType(ticketTypeId) {
         const ticketType = _.find(this.event.data.ticket_types, ticket => {
             return ticket.id == ticketTypeId
         })
-        const dialog = new MessageDialog()
-        dialog.showProcessing('Deleting ticket...')
-        const response = await TicketTypeApi.deleteTicketType(ticketType.event_id, ticketTypeId)
-        dialog.close()
-        if (response.ok) {
-            var removed = _.remove(this.event.data.ticket_types, ticket => {
+        const results = await MessageDialog.doRequestWithProcessing('Deleting ticket', async () => {
+            return await TicketTypeApi.deleteTicketType(ticketType.event_id, ticketTypeId)
+        })
+        if (results.ok) {
+            _.remove(this.event.data.ticket_types, ticket => {
                 return ticket.id == ticketTypeId
             })
             this.refresh()
-        } else {
-            const data = await response.json()
-            dialog.showMessage('Error', data.message)
         }
     }
 

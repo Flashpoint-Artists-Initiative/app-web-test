@@ -146,15 +146,11 @@ export class PageEvents extends HTMLElement {
         dialog.open = true
     }
     async addEvent(event) {
-        const dialog = new MessageDialog()
-        dialog.showProcessing('Saving event...')
-        const response = await EventApi.addEvent(event)
-        const data = await response.json()
-        dialog.close()
-        if (response.ok) {
-            window.location.href = `./event?id=${data.data.id}`
-        } else {
-            dialog.showMessage('Error', data.message)
+        const results = await MessageDialog.doRequestWithProcessing('Saving event', async () => {
+            return await EventApi.addEvent(event)
+        })
+        if (results.ok) {
+            window.location.href = `./event?id=${results.data.data.id}`
         }
     }
 

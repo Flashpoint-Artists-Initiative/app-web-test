@@ -291,7 +291,7 @@ export class AppBar extends HTMLElement {
     }
     async signin(email, password) {
         const dialog = new MessageDialog()
-        dialog.showProcessing('Signing in...')
+        dialog.showProcessing('Signing in')
         const response = await session.signin(email, password)
         dialog.close()
         if (!response.ok) {
@@ -306,7 +306,7 @@ export class AppBar extends HTMLElement {
     }
     async signup(user) {
         const dialog = new MessageDialog()
-        dialog.showProcessing('Signing up...')
+        dialog.showProcessing('Signing up')
         const response = await session.signup(user)
         dialog.close()
         if (!response.ok) {
@@ -315,7 +315,7 @@ export class AppBar extends HTMLElement {
     }
     async updateUser(user) {
         const dialog = new MessageDialog()
-        dialog.showProcessing('Saving...')
+        dialog.showProcessing('Saving')
         const response = await UserApi.updateUser(session.me.id, user)
         if (!response.ok) {
             dialog.showMessage('Could not save', response.error)
