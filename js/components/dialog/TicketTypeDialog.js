@@ -86,7 +86,7 @@ export class TicketTypeDialog extends HTMLElement {
 
         const element = this.querySelector('.mdc-dialog')
         if (element) {
-            ['name','description','price','quantity'].forEach(prop => {
+            Array('name','description','price','quantity').forEach(prop => {
                 element.querySelector(`.field-${prop}`).value = this.ticketType[prop]
             })
             element.querySelector('.field-sale_start_date').date = this.ticketType.sale_start_date ? new Date(this.ticketType.sale_start_date) : null 

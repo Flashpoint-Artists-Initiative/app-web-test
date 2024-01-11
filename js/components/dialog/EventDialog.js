@@ -102,8 +102,8 @@ export class EventDialog extends HTMLElement {
         this.isOpen = value
         if (value) {
             this.refresh()
-            const element = this.querySelector('.mdc-dialog');
-            ['name', 'location', 'contact_email'].forEach(prop => {
+            const element = this.querySelector('.mdc-dialog')
+            Array('name', 'location', 'contact_email').forEach(prop => {
                 element.querySelector(`.field-${prop}`).value = this.event[prop]
             })
             element.querySelector('.field-start_date').date = this.event.start_date ? new Date(this.event.start_date.slice(0,-1)) : null 

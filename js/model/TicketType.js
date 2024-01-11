@@ -22,7 +22,9 @@ export default class TicketType {
                 inactive: !ticket.active,
                 deleted: ticket.deleted_at,
                 price: '$' + ticket.price.toLocaleString(undefined, {minimumFractionDigits: 2}),
+                sale_start_date: ticket.sale_start_date,
                 startDate: saleStartDate,
+                sale_end_date: ticket.sale_end_date,
                 endDate: saleEndDate,
                 reserved: ticket.quantity == 0,
                 qty: ticket.quantity,
@@ -57,9 +59,7 @@ export default class TicketType {
 
     static getPurchasedTicketData(purchased, ticketTypes) {
         return _.map(purchased, ticket => {
-            const type = _.find(ticketTypes, type => {
-                return type.id == ticket.ticket_type_id
-            })
+            const type = _.find(ticketTypes, {id: ticket.ticket_type_id})
             return {
                 id: ticket.id,
                 name: ticket.user.display_name,
@@ -72,9 +72,7 @@ export default class TicketType {
 
     static getReservedTicketData(reserved, ticketTypes) {
         return _.map(reserved, ticket => {
-            const type = _.find(ticketTypes, type => {
-                return type.id == ticket.ticket_type_id
-            })
+            const type = _.find(ticketTypes, {id: ticket.ticket_type_id})
             return {
                 id: ticket.id,
                 email: ticket.email,

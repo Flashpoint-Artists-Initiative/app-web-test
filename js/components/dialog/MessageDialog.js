@@ -59,7 +59,7 @@ export class MessageDialog {
         this.close()
         this.dialogElement = document.createElement("div")
         this.dialogElement.innerHTML = Handlebars.compile(template)(templateData)
-        document.body.appendChild(this.dialogElement);
+        document.body.appendChild(this.dialogElement)
         this.dialog = new MDCDialog(this.dialogElement.querySelector('.mdc-dialog'))
         this.dialog.open()  
     }

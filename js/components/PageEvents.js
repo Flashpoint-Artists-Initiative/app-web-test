@@ -99,6 +99,10 @@ export class PageEvents extends HTMLElement {
                 this.openAddEventDialog()
             })
         })
+        const addEventDialog = this.querySelector('event-dialog')
+        addEventDialog.addEventListener('save', async (event) => {
+            await this.addEvent(event.detail)
+        })
 
         if (!session.loaded) {
             return 
@@ -140,9 +144,6 @@ export class PageEvents extends HTMLElement {
     }
     openAddEventDialog() {
         const dialog = this.querySelector('event-dialog')
-        dialog.addEventListener('save', async (event) => {
-            await this.addEvent(event.detail)
-        })
         dialog.open = true
     }
     async addEvent(event) {

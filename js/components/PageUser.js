@@ -149,7 +149,7 @@ export class PageUser extends HTMLElement {
         if (!session.loaded) {
             return 
         }
-        const id = new URLSearchParams(window.location.search).get('id');
+        const id = new URLSearchParams(window.location.search).get('id')
         if (!this.user || this.user.id != id) {
             this.fetch.done = false
             this.user = {
