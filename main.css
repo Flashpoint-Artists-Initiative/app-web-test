@@ -12,6 +12,9 @@ body {
 .d-flex { display: flex; }
 .d-none { display: none; }
 
+.w-100 { width: 100% }
+.fill-height { height: 100% }
+
 .flex-column { flex-direction: column; }
 .flex-grow-0 { flex-grow: 0; }
 .flex-grow-1 { flex-grow: 1; }
@@ -29,6 +32,8 @@ body {
 .text-uppercase { text-transform: uppercase;}
 .text-medium-emphasis { opacity: .6; }
 .text-disabled { opacity: .38; }
+.overflow-hidden { overflow: hidden; }
+.overflow-y-auto { overflow-y: auto; }
 
 .justify-start { justify-content: flex-start; }
 .justify-center { justify-content: center; }
@@ -47,8 +52,6 @@ body {
 
 .opacity-0 { opacity: 0 }
 .opacity-1 { opacity: 1 }
-
-.w-100 { width: 100% }
 
 .pa-auto { padding: auto; }
 .pa-0 { padding: 0; }
@@ -146,6 +149,8 @@ body {
 .text-blue { color: #2196F3 !important; }
 .text-green { color: #4CAF50 !important; }
 .text-white { color: #FFF !important; }
+.text-grey { color: #9E9E9E !important; }
+.text-grey-darken-2 { color: #616161 !important; }
 .text-black { color: #000 !important; }
 
 .mdc-button.text-red .mdc-button__ripple::before,.mdc-button.text-red .mdc-button__ripple::after { background-color: #F44336; }
@@ -160,6 +165,7 @@ body {
 .bg-green-lighten-3 { background-color: #A5D6A7 !important; }
 .bg-green-lighten-5 { background-color: #E8F5E9!important; }
 .bg-grey { background-color: #9E9E9E !important; }
+.bg-grey-lighten-3 { background-color: #EEEEEE !important; }
 
 .mdc-top-app-bar--fixed-adjust {
     display: flex;
