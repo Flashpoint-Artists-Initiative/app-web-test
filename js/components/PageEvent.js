@@ -211,10 +211,14 @@ const template = `
                                                     <span class="text-green">sold</span>
                                                 {{else if saleEnded}}
                                                     <span>expired</span>
-                                                {{else if assigned}}
-                                                    <span class="">claimed</span>
                                                 {{else}}
-                                                    <span class="text-red">unclaimed</span>
+                                                    {{#if ticketInactive}}
+                                                        <span class="text-grey">inactive</span>
+                                                    {{else if assigned}}
+                                                        <span>claimed</span>
+                                                    {{else}}
+                                                        <span class="text-red">unclaimed</span>
+                                                    {{/if}}
                                                 {{/if}}
                                             </td>
                                             <td class="mdc-data-table__cell">{{email}}</td>

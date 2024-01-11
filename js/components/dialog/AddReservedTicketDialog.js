@@ -194,11 +194,10 @@ export class AddReservedTicketDialog extends HTMLElement {
             this.mdcDialog.listen('MDCDialog:closing', async (event) => {
                 switch(event.detail.action) {
                     case 'save':
-                        this.reservedTicket.email = element.querySelector('.field-email').value.trim()
-                        const name = element.querySelector('.field-name').value.trim()
-                        if (name) {
-                            this.reservedTicket.email = `${name} <${this.reservedTicket.email}>`
-                        }
+                        Object.assign(this.reservedTicket, {
+                            email: element.querySelector('.field-email').value.trim(),
+                            name: element.querySelector('.field-name').value.trim()
+                        })
                         if (this.expirationType == 'yes') {
                             this.reservedTicket.expiration_date = element.querySelector('.field-expiration_date').isoDate
                         } else {
