@@ -627,12 +627,7 @@ export class PageEvent extends HTMLElement {
         return ticket
     }
     openAddReservedTicketDialog() {
-        const ticketTypes = _.chain(this.event.data.ticket_types)
-            .filter(ticket => {
-                return ticket.active && !ticket.deleted_at
-            })
-            .sortBy(['sale_start_date', 'name'])
-            .value()
+        const ticketTypes = _.sortBy(this.event.data.ticket_types, ['sale_start_date', 'name'])
         if (ticketTypes.length == 0) {
             new MessageDialog().showMessage('Error', 'Add a ticket type first')
             return
