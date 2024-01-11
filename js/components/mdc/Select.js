@@ -33,7 +33,7 @@ const template = `
         {{#each items}}
             <li class="mdc-list-item{{#if selected}} mdc-list-item--selected{{/if}}" data-value="{{value}}">
                 <span class="mdc-list-item__ripple"></span>
-                <span class="mdc-list-item__text">{{text}}</span>
+                <span class="mdc-list-item__text">{{#if content}}{{{content}}}{{else}}{{text}}{{/if}}</span>
             </li>
         {{/each}}
     </ul>

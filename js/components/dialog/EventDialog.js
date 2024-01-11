@@ -1,3 +1,4 @@
+import Event from '../../model/Event.js'
 import { DatePicker } from '../DatePicker.js'
 import { DialogButton } from '../mdc/DialogButton.js'
 import { Select } from '../mdc/Select.js'
@@ -125,14 +126,6 @@ export class EventDialog extends HTMLElement {
 
     mdcDialog = undefined
     isOpen = false
-    event = {
-        id: null,
-        name: '',
-        active: 0,
-        location: '',
-        contact_email: '',
-        start_date: null,
-        end_date: null
-    }
+    event = new Event()
 }
 customElements.define('event-dialog', EventDialog)

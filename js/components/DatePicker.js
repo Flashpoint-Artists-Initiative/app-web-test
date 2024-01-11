@@ -107,6 +107,11 @@ export class DatePicker extends HTMLElement {
             this.refresh()
             this.dispatchEvent(new CustomEvent('change', {detail: {value: this._date}}))
         })
+        hourSelect?.addEventListener('change', event => {
+            this._date.setHours(event.detail.value)
+            this.refresh()
+            this.dispatchEvent(new CustomEvent('change', {detail: {value: this._date}}))
+        })
     }
     get isoDate() {
         if (this._date) {

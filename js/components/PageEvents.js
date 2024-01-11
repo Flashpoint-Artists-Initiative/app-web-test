@@ -1,3 +1,4 @@
+import Event from '../model/Event.js'
 import { session } from '../model/Session.js'
 import EventApi from '../api/EventApi.js'
 import { EventDialog } from './dialog/EventDialog.js'
@@ -94,6 +95,10 @@ export class PageEvents extends HTMLElement {
     }
     async refresh() {
         this.innerHTML = Handlebars.compile(template)(this.templateData)
+        if (!session.loaded) {
+            return 
+        }
+
         this.querySelectorAll('.add-event-button').forEach(element => {
             element.addEventListener('click', event => {
                 this.openAddEventDialog()
@@ -104,9 +109,6 @@ export class PageEvents extends HTMLElement {
             await this.addEvent(event.detail)
         })
 
-        if (!session.loaded) {
-            return 
-        }
         if (!this.events || this.events.meId != session.me?.id) {
             this.fetch.done = false
             this.events = {
@@ -144,6 +146,7 @@ export class PageEvents extends HTMLElement {
     }
     openAddEventDialog() {
         const dialog = this.querySelector('event-dialog')
+        dialog.event = new Event()
         dialog.open = true
     }
     async addEvent(event) {
