@@ -258,29 +258,29 @@ export class AppBar extends HTMLElement {
         })
     }
     openSigninDialog() {
-        const element = this.querySelector('.signin-dialog');
-        ['email', 'password'].forEach(prop => {
+        const element = this.querySelector('.signin-dialog')
+        Array('email', 'password').forEach(prop => {
             element.querySelector(`.field-${prop}`).value = ''
         })
         this.signinDialog.open()
     }
     openForgotPasswordDialog() {
-        const element = this.querySelector('.forgot-password-dialog');
-        ['email'].forEach(prop => {
+        const element = this.querySelector('.forgot-password-dialog')
+        Array('email').forEach(prop => {
             element.querySelector(`.field-${prop}`).value = ''
         })
         this.forgotPasswordDialog.open()
     }
     openSignupDialog() {
-        const element = this.querySelector('.signup-dialog');
-        ['legal_name', 'preferred_name', 'email', 'password'].forEach(prop => {
+        const element = this.querySelector('.signup-dialog')
+        Array('legal_name', 'preferred_name', 'email', 'password').forEach(prop => {
             element.querySelector(`.field-${prop}`).value = ''
         })
         this.signupDialog.open()
     }
     openMyProfileDialog() {
-        const element = this.querySelector('.my-profile-dialog');
-        ['legal_name', 'email'].forEach(prop => {
+        const element = this.querySelector('.my-profile-dialog')
+        Array('legal_name', 'email').forEach(prop => {
             element.querySelector(`.field-${prop}`).value = session.me[prop]
         })
         const name = session.me.preferred_name || session.me.legal_name
