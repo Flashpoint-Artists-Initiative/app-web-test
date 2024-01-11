@@ -18,13 +18,13 @@ const template = `
                 <div class="mdc-icon-button__ripple"></div>
                 arrow_back
             </button>
-            <span>Add Reserved Ticket</span>
+            <span>Add Reserved Tickets</span>
         </h2>
         <div class="mdc-dialog__content">
             <form autocomplete="off" class="my-2">
                 <label class="d-block">Event</label>
                 <h2 class="mt-0">{{eventName}}</h2>
-                <div class="page-main overflow-y-auto" style="height:25rem">
+                <div class="page-main overflow-y-auto" style="height:29rem">
                     <label class="d-block">Ticket</label>
                     <button 
                         class="ticket-type-button mdc-button mdc-button--outlined bg-grey-lighten-3 text-grey-darken-2 w-100"
@@ -34,9 +34,9 @@ const template = `
                     <label class="d-block pt-2">Email</label>
                     <mdc-textfield class="w-100" input-class="field-email" input-type="text"></mdc-textfield>
                     <label class="d-block pt-2">Name</label>
-                    <mdc-textfield class="w-100" input-class="field-name" input-type="text"></mdc-textfield>
+                    <mdc-textfield class="w-100" input-class="field-name" input-type="text" autocomplete="off"></mdc-textfield>
                     <label class="d-block pt-2">Expiration</label>
-                    <mdc-select surface-fixed class="field-expiration_type w-100"></mdc-select>
+                    <mdc-select surface-fullwidth class="field-expiration_type w-100"></mdc-select>
                     <div class="mt-2">
                         <div class="expiration-block-yes">
                             <date-picker select-hour class="field-expiration_date"></date-picker>
@@ -45,8 +45,15 @@ const template = `
                             <div class="ticket-sale-end"></div>
                         </div>
                     </div>
+                    <label class="d-block pt-2">Quantity</label>
+                    <div class="d-flex w-100 pt-2">
+                        <mdc-select surface-fixed class="field-quantityType mr-2"></mdc-select>
+                        <div class="quantity-block">
+                            <mdc-textfield input-class="field-quantity" input-type="number" autocomplete="off" class="d-block" style="width:6rem"></mdc-textfield>
+                        </div>
+                    </div>
                 </div>
-                <div class="page-ticketType" style="height:25rem">
+                <div class="page-ticketType" style="height:29rem">
                     <div class="d-flex flex-column fill-height">
                         <label class="d-block">Ticket</label>
                         <ul class="mdc-list mdc-list--two-line pt-0 overflow-y-auto">
@@ -110,11 +117,11 @@ export class AddReservedTicketDialog extends HTMLElement {
     }
     refreshFormFields() {
         this.refreshVisiblePage()
-        const ticketTypeButton = this.querySelector('.ticket-type-button')
-        ticketTypeButton.innerHTML = Handlebars.compile(ticketTypeButtonTemplate)(this.ticketType)
-        const expirationTypeSelect = this.querySelector('.field-expiration_type')
-        expirationTypeSelect.selected = this.expirationType
+        this.querySelector('.ticket-type-button').innerHTML = Handlebars.compile(ticketTypeButtonTemplate)(this.ticketType)
+        this.querySelector('.field-expiration_type').selected = this.expirationType
+        this.querySelector('.field-quantityType').selected = this.quantityType
         this.refreshForExpirationType()
+        this.refreshForQuantityType()
     }
     refreshVisiblePage() {
         Array('main','ticketType').forEach(type => {
@@ -146,6 +153,10 @@ export class AddReservedTicketDialog extends HTMLElement {
         }
         this.querySelector('.ticket-sale-end').textContent = this.ticketType.endDate.toLocaleString(undefined, dateOptions)
     }
+    refreshForQuantityType() {
+        const show = this.quantityType == 'n'
+        this.querySelector('.quantity-block').style.display = show ? 'block' : 'none'
+    }
     async refresh() {
         this.mdcDialog = null
         this.innerHTML = Handlebars.compile(template)(this.templateData)
@@ -157,6 +168,12 @@ export class AddReservedTicketDialog extends HTMLElement {
                 {text: 'Use ticket end date', value: 'no'},
                 {text: 'Set expiration time', value: 'yes'}
             ]
+            const quantityTypeSelect = element.querySelector('.field-quantityType')
+            quantityTypeSelect.items = [
+                {text: 'One', value: '1'},
+                {text: 'Multiple', value: 'n'}
+            ]
+            element.querySelector('.field-quantity').value = '1'
             this.refreshFormFields()
 
             const ticketTypeButton = element.querySelector('.ticket-type-button')
@@ -174,6 +191,30 @@ export class AddReservedTicketDialog extends HTMLElement {
                         break
                 }
                 this.refreshForExpirationType()
+            })
+            quantityTypeSelect.addEventListener('change', event => {
+                this.quantityType = event.detail.value
+                const quantityField = this.querySelector('.field-quantity')
+                switch (this.quantityType) {
+                    case '1':
+                        quantityField.value = '1'
+                        break
+                    case 'n':
+                        try {
+                            if (parseInt(quantityField.value) < 2) {
+                                throw ''
+                            }
+                        } catch {
+                            quantityField.value = '2'
+                        }
+                        break
+                }
+                if(this.quantityType == '1') {
+                    quantityField.value = '1'
+                }
+                this.refreshForQuantityType()
+                quantityField.select()
+                quantityField.focus()
             })
 
             this.querySelector('.back-button').addEventListener('click', event => {
@@ -203,7 +244,11 @@ export class AddReservedTicketDialog extends HTMLElement {
                         } else {
                             this.reservedTicket.expiration_date = null
                         }
-                        this.dispatchEvent(new CustomEvent('save', {detail: this.reservedTicket}))
+                        const info = {
+                            ticket: this.reservedTicket,
+                            quantity: parseInt(element.querySelector('.field-quantity').value)
+                        }
+                        this.dispatchEvent(new CustomEvent('save', {detail: info}))
                         break
                 }
                 this.isOpen = false
@@ -223,6 +268,7 @@ export class AddReservedTicketDialog extends HTMLElement {
         if (value) {
             this._page = 'ticketType'
             this.firstSelect = true
+            this.quantityType = '1'
             this.refresh()
             this.mdcDialog.open()
         } else {
@@ -235,6 +281,8 @@ export class AddReservedTicketDialog extends HTMLElement {
     ticketTypeList = undefined
     isOpen = false
     _page = 'main'
+    firstSelect = true
+    quantityType = '1'
     eventName = ''
     ticketTypes = []
     reservedTicket = new ReservedTicket()

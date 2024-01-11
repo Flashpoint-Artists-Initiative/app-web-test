@@ -187,7 +187,7 @@ const template = `
                         <div class="mb-2">
                             <button type="button" class="add-reserved-ticket-button mdc-button mdc-button--unelevated bg-grey text-white mr-2">
                                 <div class="mdc-button__ripple"></div>
-                                <span class="mdc-button__label">Add Reserved Ticket</span>
+                                <span class="mdc-button__label">Add Reserved Tickets</span>
                             </button>
                         </div>
                         <div class="reserved-ticket-list mdc-data-table">
@@ -569,7 +569,7 @@ export class PageEvent extends HTMLElement {
         })
         const addReservedTicketDialog = this.querySelector('add-reserved-ticket-dialog')
         addReservedTicketDialog.addEventListener('save', async (event) => {
-            await this.addReservedTicket(event.detail)
+            await this.addReservedTickets(event.detail.ticket, event.detail.quantity)
         })
 
         if (!this.event || this.event.meId != session.me?.id) {
@@ -707,15 +707,21 @@ export class PageEvent extends HTMLElement {
             this.refresh()
         }
     }
-    async addReservedTicket(ticket) {
-        const results = await MessageDialog.doRequestWithProcessing('Adding ticket', async () => {
-            return await ReservedTicketApi.addReservedTicket(ticket)
+    async addReservedTickets(ticket, quantity) {
+        if (quantity < 1) {
+            return 
+        }
+        const tickets = _.times(quantity, () => {
+            return ticket
+        })
+        const results = await MessageDialog.doRequestWithProcessing('Adding tickets', async () => {
+            return await ReservedTicketApi.addReservedTickets(tickets)
         })
         if (results.ok) {
             if (!this.event.reserved_tickets) {
                 this.event.reserved_tickets = []
             }
-            this.event.data.reserved_tickets.push(results.data.data)
+            this.event.data.reserved_tickets = this.event.data.reserved_tickets.concat(results.data.data)
             this.refresh()
         }
     }

@@ -7,6 +7,13 @@ export default class ReservedTicketApi extends ApiBase {
         const ticketTypeId = ticket.ticket_type_id
         return await this.post(new URL(`${ApiUrl}ticket-types/${ticketTypeId}/reserved-tickets`), ticket, session.jwtToken)
     }
+    static async addReservedTickets(tickets) {
+        if (tickets.length == 0) {
+            return
+        }
+        const ticketTypeId = tickets[0].ticket_type_id
+        return await this.post(new URL(`${ApiUrl}ticket-types/${ticketTypeId}/reserved-tickets/batch`), {resources: tickets}, session.jwtToken)
+    }
     static async updateReservedTicket(ticket) {
         const ticketTypeId = ticket.ticket_type_id
         return await this.patch(new URL(`${ApiUrl}ticket-types/${ticketTypeId}/reserved-tickets/${ticket.id}`), ticket, session.jwtToken)
