@@ -19,10 +19,8 @@ const template = `
                 <h2 class="mt-0">{{event.name}}</h2>
                 <label class="d-block pt-2">Name</label>
                 <mdc-textfield class="w-100" input-class="field-name" input-type="text" input-tabindex="0"></mdc-textfield>
-                {{#if ticketType.id}}
-                    <label class="d-block pt-2">Status</label>
-                    <mdc-select surface-fullwidth class="field-active w-100"></mdc-select>
-                {{/if}}
+                <label class="d-block pt-2">Status</label>
+                <mdc-select surface-fullwidth class="field-active w-100"></mdc-select>
                 <label class="d-block pt-2">Description</label>
                 <mdc-textarea rows="4" resizable class="w-100" input-class="field-description"></mdc-textarea>
                 <label class="d-block pt-2">Sale Start Date</label>
@@ -80,10 +78,7 @@ export class TicketTypeDialog extends HTMLElement {
         Array('name','description','price','quantity').forEach(prop => {
             this.querySelector(`.field-${prop}`).value = this.ticketType[prop]
         })
-        const activeSelect = this.querySelector('.field-active')
-        if (activeSelect) {
-            activeSelect.selected = this.ticketType.active
-        }
+        this.querySelector('.field-active').selected = this.ticketType.active
         this.querySelector('.field-sale_start_date').date = this.ticketType.sale_start_date ? new Date(this.ticketType.sale_start_date) : null 
         this.querySelector('.field-sale_end_date').date = this.ticketType.sale_end_date ? new Date(this.ticketType.sale_end_date) : null
         this.querySelector('.field-availability').selected = this.forPublicSale ? 'yes' : 'no'
@@ -99,12 +94,10 @@ export class TicketTypeDialog extends HTMLElement {
         const element = this.querySelector('.mdc-dialog')
         if (element) {
             const activeSelect = element.querySelector('.field-active')
-            if (activeSelect) {
-                activeSelect.items = [
-                    {text:'Active', value:1},
-                    {text:'Inactive', value:0}
-                ]    
-            }
+            activeSelect.items = [
+                {text:'Active', value:1},
+                {text:'Inactive', value:0}
+            ]    
             const availabilitySelect = element.querySelector('.field-availability')
             availabilitySelect.items = [
                 {text: 'Public Sale', value: 'yes'},
@@ -120,7 +113,7 @@ export class TicketTypeDialog extends HTMLElement {
                 this.refreshForPublicSale()
             })
 
-            activeSelect?.addEventListener('change', event => {
+            activeSelect.addEventListener('change', event => {
                 this.ticketType.active = parseInt(event.detail.value)
             })
 

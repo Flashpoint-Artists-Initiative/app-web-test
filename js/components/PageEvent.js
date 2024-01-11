@@ -615,6 +615,7 @@ export class PageEvent extends HTMLElement {
     }
     getDefaultTicketType() {
         const ticket = new TicketType()
+        ticket.active = false
         ticket.event_id = this.event.data.id
 
         const nowIsh = new Date()

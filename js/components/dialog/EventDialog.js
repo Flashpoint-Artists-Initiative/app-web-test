@@ -68,12 +68,12 @@ export class EventDialog extends HTMLElement {
         Array('name', 'location', 'contact_email').forEach(prop => {
             this.querySelector(`.field-${prop}`).value = this.event[prop]
         })
+        const activeSelect = this.querySelector('.field-active')
         if (activeSelect) {
             activeSelect.selected = this.event.active
         }
         this.querySelector('.field-start_date').date = this.event.start_date ? new Date(this.event.start_date.slice(0,-1)) : null 
         this.querySelector('.field-end_date').date = this.event.end_date ? new Date(this.event.end_date.slice(0,-1)) : null
-        const activeSelect = this.querySelector('.field-active')
     }
     async refresh() {
         this.mdcDialog = null
