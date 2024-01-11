@@ -2,13 +2,16 @@ import DateTime from '../model/DateTime.js'
 import { session } from '../model/Session.js'
 import TicketType from '../model/TicketType.js'
 import EventApi from '../api/EventApi.js'
+import ReservedTicketApi from '../api/ReservedTicketApi.js'
 import TicketTypeApi from '../api/TicketTypeApi.js'
+import { AddReservedTicketDialog } from './dialog/AddReservedTicketDialog.js'
 import { EventDialog } from './dialog/EventDialog.js'
 import { MessageDialog } from './dialog/MessageDialog.js'
 import { TicketTypeDialog } from './dialog/TicketTypeDialog.js'
 import { CircularProgress } from './mdc/CircularProgress.js'
 import { TabBar } from './mdc/TabBar.js'
 import { Tab } from './mdc/Tab.js'
+import ReservedTicket from '../model/ReservedTicket.js'
 
 const template = `
 {{#if ready}}
@@ -181,6 +184,12 @@ const template = `
                         </div>
                     </div>
                     <div style="display:none">
+                        <div class="mb-2">
+                            <button type="button" class="add-reserved-ticket-button mdc-button mdc-button--unelevated bg-grey text-white mr-2">
+                                <div class="mdc-button__ripple"></div>
+                                <span class="mdc-button__label">Add Reserved Ticket</span>
+                            </button>
+                        </div>
                         <div class="reserved-ticket-list mdc-data-table">
                             <div class="mdc-data-table__table-container">
                                 <table class="mdc-data-table__table">
@@ -211,7 +220,7 @@ const template = `
                                             <td class="mdc-data-table__cell">{{email}}</td>
                                             <td class="mdc-data-table__cell">{{ticketType}}</td>
                                             <td class="mdc-data-table__cell">
-                                                <span class="font-weight-bold">{{assignedName}}</span>{{#if assignedEmail}} <{{assignedEmail}}>{{/if}}
+                                                <span class="font-weight-bold">{{assignedName}}</span>{{#if assignedEmail}} &lt;{{assignedEmail}}&gt;{{/if}}
                                             </td>
                                             <td class="mdc-data-table__cell pr-0">{{issued.dayOfWeek}}, </td>
                                             <td class="mdc-data-table__cell px-2">{{issued.date}}</td>
@@ -317,6 +326,7 @@ const template = `
 </div>
 <event-dialog></event-dialog>
 <ticket-type-dialog></ticket-type-dialog>
+<add-reserved-ticket-dialog></add-reserved-ticket-dialog>
 {{/if}}
 `
 
@@ -507,22 +517,31 @@ export class PageEvent extends HTMLElement {
     }
     async refresh() {
         this.innerHTML = Handlebars.compile(template)(this.templateData)
+        if (!session.loaded) {
+            return 
+        }
+        
         this.querySelectorAll('.edit-button').forEach(element => {
             element.addEventListener('click', event => {
                 this.openEditEventDialog()
             })
+        })
+        const eventDialog = this.querySelector('event-dialog')
+        eventDialog.addEventListener('save', async (event) => {
+            await this.updateEvent(event.detail)
+        })
+        eventDialog.addEventListener('delete', async (event) => {
+            await this.deleteEvent(event.detail.id)
         })
         const tabPages = this.querySelector('.tab-pages')
         if (tabPages?.children) {
             tabPages.children[this.activeTab].style.display = 'block'
         }
         const tabBar = this.querySelector('.main-tab-bar')
-        if (tabBar) {
-            tabBar.addEventListener('activeTab', event => {
-                this.activeTab = event.detail.index
-                this.refresh()
-            })    
-        }
+        tabBar?.addEventListener('activeTab', event => {
+            this.activeTab = event.detail.index
+            this.refresh()
+        })    
         this.querySelector('.add-ticket-type-button')?.addEventListener('click', event => {
             this.openAddTicketTypeDialog()
         })
@@ -530,14 +549,25 @@ export class PageEvent extends HTMLElement {
             element.addEventListener('click', event => {
                 const ticketTypeId = event.currentTarget.dataset.ticketTypeId
                 if (ticketTypeId) {
-                    this.openEditTicketTypeDialog(ticketTypeId)
+                    this.openEditTicketTypeDialog(parseInt(ticketTypeId))
                 }
             })
         })
+        const ticketTypeDialog = this.querySelector('ticket-type-dialog')
+        ticketTypeDialog.addEventListener('save', async (event) => {
+            await this.saveTicketType(event.detail)
+        })
+        ticketTypeDialog.addEventListener('delete', async (event) => {
+            await this.deleteTicketType(event.detail.id)
+        })
+        this.querySelector('.add-reserved-ticket-button')?.addEventListener('click', event => {
+            this.openAddReservedTicketDialog()
+        })
+        const addReservedTicketDialog = this.querySelector('add-reserved-ticket-dialog')
+        addReservedTicketDialog.addEventListener('save', async (event) => {
+            await this.addReservedTicket(event.detail)
+        })
 
-        if (!session.loaded) {
-            return 
-        }
         if (!this.event || this.event.meId != session.me?.id) {
             this.fetch.done = false
             this.event = {
@@ -567,12 +597,6 @@ export class PageEvent extends HTMLElement {
     }
     openEditEventDialog() {
         const dialog = this.querySelector('event-dialog')
-        dialog.addEventListener('save', async (event) => {
-            await this.updateEvent(event.detail)
-        })
-        dialog.addEventListener('delete', async (event) => {
-            await this.deleteEvent(event.detail.id)
-        })
         dialog.event = _.cloneDeep(this.event.data)
         dialog.open = true
     }
@@ -580,26 +604,13 @@ export class PageEvent extends HTMLElement {
         const dialog = this.querySelector('ticket-type-dialog')
         dialog.event = this.event.data
         dialog.ticketType = this.getDefaultTicketType()
-
-        dialog.addEventListener('save', async (event) => {
-            await this.addTicketType(event.detail)
-        })
         dialog.open = true
     }
     openEditTicketTypeDialog(ticketTypeId) {
-        const ticketType = _.find(this.event.data.ticket_types, ticket => {
-            return ticket.id == ticketTypeId
-        })
+        const ticketType = _.find(this.event.data.ticket_types, {id: ticketTypeId})
         const dialog = this.querySelector('ticket-type-dialog')
         dialog.event = this.event.data
         dialog.ticketType = _.cloneDeep(ticketType)
-
-        dialog.addEventListener('save', async (event) => {
-            await this.updateTicketType(event.detail)
-        })
-        dialog.addEventListener('delete', async (event) => {
-            await this.deleteTicketType(event.detail.id)
-        })
         dialog.open = true
     }
     getDefaultTicketType() {
@@ -614,12 +625,36 @@ export class PageEvent extends HTMLElement {
         ticket.sale_end_date = endDate.toISOString()
         return ticket
     }
+    openAddReservedTicketDialog() {
+        const ticketTypes = _.chain(this.event.data.ticket_types)
+            .filter(ticket => {
+                return ticket.active && !ticket.deleted_at
+            })
+            .sortBy(['sale_start_date', 'name'])
+            .value()
+        if (ticketTypes.length == 0) {
+            new MessageDialog().showMessage('Error', 'Add a ticket type first')
+            return
+        }
+
+        let ticketType = _.find(ticketTypes, {quantity: 0})
+        if (!ticketType) {
+            ticketType = ticketTypes[0]
+        }
+
+        const dialog = this.querySelector('add-reserved-ticket-dialog')
+        dialog.eventName = this.event.data.name
+        dialog.ticketTypes = TicketType.getTicketData(ticketTypes)
+        dialog.reservedTicket = new ReservedTicket()
+        dialog.reservedTicket.ticket_type_id = ticketType.id
+        dialog.open = true
+    }
     async updateEvent(event) {
         const results = await MessageDialog.doRequestWithProcessing('Saving event', async () => {
             return await EventApi.updateEvent(event)
         })
         if (results.ok) {
-            this.event.data = results.data.data
+            Object.assign(this.event.data, results.data.data)
             this.refresh()
         }
     }
@@ -629,6 +664,13 @@ export class PageEvent extends HTMLElement {
         })
         if (results.ok) {
             window.location.href = './events'
+        }
+    }
+    async saveTicketType(ticketType) {
+        if (ticketType.id) {
+            await this.updateTicketType(ticketType)
+        } else {
+            await this.addTicketType(ticketType)
         }
     }
     async addTicketType(ticketType) {
@@ -648,17 +690,13 @@ export class PageEvent extends HTMLElement {
             return await TicketTypeApi.updateTicketType(ticketType)
         })
         if (results.ok) {
-            const ticketType = _.find(this.event.data.ticket_types, ticket => {
-                return ticket.id == results.data.data.id
-            })
+            const ticketType = _.find(this.event.data.ticket_types, {id: results.data.data.id})
             Object.assign(ticketType, results.data.data)
             this.refresh()
         }
     }
     async deleteTicketType(ticketTypeId) {
-        const ticketType = _.find(this.event.data.ticket_types, ticket => {
-            return ticket.id == ticketTypeId
-        })
+        const ticketType = _.find(this.event.data.ticket_types, {id: ticketTypeId})
         const results = await MessageDialog.doRequestWithProcessing('Deleting ticket', async () => {
             return await TicketTypeApi.deleteTicketType(ticketType.event_id, ticketTypeId)
         })
@@ -666,6 +704,18 @@ export class PageEvent extends HTMLElement {
             _.remove(this.event.data.ticket_types, ticket => {
                 return ticket.id == ticketTypeId
             })
+            this.refresh()
+        }
+    }
+    async addReservedTicket(ticket) {
+        const results = await MessageDialog.doRequestWithProcessing('Adding ticket', async () => {
+            return await ReservedTicketApi.addReservedTicket(ticket)
+        })
+        if (results.ok) {
+            if (!this.event.reserved_tickets) {
+                this.event.reserved_tickets = []
+            }
+            this.event.data.reserved_tickets.push(results.data.data)
             this.refresh()
         }
     }

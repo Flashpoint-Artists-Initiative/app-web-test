@@ -76,9 +76,21 @@ export class TicketTypeDialog extends HTMLElement {
             ticketType: this.ticketType
         }
     }
+    refreshFormFields() {
+        Array('name','description','price','quantity').forEach(prop => {
+            this.querySelector(`.field-${prop}`).value = this.ticketType[prop]
+        })
+        const activeSelect = this.querySelector('.field-active')
+        if (activeSelect) {
+            activeSelect.selected = this.ticketType.active
+        }
+        this.querySelector('.field-sale_start_date').date = this.ticketType.sale_start_date ? new Date(this.ticketType.sale_start_date) : null 
+        this.querySelector('.field-sale_end_date').date = this.ticketType.sale_end_date ? new Date(this.ticketType.sale_end_date) : null
+        this.querySelector('.field-availability').selected = this.forPublicSale ? 'yes' : 'no'
+        this.refreshForPublicSale()
+    }
     refreshForPublicSale() {
-        const element = this.querySelector('.mdc-dialog')
-        element.querySelector('.quantity-block').style.opacity = this.forPublicSale ? '1' : '0'
+        this.querySelector('.quantity-block').style.opacity = this.forPublicSale ? '1' : '0'
     }
     async refresh() {
         this.mdcDialog = null
@@ -86,24 +98,20 @@ export class TicketTypeDialog extends HTMLElement {
 
         const element = this.querySelector('.mdc-dialog')
         if (element) {
-            Array('name','description','price','quantity').forEach(prop => {
-                element.querySelector(`.field-${prop}`).value = this.ticketType[prop]
-            })
-            element.querySelector('.field-sale_start_date').date = this.ticketType.sale_start_date ? new Date(this.ticketType.sale_start_date) : null 
-            element.querySelector('.field-sale_end_date').date = this.ticketType.sale_end_date ? new Date(this.ticketType.sale_end_date) : null
-            element.querySelector('.field-availability').selected = this.forPublicSale ? 'yes' : 'no'
-            this.refreshForPublicSale()
-
-            if (this.ticketType.id) {
-                const activeSelect = element.querySelector('.field-active')
-                activeSelect.selected = this.ticketType.active
+            const activeSelect = element.querySelector('.field-active')
+            if (activeSelect) {
+                activeSelect.items = [
+                    {text:'Active', value:1},
+                    {text:'Inactive', value:0}
+                ]    
             }
-
             const availabilitySelect = element.querySelector('.field-availability')
             availabilitySelect.items = [
                 {text: 'Public Sale', value: 'yes'},
                 {text: 'Reserved Only', value: 'no'}
             ]
+            this.refreshFormFields()
+
             availabilitySelect.addEventListener('change', event => {
                 this.forPublicSale = event.detail.value == 'yes'
                 if (this.forPublicSale) {
@@ -112,16 +120,9 @@ export class TicketTypeDialog extends HTMLElement {
                 this.refreshForPublicSale()
             })
 
-            if (this.ticketType.id) {
-                const activeSelect = element.querySelector('.field-active')
-                activeSelect.items = [
-                    {text:'Active', value:1},
-                    {text:'Inactive', value:0}
-                ]
-                activeSelect.addEventListener('change', event => {
-                    this.ticketType.active = parseInt(event.detail.value)
-                })
-            }
+            activeSelect?.addEventListener('change', event => {
+                this.ticketType.active = parseInt(event.detail.value)
+            })
 
             this.mdcDialog = new MDCDialog(element)
             this.mdcDialog.listen('MDCDialog:closing', async (event) => {

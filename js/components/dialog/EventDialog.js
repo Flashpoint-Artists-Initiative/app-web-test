@@ -64,12 +64,36 @@ export class EventDialog extends HTMLElement {
             event: this.event
         }
     }
+    refreshFormFields() {
+        Array('name', 'location', 'contact_email').forEach(prop => {
+            this.querySelector(`.field-${prop}`).value = this.event[prop]
+        })
+        if (activeSelect) {
+            activeSelect.selected = this.event.active
+        }
+        this.querySelector('.field-start_date').date = this.event.start_date ? new Date(this.event.start_date.slice(0,-1)) : null 
+        this.querySelector('.field-end_date').date = this.event.end_date ? new Date(this.event.end_date.slice(0,-1)) : null
+        const activeSelect = this.querySelector('.field-active')
+    }
     async refresh() {
         this.mdcDialog = null
         this.innerHTML = Handlebars.compile(template)(this.templateData)
 
         const element = this.querySelector('.mdc-dialog')
         if (element) {
+            const activeSelect = this.querySelector('.field-active')
+            if (activeSelect) {
+                activeSelect.items = [
+                    {text:'Active', value:1},
+                    {text:'Inactive', value:0}
+                ]    
+            }
+            this.refreshFormFields()
+
+            activeSelect?.addEventListener('change', event => {
+                this.event.active = parseInt(event.detail.value)
+            })
+
             this.mdcDialog = new MDCDialog(element)
             this.mdcDialog.listen('MDCDialog:closing', async (event) => {
                 switch(event.detail.action) {
@@ -90,33 +114,12 @@ export class EventDialog extends HTMLElement {
                 this.isOpen = false
                 this.refresh()
             })
-
-            if (this.event.id) {
-                const activeSelect = this.querySelector('.field-active')
-                activeSelect.addEventListener('change', event => {
-                    this.event.active = parseInt(event.detail.value)
-                })
-            }
         }
     }
     set open(value) {
         this.isOpen = value
         if (value) {
             this.refresh()
-            const element = this.querySelector('.mdc-dialog')
-            Array('name', 'location', 'contact_email').forEach(prop => {
-                element.querySelector(`.field-${prop}`).value = this.event[prop]
-            })
-            element.querySelector('.field-start_date').date = this.event.start_date ? new Date(this.event.start_date.slice(0,-1)) : null 
-            element.querySelector('.field-end_date').date = this.event.end_date ? new Date(this.event.end_date.slice(0,-1)) : null
-            if (this.event.id) {{
-                const activeSelect = this.querySelector('.field-active')
-                activeSelect.items = [
-                    {text:'Active', value:1},
-                    {text:'Inactive', value:0}
-                ]
-                activeSelect.selected = this.event.active
-            }}
             this.mdcDialog.open()
         } else {
             this.mdcDialog?.close()
