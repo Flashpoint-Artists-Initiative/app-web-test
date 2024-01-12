@@ -13,7 +13,7 @@ const template = `
     </h3>
     <div class="ml-6 text-right">
         <button class="mdc-button mdc-button--outlined text-white bg-blue mb-2">
-            <a href="./shop?event-id={{eventId.id}}&reserved" class="text-white">
+            <a href="./shop?event-id={{reservedTickets.eventId}}&reserved" class="text-white">
                 <span class="mdc-button__ripple"></span>Buy
             </a>
         </button>
@@ -58,7 +58,7 @@ export class AppAlert extends HTMLElement {
             .map(ticket => {
                 return {
                     name: ticket.ticket_type.name,
-                    eventId: ticket.ticket_type.event.id
+                    eventId: ticket.ticket_type.event_id
                 }
             })
             .value()

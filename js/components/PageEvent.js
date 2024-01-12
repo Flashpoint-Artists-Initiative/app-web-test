@@ -333,8 +333,7 @@ const template = `
 <ticket-type-dialog></ticket-type-dialog>
 <add-reserved-ticket-dialog></add-reserved-ticket-dialog>
 <edit-reserved-ticket-dialog></edit-reserved-ticket-dialog>
-{{/if}}
-`
+{{/if}}`
 
 export class PageEvent extends HTMLElement {
     constructor() {
