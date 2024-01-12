@@ -80,7 +80,7 @@ export default class TicketType {
                 assignedName: ticket.user?.display_name,
                 assignedEmail: ticket.user?.email,
                 ticketType: type?.name,
-                ticketInactive: !ticket.active,
+                ticketInactive: !type.active,
                 issueDate: new Date(ticket.created_at),
                 saleEndDate: new Date(type.sale_end_date),
                 expirationDate: ticket.expiration_date ? new Date(ticket.expiration_date) : null,
