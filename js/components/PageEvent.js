@@ -5,6 +5,7 @@ import EventApi from '../api/EventApi.js'
 import ReservedTicketApi from '../api/ReservedTicketApi.js'
 import TicketTypeApi from '../api/TicketTypeApi.js'
 import { AddReservedTicketDialog } from './dialog/AddReservedTicketDialog.js'
+import { EditReservedTicketDialog } from './dialog/EditReservedTicketDialog.js'
 import { EventDialog } from './dialog/EventDialog.js'
 import { MessageDialog } from './dialog/MessageDialog.js'
 import { TicketTypeDialog } from './dialog/TicketTypeDialog.js'
@@ -205,7 +206,7 @@ const template = `
                                     </thead>
                                     <tbody class="mdc-data-table__content">
                                         {{#each event.reserved}}
-                                        <tr class="mdc-data-table__row{{#if saleEnded}} text-disabled{{/if}}">
+                                        <tr class="mdc-data-table__row{{#if saleEnded}} text-disabled{{/if}}" data-reserved-ticket-id="{{id}}">
                                             <td class="mdc-data-table__cell text-center">
                                                 {{#if sold}}
                                                     <span class="text-green">sold</span>
@@ -331,6 +332,7 @@ const template = `
 <event-dialog></event-dialog>
 <ticket-type-dialog></ticket-type-dialog>
 <add-reserved-ticket-dialog></add-reserved-ticket-dialog>
+<edit-reserved-ticket-dialog></edit-reserved-ticket-dialog>
 {{/if}}
 `
 
@@ -571,6 +573,21 @@ export class PageEvent extends HTMLElement {
         addReservedTicketDialog.addEventListener('save', async (event) => {
             await this.addReservedTickets(event.detail.ticket, event.detail.quantity)
         })
+        this.querySelectorAll('.reserved-ticket-list tbody tr').forEach(element => {
+            element.addEventListener('click', event => {
+                const reservedTicketId = event.currentTarget.dataset.reservedTicketId
+                if (reservedTicketId) {
+                    this.openEditReservedTicketDialog(parseInt(reservedTicketId))
+                }
+            })
+        })
+        const editReservedTicketDialog = this.querySelector('edit-reserved-ticket-dialog')
+        editReservedTicketDialog.addEventListener('save', async (event) => {
+            await this.saveReservedTicket(event.detail)
+        })
+        editReservedTicketDialog.addEventListener('delete', async (event) => {
+            await this.deleteReservedTicket(event.detail.id)
+        })
 
         if (!this.event || this.event.meId != session.me?.id) {
             this.fetch.done = false
@@ -649,6 +666,15 @@ export class PageEvent extends HTMLElement {
         dialog.reservedTicket.ticket_type_id = ticketType.id
         dialog.open = true
     }
+    openEditReservedTicketDialog(reservedTicketId) {
+        const reservedTicket = _.find(this.event.data.reserved_tickets, {id: reservedTicketId})
+        const ticketType = _.find(this.event.data.ticket_types, {id: reservedTicket.ticket_type_id})
+        const dialog = this.querySelector('edit-reserved-ticket-dialog')
+        dialog.eventName = this.event.data.name
+        dialog.ticketType = TicketType.getTicketData([ticketType])[0]
+        dialog.reservedTicket = _.cloneDeep(reservedTicket)
+        dialog.open = true
+    }
     async updateEvent(event) {
         const results = await MessageDialog.doRequestWithProcessing('Saving event', async () => {
             return await EventApi.updateEvent(event)
@@ -722,6 +748,28 @@ export class PageEvent extends HTMLElement {
                 this.event.reserved_tickets = []
             }
             this.event.data.reserved_tickets = this.event.data.reserved_tickets.concat(results.data.data)
+            this.refresh()
+        }
+    }
+    async saveReservedTicket(reservedTicket) {
+        const results = await MessageDialog.doRequestWithProcessing('Saving ticket', async () => {
+            return await ReservedTicketApi.updateReservedTicket(reservedTicket)
+        })
+        if (results.ok) {
+            const reservedTicket = _.find(this.event.data.reserved_tickets, {id: results.data.data.id})
+            Object.assign(reservedTicket, results.data.data)
+            this.refresh()
+        }
+    }
+    async deleteReservedTicket(reservedTicketId) {
+        const reservedTicket = _.find(this.event.data.reserved_tickets, {id: reservedTicketId})
+        const results = await MessageDialog.doRequestWithProcessing('Deleting ticket', async () => {
+            return await ReservedTicketApi.deleteReservedTicket(reservedTicket.ticket_type_id, reservedTicketId)
+        })
+        if (results.ok) {
+            _.remove(this.event.data.reserved_tickets, ticket => {
+                return ticket.id == reservedTicketId
+            })
             this.refresh()
         }
     }

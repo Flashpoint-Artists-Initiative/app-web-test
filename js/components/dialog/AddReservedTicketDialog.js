@@ -178,6 +178,7 @@ export class AddReservedTicketDialog extends HTMLElement {
 
             element.querySelector('.ticket-type-button').addEventListener('click', event => {
                 event.preventDefault()
+                this.ticketTypeList.selectedIndex = _.findIndex(this.ticketTypes, {id: this.reservedTicket.ticket_type_id})
                 this.page = 'ticketType'
             })
             expirationTypeSelect.addEventListener('change', event => {
