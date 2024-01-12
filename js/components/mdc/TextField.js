@@ -6,6 +6,7 @@ const template = `
         {{#if inputType}}type="{{inputType}}"{{/if}}
         {{#if inputAutocomplete}}autocomplete="{{inputAutocomplete}}"{{/if}}
         {{#if inputTabIndex}}tabindex="{{inputTabIndex}}"{{/if}}
+        {{#if inputValue}}value="{{inputValue}}"{{/if}}
     >
     <span class="mdc-line-ripple"></span>
 </label>
@@ -20,7 +21,8 @@ export class TextField extends HTMLElement {
             inputClass: this.getAttribute('input-class'),
             inputType: this.getAttribute('input-type'),
             inputAutocomplete: this.getAttribute('input-autocomplete'),
-            inputTabIndex: this.getAttribute('input-tabindex')
+            inputTabIndex: this.getAttribute('input-tabindex'),
+            inputValue: this.getAttribute('input-value')
         }
     }
     refresh() {
