@@ -88,7 +88,7 @@ const template = `
                                 <span class="mdc-button__label">Add Ticket</span>
                             </button>
                         </div>
-                        <div class="ticket-type-list mdc-data-table">
+                        <div class="ticket-type-list mdc-data-table w-100">
                             <div class="mdc-data-table__table-container">
                                 <table class="mdc-data-table__table">
                                     <thead>
@@ -157,7 +157,7 @@ const template = `
                         </div>
                     </div>
                     <div style="display:none">
-                        <div class="sold-ticket-list mdc-data-table">
+                        <div class="sold-ticket-list mdc-data-table w-100">
                             <div class="mdc-data-table__table-container">
                                 <table class="mdc-data-table__table">
                                     <thead>
@@ -191,7 +191,7 @@ const template = `
                                 <span class="mdc-button__label">Add Reserved Tickets</span>
                             </button>
                         </div>
-                        <div class="reserved-ticket-list mdc-data-table">
+                        <div class="reserved-ticket-list mdc-data-table w-100">
                             <div class="mdc-data-table__table-container">
                                 <table class="mdc-data-table__table">
                                     <thead>
