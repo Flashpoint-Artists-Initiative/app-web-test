@@ -1,3 +1,4 @@
+import DateTime from '../../model/DateTime.js'
 import Event from '../../model/Event.js'
 import { DatePicker } from '../DatePicker.js'
 import { DialogButton } from '../mdc/DialogButton.js'
@@ -72,8 +73,8 @@ export class EventDialog extends HTMLElement {
         if (activeSelect) {
             activeSelect.selected = this.event.active
         }
-        this.querySelector('.field-start_date').date = this.event.start_date ? new Date(this.event.start_date.slice(0,-1)) : null 
-        this.querySelector('.field-end_date').date = this.event.end_date ? new Date(this.event.end_date.slice(0,-1)) : null
+        this.querySelector('.field-start_date').date = DateTime.parseISOLocalToDate(this.event.start_date)
+        this.querySelector('.field-end_date').date = DateTime.parseISOLocalToDate(this.event.end_date)
     }
     async refresh() {
         this.mdcDialog = null
@@ -102,8 +103,8 @@ export class EventDialog extends HTMLElement {
                             name: element.querySelector('.field-name').value.trim(),
                             location: element.querySelector('.field-location').value.trim(),
                             contact_email: element.querySelector('.field-contact_email').value.trim(),
-                            start_date: element.querySelector('.field-start_date').isoDate,
-                            end_date: element.querySelector('.field-end_date').isoDate
+                            start_date: element.querySelector('.field-start_date').isoDate.slice(0,10),
+                            end_date: element.querySelector('.field-end_date').isoDate.slice(0,10)
                         })
                         this.dispatchEvent(new CustomEvent('save', {detail: this.event}))
                         break

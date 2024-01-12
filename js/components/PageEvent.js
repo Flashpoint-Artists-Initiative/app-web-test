@@ -380,8 +380,8 @@ export class PageEvent extends HTMLElement {
         }
 
         const now = new Date()
-        const startDate = new Date(eventData.start_date.slice(0,-1))
-        const endDate = new Date(eventData.end_date.slice(0,-1))
+        const startDate = DateTime.parseISOLocalToDate(eventData.start_date)
+        const endDate = DateTime.parseISOLocalToDate(eventData.end_date)
         let daysUntil = 0
         if (startDate > new Date()) {
             daysUntil = Math.ceil((startDate.getTime() - now.getTime()) / (1000 * 3600 * 24)).toLocaleString()

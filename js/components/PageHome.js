@@ -1,3 +1,4 @@
+import DateTime from '../model/DateTime.js'
 import { session } from '../model/Session.js'
 import EventApi from '../api/EventApi.js'
 import { CircularProgress } from './mdc/CircularProgress.js'
@@ -97,8 +98,8 @@ export class PageHome extends HTMLElement {
                     location: event.location,
                     deleted: event.deleted_at,
                     inactive: !event.active,
-                    startDate: new Date(event.start_date.slice(0,-1)).toLocaleString(undefined, dateOptions),
-                    endDate: new Date(event.end_date.slice(0,-1)).toLocaleString(undefined, dateOptions),
+                    startDate: DateTime.parseISOLocalToDate(event.start_date).toLocaleString(undefined, dateOptions),
+                    endDate: DateTime.parseISOLocalToDate(event.end_date).toLocaleString(undefined, dateOptions),
                     purchased: this.getMyPurchasedData(event.id)
                 }
             })

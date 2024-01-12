@@ -118,7 +118,7 @@ export class PageUser extends HTMLElement {
             year: 'numeric'
         }
 
-        var birthdate = userData.birthday ? new Date(userData.birthday.slice(0,10)) : null
+        var birthdate = DateTime.parseISOLocalToDate(userData.birthday)
         const user = {
             id: userData.id,
             name: userData.display_name,

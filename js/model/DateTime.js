@@ -1,4 +1,17 @@
 export default class DateTime {
+    static parseISOLocalToDate(dateText) {
+        if (!dateText) {
+            return null
+        }
+        const dateParts = dateText.split(/\D/);
+        return new Date(dateParts[0], dateParts[1]-1, dateParts[2], 0, 0, 0)
+    }
+    static toYMD(date) {
+        const month = (date.getMonth()+1).toString()
+        const day = date.getDate()
+        return date.getFullYear() + '-' + month.padStart(2,'0') + '-' + date.padStart(2,'0')
+    }
+
     static getDateData(date) {
         return {
             dayOfWeek: date.toLocaleString(undefined, {weekday:'short'}),
