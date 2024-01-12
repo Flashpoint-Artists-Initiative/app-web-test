@@ -612,6 +612,17 @@ export class PageEvent extends HTMLElement {
                 notAuthorized: [401, 403].includes(response.status)
             }
             this.event.data = response.ok ? data.data : undefined
+            // TODO: Backend doesn't support returning the is_purchased property for reserved_tickets. We need to fix this up here.
+            if (this.event.data) {
+                this.event.data.purchased_tickets.forEach(ticket => {
+                    if (ticket.reserved_ticket_id) {
+                        const reservedTicket = _.find(this.event.data.reserved_tickets, {id: ticket.reserved_ticket_id})
+                        if (reservedTicket) {
+                            reservedTicket.is_purchased = true
+                        }
+                    }
+                })
+            }            
 
             this.refresh()
         }

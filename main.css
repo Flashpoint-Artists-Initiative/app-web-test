@@ -143,8 +143,8 @@ body {
 .rounded-sm { border-radius: 4px; }
 .b-border { border-bottom: 1px solid rgba(0,0,0,.12); }
 
-.icon-medium { font-size: 32px; }
-.icon-large { font-size: 48px; }
+.icon-medium { font-size: 32px; width: 32px; }
+.icon-large { font-size: 48px; width: 48px; }
 
 .text-red { color: #F44336 !important; }
 .text-blue { color: #2196F3 !important; }
