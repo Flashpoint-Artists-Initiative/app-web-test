@@ -108,7 +108,7 @@ export class DatePicker extends HTMLElement {
             this.dispatchEvent(new CustomEvent('change', {detail: {value: this._date}}))
         })
         hourSelect?.addEventListener('change', event => {
-            this._date.setHours(event.detail.value)
+            this._date.setHours(event.detail.value, 0, 0, 0)
             this.refresh()
             this.dispatchEvent(new CustomEvent('change', {detail: {value: this._date}}))
         })
