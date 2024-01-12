@@ -182,8 +182,8 @@ export class PageTickets extends HTMLElement {
         return _.chain(session.me?.purchased_tickets)
             .map(ticket => {
                 const purchaseDate = new Date(ticket.created_at)
-                const eventStartDate = new Date(ticket.ticket_type.event.start_date)
-                const eventEndDate = new Date(ticket.ticket_type.event.end_date)
+                const eventStartDate = DateTime.parseISOLocalToDate(ticket.ticket_type.event.start_date)
+                const eventEndDate = DateTime.parseISOLocalToDate(ticket.ticket_type.event.end_date)
                 return {
                     name: ticket.ticket_type.name,
                     purchaseDate: purchaseDate,
@@ -205,7 +205,7 @@ export class PageTickets extends HTMLElement {
         const now = new Date()
         const tickets = _.chain(session.me?.reserved_tickets)
             .map(ticket => {
-                const eventStartDate = new Date(ticket.ticket_type.event.start_date)
+                const eventStartDate = DateTime.parseISOLocalToDate(ticket.ticket_type.event.start_date)
                 const saleStartDate = new Date(ticket.ticket_type.sale_start_date)
                 const saleEndDate = new Date(ticket.expiration_date || ticket.ticket_type.sale_end_date)
                 return {

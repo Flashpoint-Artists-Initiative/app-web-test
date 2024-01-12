@@ -641,7 +641,7 @@ export class PageEvent extends HTMLElement {
 
         const nowIsh = new Date()
         nowIsh.setHours(nowIsh.getHours(), 0, 0, 0)
-        const endDate = new Date(this.event.data.start_date)
+        const endDate = DateTime.parseISOLocalToDate(this.event.data.start_date)
         endDate.setHours(23, 0, 0, 0)
         ticket.sale_start_date = nowIsh.toISOString()
         ticket.sale_end_date = endDate.toISOString()
