@@ -85,7 +85,7 @@ export default class TicketType {
                 issueDate: new Date(ticket.created_at),
                 saleEndDate: new Date(type.sale_end_date),
                 expirationDate: ticket.expiration_date ? new Date(ticket.expiration_date) : null,
-                sold: ticket.purchased_ticket_id > 0
+                sold: ticket.is_purchased
             }
         })
     }

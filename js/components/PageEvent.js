@@ -490,7 +490,7 @@ export class PageEvent extends HTMLElement {
             .filter(ticket => {
                 const saleStartDate = new Date(ticket.ticket_type.sale_start_date)
                 const saleEndDate = new Date(ticket.expiration_date || ticket.ticket_type.sale_end_date)
-                return ticket.ticket_type.active && !ticket.purchased_ticket_id && saleStartDate < now && saleEndDate > now
+                return ticket.ticket_type.active && !ticket.is_purchased && saleStartDate < now && saleEndDate > now
             })
             .map(ticket => { 
                 // Adjust the end date if the reserved ticket has an expiration date

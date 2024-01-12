@@ -210,7 +210,7 @@ export class PageTickets extends HTMLElement {
                 const saleEndDate = new Date(ticket.expiration_date || ticket.ticket_type.sale_end_date)
                 return {
                     active: ticket.ticket_type.active,
-                    purchased: ticket.purchased_ticket_id,
+                    purchased: ticket.is_purchased,
                     name: ticket.ticket_type.name,
                     price: '$' + ticket.ticket_type.price.toLocaleString(undefined, {minimumFractionDigits: 2}),
                     eventId: ticket.ticket_type.event.id,
