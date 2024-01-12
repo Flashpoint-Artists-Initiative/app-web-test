@@ -4,7 +4,7 @@ const template = `
 <div class="mdc-typography--headline1 text-center py-8">🚧</div>
 `
 
-export class PagePurchase extends HTMLElement {
+export class PageShop extends HTMLElement {
     constructor() {
         super()
         this.refreshCallback = () => { this.refresh() }
@@ -28,4 +28,4 @@ export class PagePurchase extends HTMLElement {
 
     refreshCallback = undefined
 }
-customElements.define('page-purchase', PagePurchase)
+customElements.define('page-shop', PageShop)

@@ -2,7 +2,7 @@ import { session } from '../model/Session.js'
 
 const template = `
 {{#if reservedTickets.count}}
-<div class="d-flex align-center text-white bg-blue pa-4">
+<div class="reserved-tickets-alert d-flex align-center text-white bg-blue pa-4">
     <i class="material-icons icon-large mr-4">new_releases</i>
     <h3 class="font-weight-normal mr-auto my-0">
         {{#if reservedTickets.multiple}}
@@ -13,7 +13,7 @@ const template = `
     </h3>
     <div class="ml-6 text-right">
         <button class="mdc-button mdc-button--outlined text-white bg-blue mb-2">
-            <a href="./purchase?ticketId={{reservedTickets.id}}" class="text-white">
+            <a href="./shop?event-id={{eventId.id}}&reserved" class="text-white">
                 <span class="mdc-button__ripple"></span>Buy
             </a>
         </button>
@@ -58,14 +58,14 @@ export class AppAlert extends HTMLElement {
             .map(ticket => {
                 return {
                     name: ticket.ticket_type.name,
-                    ticketId: ticket.ticket_type.id
+                    eventId: ticket.ticket_type.event.id
                 }
             })
             .value()
         return {
             count: unsoldReservedTickets.length,
             multiple: unsoldReservedTickets.length > 1,
-            id: unsoldReservedTickets.length ? unsoldReservedTickets[0].ticketId : null,
+            eventId: unsoldReservedTickets.length ? unsoldReservedTickets[0].eventId : null,
             names: _.map(_.uniqBy(unsoldReservedTickets, 'name'), 'name').sort().join(', ')
         }
     }

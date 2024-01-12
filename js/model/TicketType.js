@@ -17,6 +17,7 @@ export default class TicketType {
 
             const ticketData = {
                 id: ticket.id,
+                eventId: ticket.event_id,
                 name: ticket.name,
                 description: ticket.description,
                 inactive: !ticket.active,
@@ -75,6 +76,7 @@ export default class TicketType {
             const type = _.find(ticketTypes, {id: ticket.ticket_type_id})
             return {
                 id: ticket.id,
+                eventId: type.event_id,
                 email: ticket.email,
                 name: ticket.name,
                 assigned: ticket.user ? true : false,

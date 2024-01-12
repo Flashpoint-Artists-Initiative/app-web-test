@@ -253,7 +253,7 @@ const template = `
                     {{#each event.reserved.tickets}}
                         <div class="app-ticket mdc-card mdc-card--outlined ma-2{{#if soldOut}} text-medium-emphasis{{/if}}">
                             <div {{#if canBuy}}class="mdc-card__primary-action"{{/if}}>
-                            {{#if canBuy}}<a href="./purchase?ticketId={{id}}" class="mdc-theme--on-surface">{{/if}}
+                            {{#if canBuy}}<a href="./shop?event-id={{eventId}}&reserved" class="mdc-theme--on-surface">{{/if}}
                                 <div class="d-flex flex-column">
                                     <div class="d-flex b-border pa-4">
                                         <div class="d-flex flex-column mr-auto">
@@ -292,7 +292,7 @@ const template = `
                 {{#each event.currentTickets}}
                     <div class="app-ticket mdc-card mdc-card--outlined ma-2{{#if soldOut}} text-medium-emphasis{{/if}}">
                         <div {{#if canBuy}}class="mdc-card__primary-action"{{/if}}>
-                        {{#if canBuy}}<a href="./purchase?ticketId={{id}}" class="mdc-theme--on-surface">{{/if}}
+                        {{#if canBuy}}<a href="./shop?event-id={{eventId}}" class="mdc-theme--on-surface">{{/if}}
                             <div class="d-flex flex-column">
                                 <div class="d-flex b-border pa-4">
                                     <div class="d-flex flex-column mr-auto">
@@ -614,7 +614,7 @@ export class PageEvent extends HTMLElement {
             this.event.data = response.ok ? data.data : undefined
             // TODO: Backend doesn't support returning the is_purchased property for reserved_tickets. We need to fix this up here.
             if (this.event.data) {
-                this.event.data.purchased_tickets.forEach(ticket => {
+                this.event.data.purchased_tickets?.forEach(ticket => {
                     if (ticket.reserved_ticket_id) {
                         const reservedTicket = _.find(this.event.data.reserved_tickets, {id: ticket.reserved_ticket_id})
                         if (reservedTicket) {
