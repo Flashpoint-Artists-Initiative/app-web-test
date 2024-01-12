@@ -161,8 +161,11 @@ export class EditReservedTicketDialog extends HTMLElement {
         this.userList = new MDCList(document.querySelector('.page-users .mdc-list'))
         this.userList.selectedIndex = _.findIndex(this.users, {id: this.reservedTicket.user_id})
         this.userList.listen('MDCList:action', event => {
-            this.reservedTicket.user = this.users[event.detail.index]
-            this.reservedTicket.user_id = this.reservedTicket.user.id
+            const user = this.users[event.detail.index]
+            this.reservedTicket.user = user
+            this.reservedTicket.user_id = user.id
+            this.reservedTicket.email = user.email
+            this.reservedTicket.name = user.display_name
             this.page = 'main'
             this.refreshFormFields()
         })
@@ -233,10 +236,12 @@ export class EditReservedTicketDialog extends HTMLElement {
             this.mdcDialog.listen('MDCDialog:closing', async (event) => {
                 switch(event.detail.action) {
                     case 'save':
-                        Object.assign(this.reservedTicket, {
-                            email: element.querySelector('.field-email').value.trim(),
-                            name: element.querySelector('.field-name').value.trim()
-                        })
+                        if (!this.reservedTicket.user_id) {
+                            Object.assign(this.reservedTicket, {
+                                email: element.querySelector('.field-email').value.trim(),
+                                name: element.querySelector('.field-name').value.trim()
+                            })    
+                        }
                         if (this.expirationType == 'yes') {
                             this.reservedTicket.expiration_date = element.querySelector('.field-expiration_date').isoDate
                         } else {

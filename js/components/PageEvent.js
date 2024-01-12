@@ -222,7 +222,7 @@ const template = `
                                                     {{/if}}
                                                 {{/if}}
                                             </td>
-                                            <td class="mdc-data-table__cell">{{email}}</td>
+                                            <td class="mdc-data-table__cell">{{#if name}}{{name}} &lt;{{email}}&gt;{{else}}{{email}}{{/if}}</td>
                                             <td class="mdc-data-table__cell">{{ticketType}}</td>
                                             <td class="mdc-data-table__cell">
                                                 <span class="font-weight-bold">{{assignedName}}</span>{{#if assignedEmail}} &lt;{{assignedEmail}}&gt;{{/if}}
@@ -756,8 +756,9 @@ export class PageEvent extends HTMLElement {
             return await ReservedTicketApi.updateReservedTicket(reservedTicket)
         })
         if (results.ok) {
-            const reservedTicket = _.find(this.event.data.reserved_tickets, {id: results.data.data.id})
-            Object.assign(reservedTicket, results.data.data)
+            const existingTicket = _.find(this.event.data.reserved_tickets, {id: results.data.data.id})
+            Object.assign(existingTicket, results.data.data)
+            existingTicket.user = reservedTicket.user
             this.refresh()
         }
     }

@@ -76,6 +76,7 @@ export default class TicketType {
             return {
                 id: ticket.id,
                 email: ticket.email,
+                name: ticket.name,
                 assigned: ticket.user ? true : false,
                 assignedName: ticket.user?.display_name,
                 assignedEmail: ticket.user?.email,
