@@ -54,6 +54,15 @@ const template = `
                         {{#if event.daysUntil}}<span>{{event.daysUntil}} days until event</span>{{/if}}
                     </div>
 
+                    {{#if cartTotalItemsOrderLimit}}
+                        <div class="d-flex align-center text-blue">
+                            <i class="material-icons icon-medium vertical-align-middle mr-4">info</i>
+                            <h3 class="font-weight-normal my-0">
+                                There is a {{cartTotalItemsOrderLimit}} ticket limit for this event
+                            </h3>
+                        </div>
+                    {{/if}}
+
                     {{#if event.purchased.count}}
                         <div class="d-flex align-center text-green py-4">
                             <i class="material-icons icon-medium vertical-align-middle mr-4">local_activity</i>
@@ -168,7 +177,8 @@ const cartListTemplate = `
 </div>
 {{/each}}`
 
-const perTicketOrderLimit = 4
+const perItemOrderLimit = undefined
+const cartTotalItemsOrderLimit = 6
 
 export class PageShop extends HTMLElement {
     constructor() {
@@ -190,7 +200,8 @@ export class PageShop extends HTMLElement {
             signedin: session.isSignedIn(),
             roles: session.getRoles(),
             fetch: this.fetch,
-            event: this.getEventData(this.event?.data)
+            event: this.getEventData(this.event?.data),
+            cartTotalItemsOrderLimit: cartTotalItemsOrderLimit
         }
     }
     getEventData(eventData) {
@@ -290,13 +301,13 @@ export class PageShop extends HTMLElement {
             element.querySelector('.add-ticket-button').style.opacity = itemInfo.quantity < itemInfo.available ? '1' : '.3'
             element.querySelector('.cart-quantity').textContent = itemInfo.quantity
         })
-        let cartTotal = _.reduce(this.cartItems, (total, item) => {
+        const cartTotalPrice = _.reduce(this.cartItems, (total, item) => {
             const ticketType = _.find(this.event.data.ticket_types, {id: item.id})
             return total + item.quantity * ticketType.price
         }, 0)
-        const cartTotalElement = this.querySelector('.cart-total-amount')
-        if (cartTotalElement) {
-            cartTotalElement.textContent = '$' + cartTotal.toFixed(2)
+        const cartTotalPriceElement = this.querySelector('.cart-total-amount')
+        if (cartTotalPriceElement) {
+            cartTotalPriceElement.textContent = '$' + cartTotalPrice.toFixed(2)
         }
         const buyButton = this.querySelector('.buy-button')
         if (buyButton) {
@@ -331,11 +342,21 @@ export class PageShop extends HTMLElement {
     getItemInfo(ticketTypeId) {
         const ticketType = _.find(this.event.data.ticket_types, {id: ticketTypeId})
         const item = _.find(this.cartItems, {id: ticketTypeId})
-        return {
+        const info = {
             item: item,
             quantity: item?.quantity || 0,
             available: ticketType.quantity - ticketType.purchased_tickets_count - ticketType.cart_items_quantity
         }
+        if (info.available > perItemOrderLimit) {
+            info.available = perItemOrderLimit
+        }
+        const cartTotalQuantity = _.reduce(this.cartItems, (total, item) => {
+            return total + item.quantity
+        }, 0)
+        if (cartTotalQuantity == cartTotalItemsOrderLimit) {
+            info.available = 0
+        }
+        return info
     }
     async refresh() {
         const reserved = new URLSearchParams(window.location.search).has('reserved')
@@ -423,14 +444,6 @@ export class PageShop extends HTMLElement {
                 notAuthorized: [401, 403].includes(response.status)
             }
             this.event.data = response.ok ? data.data : undefined
-            if (this.event.data) {
-                this.event.data.ticket_types.forEach(ticket => {
-                    const held = ticket.purchased_tickets_count + ticket.cart_items_quantity
-                    if (ticket.quantity - held > perTicketOrderLimit) {
-                        ticket.quantity = held + perTicketOrderLimit
-                    }
-                })    
-            }
             this.refresh()
         }
     }
