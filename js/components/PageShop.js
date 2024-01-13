@@ -18,41 +18,41 @@ const template = `
             {{/if}}
         </h2>
     {{else}}
-        <div class="d-flex flex-column w-100 fill-height">
-            <div class="pa-4">
-                <h1 class="my-0 mr-2 text-truncate">{{event.name}}</h1>
-                {{#if event.location}}<h3 class="mt-2 text-truncate">{{event.location}}</h3>{{/if}}
-                <div class="text-truncate">{{event.startDate}} - {{event.endDate}}</div>
-                <div class="d-flex align-center my-2">
-                    <i class="material-icons text-blue mr-2">history</i>
-                    {{#if event.ended}}<span>This event has ended</span>{{/if}}
-                    {{#if event.happeningNow}}<span>Happening now!</span>{{/if}}
-                    {{#if event.daysUntil}}<span>{{event.daysUntil}} days until event</span>{{/if}}
+        <div class="d-flex w-100 fill-height">
+            <div class="d-flex flex-column w-100 fill-height mx-4">
+                <div class="py-4">
+                    <h1 class="my-0 mr-2 text-truncate">{{event.name}}</h1>
+                    {{#if event.location}}<h3 class="mt-2 text-truncate">{{event.location}}</h3>{{/if}}
+                    <div class="text-truncate">{{event.startDate}} - {{event.endDate}}</div>
+                    <div class="d-flex align-center my-2">
+                        <i class="material-icons text-blue mr-2">history</i>
+                        {{#if event.ended}}<span>This event has ended</span>{{/if}}
+                        {{#if event.happeningNow}}<span>Happening now!</span>{{/if}}
+                        {{#if event.daysUntil}}<span>{{event.daysUntil}} days until event</span>{{/if}}
+                    </div>
+
+                    {{#if event.purchased.count}}
+                        <div class="d-flex align-center text-green py-4">
+                            <i class="material-icons icon-medium vertical-align-middle mr-4">local_activity</i>
+                            <h3 class="font-weight-normal my-0">
+                            {{#if event.purchased.multiple}}
+                                You have {{event.purchased.count}} tickets for this event
+                            {{else}}
+                                You have 1 ticket for this event
+                            {{/if}}
+                            </h3>
+                            <div class="ml-6 flex-shrink-0">
+                                <button class="mdc-button mdc-button--unelevated bg-green text-white">
+                                    <a href="./tickets" class="text-white">    
+                                        <span class="mdc-button__ripple"></span>Show Tickets
+                                    </a>
+                                </button>
+                            </div>
+                        </div>
+                    {{/if}}
                 </div>
 
-                {{#if event.purchased.count}}
-                    <div class="d-flex align-center text-green py-4">
-                        <i class="material-icons icon-medium vertical-align-middle mr-4">local_activity</i>
-                        <h3 class="font-weight-normal my-0">
-                        {{#if event.purchased.multiple}}
-                            You have {{event.purchased.count}} tickets for this event
-                        {{else}}
-                            You have 1 ticket for this event
-                        {{/if}}
-                        </h3>
-                        <div class="ml-6 flex-shrink-0">
-                            <button class="mdc-button mdc-button--unelevated bg-green text-white">
-                                <a href="./tickets" class="text-white">    
-                                    <span class="mdc-button__ripple"></span>Show Tickets
-                                </a>
-                            </button>
-                        </div>
-                    </div>
-                {{/if}}
-            </div>
-
-            <div class="d-flex w-100 flex-grow-1 flex-shrink-1" style="min-height:1rem">
-                <div class="flex-grow-1 overflow-y-auto pl-4 pb-4">
+                <div class="flex-grow-1 overflow-y-auto pr-4 pb-4">
                     {{#unless event.ended}}       
                         {{#if event.noneAvailable}}<h3 class="text-blue">No tickets available for this event yet</h3>{{/if}}
                         {{#if event.saleEnded}}<h3 class="text-blue">Ticket sales ended</h3>{{/if}}
@@ -102,19 +102,22 @@ const template = `
                         {{/each}}
                     {{/unless}}
                 </div>
-                <div class="cart-info d-flex flex-column l-border bg-yellow-lighten-5" style="width:32%;min-width:15rem;max-width:30rem">
-                    <h4 class="px-4 my-2">Your Order</h4>
-                    <div class="flex-grow-1 flex-shrink-1 overflow-y-auto px-4" style="min-height:1rem">
-                        
-                    </div>
-                    <div class="d-flex justify-center py-2">
-                        <button type="button" class="buy-button mdc-button mdc-button--unelevated" style="min-width:12rem">
-                            <div class="mdc-button__ripple"></div>
-                            <span class="mdc-button__label">Buy</span>
-                        </button>
-                    </div>
+            </div>
+            <div 
+                class="cart-info d-flex flex-column l-border" 
+                style="width:32%;min-width:15rem;max-width:30rem;box-shadow:0px 0px 16px 0px rgba(0,0,0,.2)">
+                <h3 class="my-0 pa-4 text-center b-border">Your Order</h3>
+                <div class="flex-grow-1 flex-shrink-1 overflow-y-auto px-4" style="min-height:1rem">
+                    
+                </div>
+                <div class="d-flex justify-center py-4">
+                    <button type="button" class="buy-button mdc-button mdc-button--unelevated" style="min-width:12rem">
+                        <div class="mdc-button__ripple"></div>
+                        <span class="mdc-button__label">Buy</span>
+                    </button>
                 </div>
             </div>
+        </div>
     {{/if}}
 {{else}}
     <div class="d-flex justify-center pa-4">
