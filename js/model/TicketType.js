@@ -28,10 +28,10 @@ export default class TicketType {
                 sale_end_date: ticket.sale_end_date,
                 endDate: saleEndDate,
                 reserved: ticket.quantity == 0,
-                qty: ticket.quantity?.toLocaleString(),
-                qtySold: ticket.purchased_tickets_count?.toLocaleString(),
-                qtyReserved: ticket.reserved_tickets_count?.toLocaleString(),
-                qtyAvailable: Math.max(0, ticket.quantity - ticket.purchased_tickets_count)?.toLocaleString(),
+                qty: ticket.quantity,
+                qtySold: ticket.purchased_tickets_count,
+                qtyReserved: ticket.reserved_tickets_count,
+                qtyAvailable: Math.max(0, ticket.quantity - ticket.purchased_tickets_count - ticket.cart_items_quantity),
                 canBuy: false
             }
             ticketData.showSoldOutSoon = ticketData.qtyAvailable > 0 && ticketData.qtyAvailable < 10

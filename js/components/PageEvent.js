@@ -1,4 +1,5 @@
 import DateTime from '../model/DateTime.js'
+import ReservedTicket from '../model/ReservedTicket.js'
 import { session } from '../model/Session.js'
 import TicketType from '../model/TicketType.js'
 import EventApi from '../api/EventApi.js'
@@ -12,7 +13,6 @@ import { TicketTypeDialog } from './dialog/TicketTypeDialog.js'
 import { CircularProgress } from './mdc/CircularProgress.js'
 import { TabBar } from './mdc/TabBar.js'
 import { Tab } from './mdc/Tab.js'
-import ReservedTicket from '../model/ReservedTicket.js'
 
 const template = `
 {{#if ready}}
@@ -446,7 +446,7 @@ export class PageEvent extends HTMLElement {
                 return !ticket.inactive && !ticket.reserved && ticket.availableOn
             })
             event.currentTickets = availableTickets.concat(currentSoldOut)
-            
+            console.log(event.currentTickets)
             if (pastTickets.length && !event.currentTickets.length) {
                 event.saleEnded = true
             }
@@ -460,7 +460,7 @@ export class PageEvent extends HTMLElement {
             }
             if (!pastTickets.length && !event.currentTickets.length && !futureTickets.length) {
                 event.noneAvailable = true
-            }    
+            }
         }
         return event
     }
