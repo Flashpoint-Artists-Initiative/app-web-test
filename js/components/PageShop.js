@@ -194,6 +194,12 @@ export class PageShop extends HTMLElement {
         session.removeEventListener('loaded', this.refreshCallback)
         session.removeEventListener('me', this.refreshCallback)
     }
+    get isReservedMode() {
+        return new URLSearchParams(window.location.search).has('reserved')
+    }
+    get eventId() {
+        return new URLSearchParams(window.location.search).get('event-id')
+    }
     get templateData() {
         return {
             ready: session.loaded,
@@ -201,7 +207,7 @@ export class PageShop extends HTMLElement {
             roles: session.getRoles(),
             fetch: this.fetch,
             event: this.getEventData(this.event?.data),
-            cartTotalItemsOrderLimit: cartTotalItemsOrderLimit
+            cartTotalItemsOrderLimit: this.isReservedMode ? undefined : cartTotalItemsOrderLimit
         }
     }
     getEventData(eventData) {
@@ -237,9 +243,7 @@ export class PageShop extends HTMLElement {
 
         event.purchased = this.getMyPurchasedData(event)
 
-        const reserved = new URLSearchParams(window.location.search).has('reserved')
-
-        if (reserved) {
+        if (this.isReservedMode) {
 
         } else {
             const tickets = TicketType.getTicketData(eventData.ticket_types)
@@ -359,8 +363,7 @@ export class PageShop extends HTMLElement {
         return info
     }
     async refresh() {
-        const reserved = new URLSearchParams(window.location.search).has('reserved')
-        if (reserved) {
+        if (this.isReservedMode) {
             const alert = document.querySelector('.reserved-tickets-alert')
             if (alert) {
                 alert.style.display = 'none'
@@ -415,7 +418,7 @@ export class PageShop extends HTMLElement {
             await this.createCheckoutCart()
         })
         
-        const eventId = new URLSearchParams(window.location.search).get('event-id')
+        const eventId = this.eventId
         if (!eventId) {
             this.fetch = {
                 done: true,
@@ -449,9 +452,8 @@ export class PageShop extends HTMLElement {
     }
     async createCheckoutCart() {
         const results = await MessageDialog.doRequestWithProcessing('Checking out', async () => {
-            const reserved = new URLSearchParams(window.location.search).has('reserved')
             const info = {
-                reserved: reserved,
+                reserved: this.isReservedMode,
                 tickets: this.cartItems
             }
             return await CartApi.addCart(info)
