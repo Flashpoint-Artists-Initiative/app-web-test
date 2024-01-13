@@ -310,8 +310,7 @@ const template = `
                                         {{#if showQtyAvailable}}<div class="text-medium-emphasis">{{qtyAvailable}} available</div>
                                         {{else if showSoldOutSoon}}<div class="text-red font-weight-bold text-uppercase mt-2">only {{qtyAvailable}} left</div>
                                         {{/if}}
-                                    </div>
-                                    
+                                    </div>                                    
                                 </div>
                                 <div class="pa-4">{{description}}</div>
                             </div>

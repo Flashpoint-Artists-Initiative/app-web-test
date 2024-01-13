@@ -101,7 +101,7 @@ const template = `
                                                     {{#if saleEnded}}Sale ended {{saleEnded}}
                                                     {{else if availableOn}}<span class="text-blue">Available on {{availableOn}}</span>
                                                     {{else if soldOut}}<span class="text-red">Sold out</span>
-                                                    {{else}}{{timeRemaining}}
+                                                    {{else}}{{#if showQtyAvailable}}<span class="font-weight-bold">{{qtyAvailable}} available</span>{{/if}}
                                                     {{/if}}
                                                 </div>
                                             </div>
@@ -243,42 +243,68 @@ export class PageShop extends HTMLElement {
 
         event.purchased = this.getMyPurchasedData(event)
 
-        if (this.isReservedMode) {
+        let ticketTypes = eventData.ticket_types
 
-        } else {
-            const tickets = TicketType.getTicketData(eventData.ticket_types)
-            tickets.forEach(ticket => {
-                ticket.qtyCart = _.find(this.cartItems, {id: ticket.id})?.quantity || 0
-                ticket.qtyCartAvailable = ticket.qtyAvailable - ticket.qtyCart
+        if (this.isReservedMode) {
+            // TODO: How to handle if a reserved ticket is in a cart already to determine available quantity.
+            const reservedQtyByTicketType = _.chain(session.me?.reserved_tickets)
+                .filter(ticket => {
+                    const saleStartDate = new Date(ticket.ticket_type.sale_start_date)
+                    const saleEndDate = new Date(ticket.expiration_date || ticket.ticket_type.sale_end_date)
+                    return ticket.ticket_type.active && !ticket.is_purchased && saleStartDate < now && saleEndDate > now
+                })
+                .map(ticket => {
+                    return {
+                        ticket_type_id: ticket.ticket_type_id
+                    }
+                })
+                .countBy('ticket_type_id')
+                .value()
+            ticketTypes = _.map(reservedQtyByTicketType, (quantity, id) => {
+                const ticketType = _.find(eventData.ticket_types, {id: parseInt(id)})
+                ticketType.quantity = quantity
+                ticketType.purchased_tickets_count = 0
+                ticketType.reserved_tickets_count = 0 // TODO: We need the 
+                ticketType.cart_items_quantity = 0 // TODO: We need the 
+                return ticketType
             })
-            const pastTickets = _.filter(tickets, ticket => {
-                return !ticket.inactive && !ticket.reserved && ticket.saleEnded
-            })
-            const availableTickets = _.filter(tickets, ticket => {
-                return !ticket.inactive && !ticket.reserved && ticket.canBuy
-            })
-            const currentSoldOut = _.filter(tickets, ticket => {
-                return !ticket.inactive && !ticket.reserved && ticket.soldOut
-            })
-            const futureTickets = _.filter(tickets, ticket => {
-                return !ticket.inactive && !ticket.reserved && ticket.availableOn
-            })
-            event.currentTickets = availableTickets.concat(currentSoldOut)
-            
-            if (pastTickets.length && !event.currentTickets.length) {
-                event.saleEnded = true
+            //console.log(session.me?.reserved_tickets)
+            //console.log(reservedQtyByTicketType)
+        }
+
+        const tickets = TicketType.getTicketData(ticketTypes)
+        tickets.forEach(ticket => {
+            ticket.qtyCart = _.find(this.cartItems, {id: ticket.id})?.quantity || 0
+            ticket.qtyCartAvailable = ticket.qtyAvailable - ticket.qtyCart
+            ticket.showQtyAvailable = true
+        })
+        const pastTickets = _.filter(tickets, ticket => {
+            return !ticket.inactive && !ticket.reserved && ticket.saleEnded
+        })
+        const availableTickets = _.filter(tickets, ticket => {
+            return !ticket.inactive && !ticket.reserved && ticket.canBuy
+        })
+        const currentSoldOut = _.filter(tickets, ticket => {
+            return !ticket.inactive && !ticket.reserved && ticket.soldOut
+        })
+        const futureTickets = _.filter(tickets, ticket => {
+            return !ticket.inactive && !ticket.reserved && ticket.availableOn
+        })
+        event.currentTickets = availableTickets.concat(currentSoldOut)
+        
+        if (pastTickets.length && !event.currentTickets.length) {
+            event.saleEnded = true
+        }
+        if (futureTickets.length && !availableTickets.length) {
+            const firstSaleDate = _.minBy(futureTickets, 'startDate').startDate.toLocaleString(undefined, dateTimeOptions)
+            if (pastTickets.length || currentSoldOut.length) {
+                event.additionalAvailableOn = firstSaleDate
+            } else {
+                event.availableOn = firstSaleDate
             }
-            if (futureTickets.length && !availableTickets.length) {
-                const firstSaleDate = _.minBy(futureTickets, 'startDate').startDate.toLocaleString(undefined, dateTimeOptions)
-                if (pastTickets.length || currentSoldOut.length) {
-                    event.additionalAvailableOn = firstSaleDate
-                } else {
-                    event.availableOn = firstSaleDate
-                }
-            }
-            if (!pastTickets.length && !event.currentTickets.length && !futureTickets.length) {
-                event.noneAvailable = true
-            }
+        }
+        if (!pastTickets.length && !event.currentTickets.length && !futureTickets.length) {
+            event.noneAvailable = true
         }
         return event
     }
@@ -351,14 +377,16 @@ export class PageShop extends HTMLElement {
             quantity: item?.quantity || 0,
             available: ticketType.quantity - ticketType.purchased_tickets_count - ticketType.cart_items_quantity
         }
-        if (info.available > perItemOrderLimit) {
-            info.available = perItemOrderLimit
-        }
-        const cartTotalQuantity = _.reduce(this.cartItems, (total, item) => {
-            return total + item.quantity
-        }, 0)
-        if (cartTotalQuantity == cartTotalItemsOrderLimit) {
-            info.available = 0
+        if (!this.isReservedMode) {
+            if (info.available > perItemOrderLimit) {
+                info.available = perItemOrderLimit
+            }
+            const cartTotalQuantity = _.reduce(this.cartItems, (total, item) => {
+                return total + item.quantity
+            }, 0)
+            if (cartTotalQuantity == cartTotalItemsOrderLimit) {
+                info.available = 0
+            }
         }
         return info
     }
