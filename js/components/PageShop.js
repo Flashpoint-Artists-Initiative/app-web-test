@@ -5,6 +5,11 @@ import EventApi from '../api/EventApi.js'
 import { CircularProgress } from './mdc/CircularProgress.js'
 
 const template = `
+<style>
+    .cart-list .cart-item:hover {
+        background-color: #FAFAFA;
+    }
+</style>
 {{#if ready}}
 {{#if fetch.done}}
     {{#if fetch.error}}
@@ -107,9 +112,7 @@ const template = `
                 class="cart-info d-flex flex-column l-border" 
                 style="width:32%;min-width:15rem;max-width:30rem;box-shadow:0px 0px 16px 0px rgba(0,0,0,.2)">
                 <h3 class="my-0 pa-4 text-center bg-grey-lighten-3 b-border">Your Order</h3>
-                <div class="flex-grow-1 flex-shrink-1 overflow-y-auto px-4" style="min-height:1rem">
-                    
-                </div>
+                <div class="cart-list flex-grow-1 flex-shrink-1 overflow-y-auto" style="min-height:1rem"></div>
                 <div class="d-flex flex-column align-center py-4">
                     <h2 class="cart-total-amount">$0.00</h2>
                     <button type="button" class="buy-button disabled mdc-button mdc-button--unelevated" style="min-width:12rem">
@@ -126,6 +129,26 @@ const template = `
     </div>
 {{/if}}
 {{/if}}`
+
+const cartListTemplate = `
+{{#each this}}
+<div class="cart-item d-flex align-center px-4 py-2">
+    <div class="mr-auto">
+        <h3 class="my-0">{{name}}</h3>
+        <div class="mt-2">{{quantity}} × {{price}}</div>
+    </div>
+    <div class="ml-2">
+        <button 
+            class="remove-tickets-button mdc-icon-button material-icons text-grey-darken-2 pa-0" 
+            style="width:40px;height:40px;"
+            data-ticket-type-id="{{id}}"
+        >
+            <div class="mdc-icon-button__ripple"></div>
+            delete_outline
+        </button>
+    </div>
+</div>
+{{/each}}`
 
 const perTicketOrderLimit = 4
 
@@ -260,6 +283,31 @@ export class PageShop extends HTMLElement {
         const buyButton = this.querySelector('.buy-button')
         if (buyButton) {
             buyButton.disabled = this.cartItems.length == 0
+        }
+        const cartList = this.querySelector('.cart-list')
+        if (cartList) {
+            const cartData = _.map(this.cartItems, item => {
+                const ticketType = _.find(this.event.data.ticket_types, {id: item.id})
+                return {
+                    id: ticketType.id,
+                    name: ticketType.name,
+                    price: '$' + ticketType.price.toFixed(2),
+                    quantity: item.quantity
+                }
+            })
+            cartList.innerHTML = Handlebars.compile(cartListTemplate)(cartData)
+            this.querySelectorAll('.remove-tickets-button').forEach(element => {
+                element.addEventListener('click', event => {
+                    const ticketTypeId = parseInt(event.currentTarget.dataset.ticketTypeId)
+                    if (!ticketTypeId) {
+                        return
+                    }
+                    _.remove(this.cartItems, item => {
+                        return item.id == ticketTypeId
+                    })
+                    this.refreshTickets()
+                })
+            })
         }
     }
     getItemInfo(ticketTypeId) {
