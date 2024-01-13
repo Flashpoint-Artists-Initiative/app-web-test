@@ -253,7 +253,7 @@ const template = `
                     {{#each event.reserved.tickets}}
                         <div class="app-ticket mdc-card mdc-card--outlined ma-2{{#if soldOut}} text-medium-emphasis{{/if}}">
                             <div {{#if canBuy}}class="mdc-card__primary-action"{{/if}}>
-                            {{#if canBuy}}<a href="./shop?event-id={{eventId}}&reserved" class="mdc-theme--on-surface">{{/if}}
+                            {{#if canBuy}}<a href="./shop?event-id={{eventId}}&ticket-id={{id}}&reserved" class="mdc-theme--on-surface">{{/if}}
                                 <div class="d-flex flex-column">
                                     <div class="d-flex b-border pa-4">
                                         <div class="d-flex flex-column mr-auto">
@@ -292,7 +292,7 @@ const template = `
                 {{#each event.currentTickets}}
                     <div class="app-ticket mdc-card mdc-card--outlined ma-2{{#if soldOut}} text-medium-emphasis{{/if}}">
                         <div {{#if canBuy}}class="mdc-card__primary-action"{{/if}}>
-                        {{#if canBuy}}<a href="./shop?event-id={{eventId}}" class="mdc-theme--on-surface">{{/if}}
+                        {{#if canBuy}}<a href="./shop?event-id={{eventId}}&ticket-id={{id}}" class="mdc-theme--on-surface">{{/if}}
                             <div class="d-flex flex-column">
                                 <div class="d-flex b-border pa-4">
                                     <div class="d-flex flex-column mr-auto">
@@ -445,7 +445,6 @@ export class PageEvent extends HTMLElement {
                 return !ticket.inactive && !ticket.reserved && ticket.availableOn
             })
             event.currentTickets = availableTickets.concat(currentSoldOut)
-            console.log(event.currentTickets)
             if (pastTickets.length && !event.currentTickets.length) {
                 event.saleEnded = true
             }

@@ -198,7 +198,12 @@ export class PageShop extends HTMLElement {
         return new URLSearchParams(window.location.search).has('reserved')
     }
     get eventId() {
-        return new URLSearchParams(window.location.search).get('event-id')
+        const value = new URLSearchParams(window.location.search).get('event-id')
+        return value ? parseInt(value) : 0
+    }
+    get ticketTypeId() {
+        const value = new URLSearchParams(window.location.search).get('ticket-id')
+        return value ? parseInt(value) : 0
     }
     get templateData() {
         return {
@@ -264,12 +269,10 @@ export class PageShop extends HTMLElement {
                 const ticketType = _.find(eventData.ticket_types, {id: parseInt(id)})
                 ticketType.quantity = quantity
                 ticketType.purchased_tickets_count = 0
-                ticketType.reserved_tickets_count = 0 // TODO: We need the 
-                ticketType.cart_items_quantity = 0 // TODO: We need the 
+                ticketType.reserved_tickets_count = 0  
+                ticketType.cart_items_quantity = 0 // TODO: We need the exact reserved ids in the cart to omit them
                 return ticketType
             })
-            //console.log(session.me?.reserved_tickets)
-            //console.log(reservedQtyByTicketType)
         }
 
         const tickets = TicketType.getTicketData(ticketTypes)
@@ -475,6 +478,12 @@ export class PageShop extends HTMLElement {
                 notAuthorized: [401, 403].includes(response.status)
             }
             this.event.data = response.ok ? data.data : undefined
+            if (this.event.data) {
+                const ticketTypeId = this.ticketTypeId
+                if (ticketTypeId) {
+                    this.cartItems.push({id: ticketTypeId, quantity: 1})
+                }
+            }
             this.refresh()
         }
     }
@@ -486,9 +495,8 @@ export class PageShop extends HTMLElement {
             }
             return await CartApi.addCart(info)
         })
-        console.log(results)
         if (results.ok) {
-           
+           // TODO: Grab session, launch stripe, put page into "checkout" mode with scrim preventing interaction
         }
     }
 
