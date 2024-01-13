@@ -1,7 +1,9 @@
 import DateTime from '../model/DateTime.js'
 import { session } from '../model/Session.js'
 import TicketType from '../model/TicketType.js'
+import CartApi from '../api/CartApi.js'
 import EventApi from '../api/EventApi.js'
+import { MessageDialog } from './dialog/MessageDialog.js'
 import { CircularProgress } from './mdc/CircularProgress.js'
 
 const template = `
@@ -24,6 +26,22 @@ const template = `
         </h2>
     {{else}}
         <div class="d-flex w-100 fill-height">
+            {{#unless signedin}}
+            <div 
+                class="w-100 fill-height d-flex align-center justify-center" 
+                style="position:absolute;z-index:4;top:0;left:0;background-color:rgb(0,0,0,.3);">
+                <div 
+                    class="d-flex align-center justify-center bg-white rounded-lg" 
+                    style="width:60%;height:30%;max-width:40rem;max-height:30rem;box-shadow: 0px 0px 30px 0px rgba(0,0,0,.6)">
+                    <div class="d-flex flex-column align-center">
+                        <h3>Sign in to buy tickets</h3>
+                        <button class="signin-button mdc-button mdc-button--unelevated bg-green text-white mb-6" style="width:12rem">
+                            <span class="mdc-button__ripple"></span>Sign In
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {{/unless}}
             <div class="d-flex flex-column w-100 fill-height mx-4">
                 <div class="py-4">
                     <h1 class="my-0 mr-2 text-truncate">{{event.name}}</h1>
@@ -333,6 +351,10 @@ export class PageShop extends HTMLElement {
         }
         this.refreshTickets()
 
+        this.querySelector('.signin-button')?.addEventListener('click', () => {
+            document.querySelector('app-bar').openSigninDialog()
+        })
+
         this.querySelectorAll('.remove-ticket-button').forEach(element => {
             element.addEventListener('click', event => {
                 const ticketTypeId = parseInt(event.currentTarget.closest('.app-ticket').dataset.ticketTypeId)
@@ -367,6 +389,9 @@ export class PageShop extends HTMLElement {
                 }
                 this.refreshTickets()
             })
+        })
+        this.querySelector('.buy-button')?.addEventListener('click', async () => {
+            await this.createCheckoutCart()
         })
         
         const eventId = new URLSearchParams(window.location.search).get('event-id')
@@ -407,6 +432,20 @@ export class PageShop extends HTMLElement {
                 })    
             }
             this.refresh()
+        }
+    }
+    async createCheckoutCart() {
+        const results = await MessageDialog.doRequestWithProcessing('Checking out', async () => {
+            const reserved = new URLSearchParams(window.location.search).has('reserved')
+            const info = {
+                reserved: reserved,
+                tickets: this.cartItems
+            }
+            return await CartApi.addCart(info)
+        })
+        console.log(results)
+        if (results.ok) {
+           
         }
     }
 

@@ -139,6 +139,7 @@ body {
 .mb-6 { margin-bottom: 24px; }
 .mb-8 { margin-bottom: 32px; }
 
+.rounded-lg { border-radius: 12px; }
 .rounded { border-radius: 8px; }
 .rounded-sm { border-radius: 4px; }
 .l-border { border-left: 1px solid rgba(0,0,0,.12); }
@@ -167,6 +168,7 @@ body {
 .bg-green-lighten-3 { background-color: #A5D6A7 !important; }
 .bg-green-lighten-5 { background-color: #E8F5E9!important; }
 .bg-yellow-lighten-5 { background-color: #FFFDE7 !important; }
+.bg-white { background-color: #FFF !important;}
 .bg-grey { background-color: #9E9E9E !important; }
 .bg-grey-lighten-3 { background-color: #EEEEEE !important; }
 
