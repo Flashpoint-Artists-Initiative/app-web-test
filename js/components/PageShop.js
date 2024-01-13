@@ -106,14 +106,15 @@ const template = `
             <div 
                 class="cart-info d-flex flex-column l-border" 
                 style="width:32%;min-width:15rem;max-width:30rem;box-shadow:0px 0px 16px 0px rgba(0,0,0,.2)">
-                <h3 class="my-0 pa-4 text-center b-border">Your Order</h3>
+                <h3 class="my-0 pa-4 text-center bg-grey-lighten-3 b-border">Your Order</h3>
                 <div class="flex-grow-1 flex-shrink-1 overflow-y-auto px-4" style="min-height:1rem">
                     
                 </div>
-                <div class="d-flex justify-center py-4">
-                    <button type="button" class="buy-button mdc-button mdc-button--unelevated" style="min-width:12rem">
+                <div class="d-flex flex-column align-center py-4">
+                    <h2 class="cart-total-amount">$0.00</h2>
+                    <button type="button" class="buy-button disabled mdc-button mdc-button--unelevated" style="min-width:12rem">
                         <div class="mdc-button__ripple"></div>
-                        <span class="mdc-button__label">Buy</span>
+                        <span class="mdc-button__label">Checkout</span>
                     </button>
                 </div>
             </div>
@@ -241,7 +242,6 @@ export class PageShop extends HTMLElement {
         }
     }
     refreshTickets() {
-        //this.refresh()
         this.querySelectorAll('.app-ticket').forEach(element => {
             const ticketTypeId = parseInt(element.dataset.ticketTypeId)
             const itemInfo = this.getItemInfo(ticketTypeId)
@@ -249,6 +249,18 @@ export class PageShop extends HTMLElement {
             element.querySelector('.add-ticket-button').style.opacity = itemInfo.quantity < itemInfo.available ? '1' : '.3'
             element.querySelector('.cart-quantity').textContent = itemInfo.quantity
         })
+        let cartTotal = _.reduce(this.cartItems, (total, item) => {
+            const ticketType = _.find(this.event.data.ticket_types, {id: item.id})
+            return total + item.quantity * ticketType.price
+        }, 0)
+        const cartTotalElement = this.querySelector('.cart-total-amount')
+        if (cartTotalElement) {
+            cartTotalElement.textContent = '$' + cartTotal.toFixed(2)
+        }
+        const buyButton = this.querySelector('.buy-button')
+        if (buyButton) {
+            buyButton.disabled = this.cartItems.length == 0
+        }
     }
     getItemInfo(ticketTypeId) {
         const ticketType = _.find(this.event.data.ticket_types, {id: ticketTypeId})
@@ -271,6 +283,7 @@ export class PageShop extends HTMLElement {
         if (!session.loaded) {
             return 
         }
+        this.refreshTickets()
 
         this.querySelectorAll('.remove-ticket-button').forEach(element => {
             element.addEventListener('click', event => {
